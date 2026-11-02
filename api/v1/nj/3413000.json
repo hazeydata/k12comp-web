@@ -1,0 +1,103 @@
+{
+ "contract_terms": [],
+ "district": "Pinelands Regional",
+ "nces_leaid": "3413000",
+ "salary_cells": [],
+ "sources": [
+  {
+   "agency": "NJDOE",
+   "label": "NJDOE User-Friendly Budget file",
+   "retrieved_at": "2026-10-19T14:51:56Z",
+   "sha256": "807217de89c62527a148b647911f1312f09ecb2c191614fd24d5ee59270d94ff",
+   "url": "https://www.nj.gov/education/budget/ufb/2425/download/employees25_minus_1.csv"
+  },
+  {
+   "agency": "NJDOE",
+   "label": "NJDOE User-Friendly Budget file",
+   "retrieved_at": "2026-10-19T14:52:03Z",
+   "sha256": "6a95b50321c4d33d6a845856f843558756ff0651fdb213f9b0d63353f6a949f9",
+   "url": "https://www.nj.gov/education/budget/ufb/2526/download/employees26.csv"
+  },
+  {
+   "agency": "NJDOE",
+   "label": "NJDOE User-Friendly Budget file",
+   "retrieved_at": "2026-10-19T14:52:16Z",
+   "sha256": "7238cbbc58f7667bb0d3edc9a4da0fd6e08c24623c1810ba81f183f11e8a8b08",
+   "url": "https://www.nj.gov/education/budget/ufb/2627/download/employees27.csv"
+  }
+ ],
+ "superintendent_contracts": [
+  {
+   "base_salary": "189113",
+   "contract_end": "2028-06-30",
+   "contract_start": "2023-07-01",
+   "fips_county": "34029",
+   "nces_leaid": "3413000",
+   "page_ref": "row 4613",
+   "retrieved_at": "2026-10-19T14:52:16Z",
+   "salary_not_reported": false,
+   "salary_year": "2026-27",
+   "school_year": "2026-27",
+   "sha256": "7238cbbc58f7667bb0d3edc9a4da0fd6e08c24623c1810ba81f183f11e8a8b08",
+   "sick_days": "18",
+   "source_url": "https://www.nj.gov/education/budget/ufb/2627/download/employees27.csv",
+   "state": "NJ",
+   "state_district_id": "29-4105",
+   "term_ends_before_year": false,
+   "title": "Superintendent",
+   "ufb_fte": "1",
+   "ufb_personal_days": "5",
+   "ufb_shared": "N",
+   "ufb_work_days": "260",
+   "vacation_days": "25"
+  },
+  {
+   "base_salary": "184500",
+   "contract_end": "2027-06-30",
+   "contract_start": "2023-07-01",
+   "fips_county": "34029",
+   "nces_leaid": "3413000",
+   "page_ref": "row 4497",
+   "retrieved_at": "2026-10-19T14:52:03Z",
+   "salary_not_reported": false,
+   "salary_year": "2025-26",
+   "school_year": "2025-26",
+   "sha256": "6a95b50321c4d33d6a845856f843558756ff0651fdb213f9b0d63353f6a949f9",
+   "sick_days": "18",
+   "source_url": "https://www.nj.gov/education/budget/ufb/2526/download/employees26.csv",
+   "state": "NJ",
+   "state_district_id": "29-4105",
+   "term_ends_before_year": false,
+   "title": "Superintendent",
+   "ufb_fte": "1.0",
+   "ufb_personal_days": "5",
+   "ufb_shared": "N",
+   "ufb_work_days": "260",
+   "vacation_days": "25"
+  },
+  {
+   "base_salary": "180000",
+   "contract_end": "2027-06-30",
+   "contract_start": "2023-07-01",
+   "fips_county": "34029",
+   "nces_leaid": "3413000",
+   "page_ref": "row 4142",
+   "retrieved_at": "2026-10-19T14:51:56Z",
+   "salary_not_reported": false,
+   "salary_year": "2024-25",
+   "school_year": "2024-25",
+   "sha256": "807217de89c62527a148b647911f1312f09ecb2c191614fd24d5ee59270d94ff",
+   "sick_days": "12",
+   "source_url": "https://www.nj.gov/education/budget/ufb/2425/download/employees25_minus_1.csv",
+   "state": "NJ",
+   "state_district_id": "29-4105",
+   "term_ends_before_year": false,
+   "title": "Superintendent",
+   "ufb_fte": "1.0",
+   "ufb_personal_days": "3",
+   "ufb_shared": "N",
+   "ufb_work_days": "260",
+   "vacation_days": "25"
+  }
+ ]
+}

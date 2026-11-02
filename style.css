@@ -1,0 +1,42 @@
+body{font-family:system-ui,sans-serif;line-height:1.5;color:#222;margin:0}
+main,header,footer{max-width:70ch;margin:0 auto;padding:0 16px}
+h1{font-size:1.75rem}
+h2{font-size:1.35rem}
+h3{font-size:1.1rem}
+a{color:#0b5394}
+:focus-visible{outline:3px solid #0b5394;outline-offset:2px}
+.skip{position:absolute;left:-9999px;top:0}
+.skip:focus{position:static;display:inline-block;padding:8px}
+header nav a,td a,th a,.src-short a{display:inline-block;min-height:44px;line-height:44px}
+.note{color:#595959}
+.disclaimer{border:1px solid #595959;background:#f3f6fa;padding:.6rem .8rem}
+.button{display:inline-block;background:#0b5394;color:#fff;padding:0 16px;min-height:44px;line-height:44px;border-radius:4px;text-decoration:none}
+.source,code,li{overflow-wrap:anywhere}
+code{word-break:break-all}
+.table-wrap{overflow-x:auto;position:relative}
+table{border-collapse:collapse}
+th,td{padding:.4rem .6rem;border:1px solid #ccc;text-align:left}
+thead th{background:#f3f6fa}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.muted,.nr,.na{color:#595959}
+.nr{font-style:italic}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.badge{display:inline-block;padding:0 .5rem;border-radius:3px;border:1px solid #595959}
+.badge.ok{background:#e6f4ea;border-color:#1e6b34;color:#1e6b34}
+.badge.held{background:#fdf3e1;border-color:#8a5a00;color:#6b4600}
+.badge.none{color:#595959}
+#filters label{display:inline-block;margin:0 1rem .5rem 0;min-height:44px}
+#filters input,#filters select{font:inherit;min-height:44px;max-width:100%;box-sizing:border-box}
+details.year>summary{cursor:pointer;min-height:44px;line-height:44px;font-weight:600}
+@media (max-width:600px){#districts,#districts tbody,#districts tr,#districts th,#districts td{display:block;width:auto}
+#districts thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#districts tr{border:1px solid #ccc;margin:0 0 .5rem;padding:.3rem}
+#districts th,#districts td{border:0;padding:.1rem .3rem;text-align:left}
+#districts td::before{color:#595959}
+#districts td:nth-of-type(1)::before{content:"County: "}
+#districts td:nth-of-type(2)::before{content:"Latest reported base salary: "}
+#districts td:nth-of-type(3)::before{content:"Year: "}
+#districts td:nth-of-type(4)::before{content:"Salary grid: "}}
+@media (min-width:601px){.table-wrap{overflow:auto;max-height:80vh}
+thead th{position:sticky;top:0;z-index:1}}
+.table-wrap:focus-visible{outline:3px solid #0b5394}

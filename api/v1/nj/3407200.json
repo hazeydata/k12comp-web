@@ -1,0 +1,72 @@
+{
+ "contract_terms": [],
+ "district": "Highlands Boro",
+ "nces_leaid": "3407200",
+ "salary_cells": [],
+ "sources": [
+  {
+   "agency": "NJDOE",
+   "label": "NJDOE User-Friendly Budget file",
+   "retrieved_at": "2026-10-19T14:51:10Z",
+   "sha256": "1d3e4a36c551a488db7854b8e9ad682911df1ec9a8900fdf106829923b2b61a9",
+   "url": "https://www.nj.gov/education/budget/ufb/1920/download/employees20.csv"
+  },
+  {
+   "agency": "NJDOE",
+   "label": "NJDOE User-Friendly Budget file",
+   "retrieved_at": "2026-10-19T14:51:20Z",
+   "sha256": "25b6c2e39dc94110f800608a32b20cea23effb6d918f70f4c43bf15dab08b15f",
+   "url": "https://www.nj.gov/education/budget/ufb/2021/download/employees21.csv"
+  }
+ ],
+ "superintendent_contracts": [
+  {
+   "base_salary": "69500",
+   "contract_end": "2021-07-31",
+   "contract_start": "2018-07-01",
+   "fips_county": "34025",
+   "nces_leaid": "3407200",
+   "page_ref": "row 2812",
+   "retrieved_at": "2026-10-19T14:51:20Z",
+   "salary_not_reported": false,
+   "salary_year": "2020-21",
+   "school_year": "2020-21",
+   "sha256": "25b6c2e39dc94110f800608a32b20cea23effb6d918f70f4c43bf15dab08b15f",
+   "sick_days": "0",
+   "source_url": "https://www.nj.gov/education/budget/ufb/2021/download/employees21.csv",
+   "state": "NJ",
+   "state_district_id": "25-2160",
+   "term_ends_before_year": false,
+   "title": "Superintendent",
+   "ufb_fte": "0.1",
+   "ufb_personal_days": "0",
+   "ufb_shared": "Y",
+   "ufb_work_days": "0",
+   "vacation_days": "0"
+  },
+  {
+   "base_salary": "67000",
+   "contract_end": "2021-06-30",
+   "contract_start": "2018-07-01",
+   "fips_county": "34025",
+   "nces_leaid": "3407200",
+   "page_ref": "row 2798",
+   "retrieved_at": "2026-10-19T14:51:10Z",
+   "salary_not_reported": false,
+   "salary_year": "2019-20",
+   "school_year": "2019-20",
+   "sha256": "1d3e4a36c551a488db7854b8e9ad682911df1ec9a8900fdf106829923b2b61a9",
+   "sick_days": "0",
+   "source_url": "https://www.nj.gov/education/budget/ufb/1920/download/employees20.csv",
+   "state": "NJ",
+   "state_district_id": "25-2160",
+   "term_ends_before_year": false,
+   "title": "Superintendent",
+   "ufb_fte": "0.3",
+   "ufb_personal_days": "0",
+   "ufb_shared": "Y",
+   "ufb_work_days": "0",
+   "vacation_days": "0"
+  }
+ ]
+}

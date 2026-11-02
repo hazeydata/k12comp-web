@@ -1,0 +1,8 @@
+# K12 Comp (New Jersey)
+JSON per district: /api/v1/nj/<nces_leaid>.json = {district, nces_leaid, superintendent_contracts:[rows], salary_cells:[rows], contract_terms:[rows], sources:[{label, url|null, sha256, agency, retrieved_at|received_at}]}. Row fields are verbatim allowlisted source columns (no person names, no free text) plus display fields salary_not_reported, term_ends_before_year, null_label, grid_table and label.
+No estimates: values are as reported; nothing is imputed, rounded or computed.
+Disclaimer: Self-reported by districts to NJDOE (User-Friendly Budget); NJDOE has not verified it.
+Privacy: no person is named; superintendent contracts show the title only; no teacher or staff names.
+Identity hold: salary cells whose source identity is unverified are not published.
+$0 handling: a base_salary of 0 means not reported and is excluded from all figures.
+Licence: CC BY 4.0. Attribution: NJDOE, NCES, district source documents. UFB source files are published by NJ.gov under NJ.gov terms.

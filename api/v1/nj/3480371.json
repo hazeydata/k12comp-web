@@ -1,0 +1,72 @@
+{
+ "contract_terms": [],
+ "district": "Greenwich-Stow Creek Regional",
+ "nces_leaid": "3480371",
+ "salary_cells": [],
+ "sources": [
+  {
+   "agency": "NJDOE",
+   "label": "NJDOE User-Friendly Budget file",
+   "retrieved_at": "2026-10-19T14:52:03Z",
+   "sha256": "6a95b50321c4d33d6a845856f843558756ff0651fdb213f9b0d63353f6a949f9",
+   "url": "https://www.nj.gov/education/budget/ufb/2526/download/employees26.csv"
+  },
+  {
+   "agency": "NJDOE",
+   "label": "NJDOE User-Friendly Budget file",
+   "retrieved_at": "2026-10-19T14:52:16Z",
+   "sha256": "7238cbbc58f7667bb0d3edc9a4da0fd6e08c24623c1810ba81f183f11e8a8b08",
+   "url": "https://www.nj.gov/education/budget/ufb/2627/download/employees27.csv"
+  }
+ ],
+ "superintendent_contracts": [
+  {
+   "base_salary": "129375",
+   "contract_end": "2030-06-30",
+   "contract_start": "2025-07-01",
+   "fips_county": "34011",
+   "nces_leaid": "3480371",
+   "page_ref": "row 1922",
+   "retrieved_at": "2026-10-19T14:52:16Z",
+   "salary_not_reported": false,
+   "salary_year": "2026-27",
+   "school_year": "2026-27",
+   "sha256": "7238cbbc58f7667bb0d3edc9a4da0fd6e08c24623c1810ba81f183f11e8a8b08",
+   "sick_days": "12",
+   "source_url": "https://www.nj.gov/education/budget/ufb/2627/download/employees27.csv",
+   "state": "NJ",
+   "state_district_id": "11-1466",
+   "term_ends_before_year": false,
+   "title": "Superintendent",
+   "ufb_fte": "1",
+   "ufb_personal_days": "3",
+   "ufb_shared": "N",
+   "ufb_work_days": "260",
+   "vacation_days": "20"
+  },
+  {
+   "base_salary": "125381",
+   "contract_end": "2025-06-30",
+   "contract_start": "2020-07-01",
+   "fips_county": "34011",
+   "nces_leaid": "3480371",
+   "page_ref": "row 1840",
+   "retrieved_at": "2026-10-19T14:52:03Z",
+   "salary_not_reported": false,
+   "salary_year": "2025-26",
+   "school_year": "2025-26",
+   "sha256": "6a95b50321c4d33d6a845856f843558756ff0651fdb213f9b0d63353f6a949f9",
+   "sick_days": "12",
+   "source_url": "https://www.nj.gov/education/budget/ufb/2526/download/employees26.csv",
+   "state": "NJ",
+   "state_district_id": "11-1466",
+   "term_ends_before_year": true,
+   "title": "Superintendent",
+   "ufb_fte": "1.0",
+   "ufb_personal_days": "4",
+   "ufb_shared": "N",
+   "ufb_work_days": "260",
+   "vacation_days": "20"
+  }
+ ]
+}
