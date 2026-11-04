@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://k12comp.com/about/</loc><lastmod>2026-10-30</lastmod></url>
 <url><loc>https://k12comp.com/</loc><lastmod>2026-10-30</lastmod></url>
+<url><loc>https://k12comp.com/about/</loc><lastmod>2026-10-30</lastmod></url>
+<url><loc>https://k12comp.com/nj/</loc><lastmod>2026-10-30</lastmod></url>
 <url><loc>https://k12comp.com/nj/absecon-city-3400660/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://k12comp.com/nj/alexandria-twp-3400690/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://k12comp.com/nj/allamuchy-twp-3400720/</loc><lastmod>2026-10-19</lastmod></url>
@@ -239,7 +240,6 @@
 <url><loc>https://k12comp.com/nj/hunterdon-central-reg-3407590/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://k12comp.com/nj/hunterdon-co-ed-ser-comm-3480360/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://k12comp.com/nj/hunterdon-co-vocational-3400050/</loc><lastmod>2026-10-19</lastmod></url>
-<url><loc>https://k12comp.com/nj/</loc><lastmod>2026-10-30</lastmod></url>
 <url><loc>https://k12comp.com/nj/irvington-township-3407680/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://k12comp.com/nj/island-heights-boro-3407710/</loc><lastmod>2026-10-19</lastmod></url>
 <url><loc>https://k12comp.com/nj/jackson-twp-3407740/</loc><lastmod>2026-10-19</lastmod></url>
