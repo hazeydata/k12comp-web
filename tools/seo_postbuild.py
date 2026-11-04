@@ -4,6 +4,7 @@ Idempotent; everything comes from data already on each page (design.md,
 "SEO, upkeep and revenue"):
 - title, meta description, og:title, og:description per the templates;
 - district pages: Dataset JSON-LD with name, licence and source URLs only;
+- source lines: collapse a doubled "Source: Source:" label;
 - revenue slots: newsletter signup (inert preview) and an empty, hidden
   sponsor/licence slot.
 Sitemap regeneration is out of scope this cycle.
@@ -91,6 +92,7 @@ for f in sorted(glob.glob(os.path.join(ROOT, "**", "*.html"), recursive=True)):
         s = insert_once(s, "newsletter", NEWSLETTER, '<section aria-labelledby="dl">')
         if len(title) >= 60 or len(desc) >= 155:
             over.append(rel)
+    s = s.replace('<p class="source">Source: Source: ', '<p class="source">Source: ')
     s = re.sub(r'<div class="slot" data-slot="[a-z0-9-]+" hidden aria-hidden="true"></div>', "", s)
     s = re.sub(r'<script type="application/ld\+json" id="ld-(?:place|site|dataset)">.*?</script>', "", s, flags=re.S)
     open(f, "w", encoding="utf-8").write(s)
