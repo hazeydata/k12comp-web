@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="806.4pt" height="374.4pt" viewBox="0 0 806.4 374.4" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-04T10:59:31.720922</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 374.4 
+L 806.4 374.4 
+L 806.4 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 48.384 310.752 
+L 782.208 310.752 
+L 782.208 92.3232 
+L 48.384 92.3232 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m567a7af9a3" d="M 0 0 
+L 0 3 
+" style="stroke: #333333; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#m567a7af9a3" x="72.055742" y="310.752" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: middle; fill: #1a1d21" x="72.055742" y="325.922" transform="rotate(-0 72.055742 325.922)">$50k</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m567a7af9a3" x="190.414452" y="310.752" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: middle; fill: #1a1d21" x="190.414452" y="325.922" transform="rotate(-0 190.414452 325.922)">$100k</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#m567a7af9a3" x="308.773161" y="310.752" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: middle; fill: #1a1d21" x="308.773161" y="325.922" transform="rotate(-0 308.773161 325.922)">$150k</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m567a7af9a3" x="427.131871" y="310.752" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: middle; fill: #1a1d21" x="427.131871" y="325.922" transform="rotate(-0 427.131871 325.922)">$200k</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#m567a7af9a3" x="545.490581" y="310.752" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: middle; fill: #1a1d21" x="545.490581" y="325.922" transform="rotate(-0 545.490581 325.922)">$250k</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#m567a7af9a3" x="663.84929" y="310.752" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: middle; fill: #1a1d21" x="663.84929" y="325.922" transform="rotate(-0 663.84929 325.922)">$300k</text>
+     </g>
+    </g>
+    <g id="xtick_7">
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#m567a7af9a3" x="782.208" y="310.752" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: middle; fill: #1a1d21" x="782.208" y="325.922" transform="rotate(-0 782.208 325.922)">$350k</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_8">
+      <defs>
+       <path id="m1eb78dacb5" d="M 0 0 
+L -3 0 
+" style="stroke: #333333; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#m1eb78dacb5" x="48.384" y="310.752" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="41.884" y="315.087" transform="rotate(-0 41.884 315.087)">0</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_9">
+      <g>
+       <use xlink:href="#m1eb78dacb5" x="48.384" y="246.508235" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="41.884" y="250.843235" transform="rotate(-0 41.884 250.843235)">20</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#m1eb78dacb5" x="48.384" y="182.264471" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="41.884" y="186.599471" transform="rotate(-0 41.884 186.599471)">40</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#m1eb78dacb5" x="48.384" y="118.020706" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="41.884" y="122.355706" transform="rotate(-0 41.884 122.355706)">60</text>
+     </g>
+    </g>
+    <g id="text_12">
+     <text style="font-size: 9px; font-family: 'Space Grotesk'; text-anchor: middle; fill: #5b6470" x="25.056" y="201.5376" transform="rotate(-90 25.056 201.5376)">districts</text>
+    </g>
+   </g>
+   <g id="LineCollection_1">
+    <path d="M 83.891613 310.752 
+L 83.891613 307.539812 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 107.563355 310.752 
+L 107.563355 307.539812 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 131.235097 310.752 
+L 131.235097 304.327624 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 154.906839 310.752 
+L 154.906839 307.539812 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 178.578581 310.752 
+L 178.578581 304.327624 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 225.922065 310.752 
+L 225.922065 301.115435 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 249.593806 310.752 
+L 249.593806 288.266682 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 273.265548 310.752 
+L 273.265548 281.842306 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 296.93729 310.752 
+L 296.93729 262.569176 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 320.609032 310.752 
+L 320.609032 214.386353 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 344.280774 310.752 
+L 344.280774 191.901035 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 367.952516 310.752 
+L 367.952516 156.566965 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 391.624258 310.752 
+L 391.624258 179.052282 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 415.296 310.752 
+L 415.296 137.293835 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 438.967742 310.752 
+L 438.967742 175.840094 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 462.639484 310.752 
+L 462.639484 156.566965 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 486.311226 310.752 
+L 486.311226 134.081647 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 509.982968 310.752 
+L 509.982968 175.840094 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 533.65471 310.752 
+L 533.65471 207.961976 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 557.326452 310.752 
+L 557.326452 233.659482 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 580.998194 310.752 
+L 580.998194 252.932612 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 604.669935 310.752 
+L 604.669935 249.720424 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 628.341677 310.752 
+L 628.341677 288.266682 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 652.013419 310.752 
+L 652.013419 278.630118 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 723.028645 310.752 
+L 723.028645 304.327624 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+    <path d="M 746.700387 310.752 
+L 746.700387 307.539812 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #458699; stroke-width: 2"/>
+   </g>
+   <g id="line2d_12">
+    <defs>
+     <path id="m9f35623464" d="M 0 2 
+C 0.530406 2 1.03916 1.789267 1.414214 1.414214 
+C 1.789267 1.03916 2 0.530406 2 0 
+C 2 -0.530406 1.789267 -1.03916 1.414214 -1.414214 
+C 1.03916 -1.789267 0.530406 -2 0 -2 
+C -0.530406 -2 -1.03916 -1.789267 -1.414214 -1.414214 
+C -1.789267 -1.03916 -2 -0.530406 -2 0 
+C -2 0.530406 -1.789267 1.03916 -1.414214 1.414214 
+C -1.03916 1.789267 -0.530406 2 0 2 
+z
+" style="stroke: #458699"/>
+    </defs>
+    <g clip-path="url(#paf2a5b3ab7)">
+     <use xlink:href="#m9f35623464" x="83.891613" y="307.539812" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="107.563355" y="307.539812" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="131.235097" y="304.327624" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="154.906839" y="307.539812" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="178.578581" y="304.327624" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="225.922065" y="301.115435" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="249.593806" y="288.266682" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="273.265548" y="281.842306" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="296.93729" y="262.569176" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="320.609032" y="214.386353" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="344.280774" y="191.901035" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="367.952516" y="156.566965" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="391.624258" y="179.052282" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="415.296" y="137.293835" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="438.967742" y="175.840094" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="462.639484" y="156.566965" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="486.311226" y="134.081647" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="509.982968" y="175.840094" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="533.65471" y="207.961976" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="557.326452" y="233.659482" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="580.998194" y="252.932612" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="604.669935" y="249.720424" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="628.341677" y="288.266682" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="652.013419" y="278.630118" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="723.028645" y="304.327624" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m9f35623464" x="746.700387" y="307.539812" style="fill: #458699; stroke: #458699"/>
+    </g>
+   </g>
+   <g id="LineCollection_2">
+    <path d="M 442.769424 126.051176 
+L 442.769424 108.384141 
+" clip-path="url(#paf2a5b3ab7)" style="fill: none; stroke: #e9316f; stroke-width: 1.2"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 48.384 310.752 
+L 48.384 118.020706 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 72.055742 310.752 
+L 758.536258 310.752 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 9px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #1a1d21" x="442.769424" y="105.684141" transform="rotate(-0 442.769424 105.684141)"> median $206,606</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; fill: #5b6470" transform="translate(82.057053 284.133247)">Hampton Twp</text>
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; fill: #5b6470" transform="translate(82.057053 295.353247)">$56,225</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; fill: #5b6470" transform="translate(692.915483 255.223553)">Newark City</text>
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; fill: #5b6470" transform="translate(708.215483 266.443553)">$330,978</text>
+   </g>
+  </g>
+  <g id="text_16">
+   <text style="font-weight: 700; font-size: 14px; font-family: 'Space Grotesk'; fill: #1a1d21" transform="translate(16.128 23.136)">Median 2026-27 superintendent base salary is $206,606 across 551 NJ districts; 490 of 551 fall</text>
+   <text style="font-weight: 700; font-size: 14px; font-family: 'Space Grotesk'; fill: #1a1d21" transform="translate(16.128 41)">between $150,000 and $280,000</text>
+  </g>
+  <g id="text_17">
+   <text style="font-size: 10px; font-family: 'Space Grotesk'; fill: #5b6470" transform="translate(16.128 57.9232)">Districts per $10,000 salary bin (each bin includes its lower edge), latest reported base salary on the k12comp.com New Jersey list, 2026-27</text>
+   <text style="font-size: 10px; font-family: 'Space Grotesk'; fill: #5b6470" transform="translate(16.128 70.6832)">rows only, US dollars per year</text>
+  </g>
+  <g id="text_18">
+   <text style="font-size: 7.5px; font-family: 'Space Grotesk'; fill: #5b6470" transform="translate(16.128 358.1472)">Of 586 listed districts, 35 are left out: 11 not reported ($0 in source) and 24 whose latest reported year is before 2026-27. Source: NJDOE User-Friendly Budget files via k12comp.com New</text>
+   <text style="font-size: 7.5px; font-family: 'Space Grotesk'; fill: #5b6470" transform="translate(16.128 367.7172)">Jersey list (k12comp-web commit 59bdb5b). Median = 276th of 551 values, sorted.</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="paf2a5b3ab7">
+   <rect x="48.384" y="92.3232" width="733.824" height="218.4288"/>
+  </clipPath>
+ </defs>
+</svg>

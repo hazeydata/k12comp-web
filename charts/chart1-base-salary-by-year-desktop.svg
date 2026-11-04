@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="806.4pt" height="460.8pt" viewBox="0 0 806.4 460.8" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-04T10:59:26.783142</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 460.8 
+L 806.4 460.8 
+L 806.4 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 56.448 237.040246 
+L 201.270857 237.040246 
+L 201.270857 131.7504 
+L 56.448 131.7504 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m4b4769e171" d="M 0 0 
+L 0 3 
+" style="stroke: #333333; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#m4b4769e171" x="63.874813" y="237.040246" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m4b4769e171" x="193.844044" y="237.040246" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_3">
+      <defs>
+       <path id="mc337120187" d="M 0 0 
+L -3 0 
+" style="stroke: #333333; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#mc337120187" x="56.448" y="220.954297" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="49.948" y="225.289297" transform="rotate(-0 49.948 225.289297)">$200k</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#mc337120187" x="56.448" y="184.395323" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="49.948" y="188.730323" transform="rotate(-0 49.948 188.730323)">$250k</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#mc337120187" x="56.448" y="147.836349" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="49.948" y="152.171349" transform="rotate(-0 49.948 152.171349)">$300k</text>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_6">
+    <path d="M 63.874813 220.577009 
+L 82.441846 217.644979 
+L 101.008879 184.468441 
+L 119.575912 179.900032 
+L 138.142945 175.218289 
+L 156.709978 170.418827 
+L 175.277011 165.499452 
+L 193.844044 150.504423 
+" clip-path="url(#paed178adac)" style="fill: none; stroke: #458699; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_7">
+    <defs>
+     <path id="m829e762365" d="M 0 1.75 
+C 0.464105 1.75 0.909265 1.565609 1.237437 1.237437 
+C 1.565609 0.909265 1.75 0.464105 1.75 0 
+C 1.75 -0.464105 1.565609 -0.909265 1.237437 -1.237437 
+C 0.909265 -1.565609 0.464105 -1.75 0 -1.75 
+C -0.464105 -1.75 -0.909265 -1.565609 -1.237437 -1.237437 
+C -1.565609 -0.909265 -1.75 -0.464105 -1.75 0 
+C -1.75 0.464105 -1.565609 0.909265 -1.237437 1.237437 
+C -0.909265 1.565609 -0.464105 1.75 0 1.75 
+z
+" style="stroke: #458699"/>
+    </defs>
+    <g clip-path="url(#paed178adac)">
+     <use xlink:href="#m829e762365" x="63.874813" y="220.577009" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m829e762365" x="193.844044" y="150.504423" style="fill: #458699; stroke: #458699"/>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 56.448 220.954297 
+L 56.448 147.836349 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 63.874813 237.040246 
+L 193.844044 237.040246 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 9px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="193.844044" y="141.223807" transform="rotate(-0 193.844044 141.223807)">$296,351</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #5b6470" x="56.448" y="122.883009" transform="rotate(-0 56.448 122.883009)">2019-20 $200,516</text>
+   </g>
+   <g id="text_6">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Space Grotesk'; text-anchor: start; fill: #1a1d21" x="56.448" y="108.825329" transform="rotate(-0 56.448 108.825329)">W Windsor-Plainsboro</text>
+   </g>
+  </g>
+  <g id="axes_2">
+   <g id="patch_5">
+    <path d="M 244.717714 237.040246 
+L 389.540571 237.040246 
+L 389.540571 131.7504 
+L 244.717714 131.7504 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_3">
+    <g id="xtick_3">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#m4b4769e171" x="252.144527" y="237.040246" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_9">
+      <g>
+       <use xlink:href="#m4b4769e171" x="382.113758" y="237.040246" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_4">
+    <g id="ytick_4">
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#mc337120187" x="244.717714" y="220.954297" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#mc337120187" x="244.717714" y="184.395323" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#mc337120187" x="244.717714" y="147.836349" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_13">
+    <path d="M 252.144527 223.452007 
+L 270.71156 188.051221 
+L 289.278593 181.112327 
+L 307.845626 180.814006 
+L 326.412659 190.244759 
+L 344.979692 163.922297 
+L 363.546725 158.230796 
+L 382.113758 152.379898 
+" clip-path="url(#p767bdca9d7)" style="fill: none; stroke: #458699; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_14">
+    <g clip-path="url(#p767bdca9d7)">
+     <use xlink:href="#m829e762365" x="252.144527" y="223.452007" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m829e762365" x="382.113758" y="152.379898" style="fill: #458699; stroke: #458699"/>
+    </g>
+   </g>
+   <g id="patch_6">
+    <path d="M 244.717714 220.954297 
+L 244.717714 147.836349 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 252.144527 237.040246 
+L 382.113758 237.040246 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 9px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="382.113758" y="143.099283" transform="rotate(-0 382.113758 143.099283)">$293,786</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #5b6470" x="244.717714" y="122.883009" transform="rotate(-0 244.717714 122.883009)">2019-20 $196,584</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Space Grotesk'; text-anchor: start; fill: #1a1d21" x="244.717714" y="108.825329" transform="rotate(-0 244.717714 108.825329)">Edison Twp</text>
+   </g>
+  </g>
+  <g id="axes_3">
+   <g id="patch_8">
+    <path d="M 432.987429 237.040246 
+L 577.810286 237.040246 
+L 577.810286 131.7504 
+L 432.987429 131.7504 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_5">
+    <g id="xtick_5">
+     <g id="line2d_15">
+      <g>
+       <use xlink:href="#m4b4769e171" x="440.414242" y="237.040246" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#m4b4769e171" x="570.383473" y="237.040246" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_6">
+    <g id="ytick_7">
+     <g id="line2d_17">
+      <g>
+       <use xlink:href="#mc337120187" x="432.987429" y="220.954297" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_8">
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#mc337120187" x="432.987429" y="184.395323" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_9">
+     <g id="line2d_19">
+      <g>
+       <use xlink:href="#mc337120187" x="432.987429" y="147.836349" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_20">
+    <path d="M 440.414242 223.452007 
+L 458.981275 223.452007 
+L 477.548308 201.57731 
+L 496.115341 191.288883 
+L 514.682374 191.573312 
+L 533.249407 180.892973 
+L 551.81644 173.646253 
+L 570.383473 165.989342 
+" clip-path="url(#p528cadbd3c)" style="fill: none; stroke: #458699; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_21">
+    <g clip-path="url(#p528cadbd3c)">
+     <use xlink:href="#m829e762365" x="440.414242" y="223.452007" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m829e762365" x="570.383473" y="165.989342" style="fill: #458699; stroke: #458699"/>
+    </g>
+   </g>
+   <g id="patch_9">
+    <path d="M 432.987429 220.954297 
+L 432.987429 147.836349 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 440.414242 237.040246 
+L 570.383473 237.040246 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 9px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="570.383473" y="156.708726" transform="rotate(-0 570.383473 156.708726)">$275,173</text>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #5b6470" x="432.987429" y="122.883009" transform="rotate(-0 432.987429 122.883009)">2019-20 $196,584</text>
+   </g>
+   <g id="text_12">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Space Grotesk'; text-anchor: start; fill: #1a1d21" x="432.987429" y="108.825329" transform="rotate(-0 432.987429 108.825329)">Bayonne City</text>
+   </g>
+  </g>
+  <g id="axes_4">
+   <g id="patch_11">
+    <path d="M 621.257143 237.040246 
+L 766.08 237.040246 
+L 766.08 131.7504 
+L 621.257143 131.7504 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_7">
+    <g id="xtick_7">
+     <g id="line2d_22">
+      <g>
+       <use xlink:href="#m4b4769e171" x="628.683956" y="237.040246" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_8">
+     <g id="line2d_23">
+      <g>
+       <use xlink:href="#m4b4769e171" x="758.653187" y="237.040246" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_8">
+    <g id="ytick_10">
+     <g id="line2d_24">
+      <g>
+       <use xlink:href="#mc337120187" x="621.257143" y="220.954297" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_11">
+     <g id="line2d_25">
+      <g>
+       <use xlink:href="#mc337120187" x="621.257143" y="184.395323" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_12">
+     <g id="line2d_26">
+      <g>
+       <use xlink:href="#mc337120187" x="621.257143" y="147.836349" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_27">
+    <path d="M 628.683956 223.452007 
+L 647.250989 221.685477 
+L 665.818022 227.9919 
+L 684.385055 213.642503 
+L 702.952088 209.036072 
+L 721.519121 180.739426 
+L 740.086154 175.145903 
+L 758.653187 169.384208 
+" clip-path="url(#pa4fb6b4168)" style="fill: none; stroke: #458699; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_28">
+    <g clip-path="url(#pa4fb6b4168)">
+     <use xlink:href="#m829e762365" x="628.683956" y="223.452007" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m829e762365" x="758.653187" y="169.384208" style="fill: #458699; stroke: #458699"/>
+    </g>
+   </g>
+   <g id="patch_12">
+    <path d="M 621.257143 220.954297 
+L 621.257143 147.836349 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 628.683956 237.040246 
+L 758.653187 237.040246 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 9px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="758.653187" y="160.103593" transform="rotate(-0 758.653187 160.103593)">$270,530</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #5b6470" x="621.257143" y="122.883009" transform="rotate(-0 621.257143 122.883009)">2019-20 $196,584</text>
+   </g>
+   <g id="text_15">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Space Grotesk'; text-anchor: start; fill: #1a1d21" x="621.257143" y="108.825329" transform="rotate(-0 621.257143 108.825329)">Trenton</text>
+   </g>
+  </g>
+  <g id="axes_5">
+   <g id="patch_14">
+    <path d="M 56.448 405.504 
+L 201.270857 405.504 
+L 201.270857 300.214154 
+L 56.448 300.214154 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_9">
+    <g id="xtick_9">
+     <g id="line2d_29">
+      <g>
+       <use xlink:href="#m4b4769e171" x="63.874813" y="405.504" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_16">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #1a1d21" x="63.874813" y="420.674" transform="rotate(-0 63.874813 420.674)">2019-20</text>
+     </g>
+    </g>
+    <g id="xtick_10">
+     <g id="line2d_30">
+      <g>
+       <use xlink:href="#m4b4769e171" x="193.844044" y="405.504" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_17">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="193.844044" y="420.674" transform="rotate(-0 193.844044 420.674)">2026-27</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_10">
+    <g id="ytick_13">
+     <g id="line2d_31">
+      <g>
+       <use xlink:href="#mc337120187" x="56.448" y="389.418051" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_18">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="49.948" y="393.753051" transform="rotate(-0 49.948 393.753051)">$200k</text>
+     </g>
+    </g>
+    <g id="ytick_14">
+     <g id="line2d_32">
+      <g>
+       <use xlink:href="#mc337120187" x="56.448" y="352.859077" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_19">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="49.948" y="357.194077" transform="rotate(-0 49.948 357.194077)">$250k</text>
+     </g>
+    </g>
+    <g id="ytick_15">
+     <g id="line2d_33">
+      <g>
+       <use xlink:href="#mc337120187" x="56.448" y="316.300103" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_20">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="49.948" y="320.635103" transform="rotate(-0 49.948 320.635103)">$300k</text>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_34">
+    <path d="M 63.874813 386.108733 
+L 82.441846 391.91576 
+L 101.008879 391.91576 
+L 119.575912 360.170872 
+L 138.142945 356.66121 
+L 156.709978 345.693518 
+L 175.277011 341.894309 
+L 193.844044 338.019058 
+" clip-path="url(#p1425dcc476)" style="fill: none; stroke: #458699; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_35">
+    <g clip-path="url(#p1425dcc476)">
+     <use xlink:href="#m829e762365" x="63.874813" y="386.108733" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m829e762365" x="193.844044" y="338.019058" style="fill: #458699; stroke: #458699"/>
+    </g>
+   </g>
+   <g id="patch_15">
+    <path d="M 56.448 389.418051 
+L 56.448 316.300103 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 63.874813 405.504 
+L 193.844044 405.504 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 9px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="193.844044" y="328.738443" transform="rotate(-0 193.844044 328.738443)">$270,296</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #5b6470" x="56.448" y="291.346763" transform="rotate(-0 56.448 291.346763)">2019-20 $204,526</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Space Grotesk'; text-anchor: start; fill: #1a1d21" x="56.448" y="277.289083" transform="rotate(-0 56.448 277.289083)">Clifton City</text>
+   </g>
+  </g>
+  <g id="axes_6">
+   <g id="patch_17">
+    <path d="M 244.717714 405.504 
+L 389.540571 405.504 
+L 389.540571 300.214154 
+L 244.717714 300.214154 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_11">
+    <g id="xtick_11">
+     <g id="line2d_36">
+      <g>
+       <use xlink:href="#m4b4769e171" x="252.144527" y="405.504" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_24">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #1a1d21" x="252.144527" y="420.674" transform="rotate(-0 252.144527 420.674)">2019-20</text>
+     </g>
+    </g>
+    <g id="xtick_12">
+     <g id="line2d_37">
+      <g>
+       <use xlink:href="#m4b4769e171" x="382.113758" y="405.504" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_25">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="382.113758" y="420.674" transform="rotate(-0 382.113758 420.674)">2026-27</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_12">
+    <g id="ytick_16">
+     <g id="line2d_38">
+      <g>
+       <use xlink:href="#mc337120187" x="244.717714" y="389.418051" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_17">
+     <g id="line2d_39">
+      <g>
+       <use xlink:href="#mc337120187" x="244.717714" y="352.859077" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_18">
+     <g id="line2d_40">
+      <g>
+       <use xlink:href="#mc337120187" x="244.717714" y="316.300103" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_41">
+    <path d="M 252.144527 402.624615 
+L 270.71156 399.964584 
+L 289.278593 397.250446 
+L 307.845626 385.030974 
+L 326.412659 377.405503 
+L 344.979692 373.453478 
+L 363.546725 349.642618 
+L 382.113758 342.805359 
+" clip-path="url(#p7da1aa71a7)" style="fill: none; stroke: #458699; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_42">
+    <g clip-path="url(#p7da1aa71a7)">
+     <use xlink:href="#m829e762365" x="252.144527" y="402.624615" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m829e762365" x="382.113758" y="342.805359" style="fill: #458699; stroke: #458699"/>
+    </g>
+   </g>
+   <g id="patch_18">
+    <path d="M 244.717714 389.418051 
+L 244.717714 316.300103 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 252.144527 405.504 
+L 382.113758 405.504 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_26">
+    <text style="font-size: 9px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="382.113758" y="333.524744" transform="rotate(-0 382.113758 333.524744)">$263,750</text>
+   </g>
+   <g id="text_27">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #5b6470" x="244.717714" y="291.346763" transform="rotate(-0 244.717714 291.346763)">2019-20 $181,938</text>
+   </g>
+   <g id="text_28">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Space Grotesk'; text-anchor: start; fill: #1a1d21" x="244.717714" y="277.289083" transform="rotate(-0 244.717714 277.289083)">Vineland City</text>
+   </g>
+  </g>
+  <g id="axes_7">
+   <g id="patch_20">
+    <path d="M 432.987429 405.504 
+L 577.810286 405.504 
+L 577.810286 300.214154 
+L 432.987429 300.214154 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_13">
+    <g id="xtick_13">
+     <g id="line2d_43">
+      <g>
+       <use xlink:href="#m4b4769e171" x="440.414242" y="405.504" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_29">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #1a1d21" x="440.414242" y="420.674" transform="rotate(-0 440.414242 420.674)">2019-20</text>
+     </g>
+    </g>
+    <g id="xtick_14">
+     <g id="line2d_44">
+      <g>
+       <use xlink:href="#m4b4769e171" x="570.383473" y="405.504" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_30">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="570.383473" y="420.674" transform="rotate(-0 570.383473 420.674)">2026-27</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_14">
+    <g id="ytick_19">
+     <g id="line2d_45">
+      <g>
+       <use xlink:href="#mc337120187" x="432.987429" y="389.418051" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_20">
+     <g id="line2d_46">
+      <g>
+       <use xlink:href="#mc337120187" x="432.987429" y="352.859077" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_21">
+     <g id="line2d_47">
+      <g>
+       <use xlink:href="#mc337120187" x="432.987429" y="316.300103" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_48">
+    <path d="M 440.414242 391.91576 
+L 458.981275 391.91576 
+L 477.548308 389.113881 
+L 496.115341 371.138564 
+L 514.682374 367.025679 
+L 533.249407 382.106256 
+L 551.81644 358.032172 
+L 570.383473 352.703336 
+" clip-path="url(#p74f2fae25a)" style="fill: none; stroke: #458699; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_49">
+    <g clip-path="url(#p74f2fae25a)">
+     <use xlink:href="#m829e762365" x="440.414242" y="391.91576" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m829e762365" x="570.383473" y="352.703336" style="fill: #458699; stroke: #458699"/>
+    </g>
+   </g>
+   <g id="patch_21">
+    <path d="M 432.987429 389.418051 
+L 432.987429 316.300103 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_22">
+    <path d="M 440.414242 405.504 
+L 570.383473 405.504 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 9px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="570.383473" y="343.42272" transform="rotate(-0 570.383473 343.42272)">$250,213</text>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #5b6470" x="432.987429" y="291.346763" transform="rotate(-0 432.987429 291.346763)">2019-20 $196,584</text>
+   </g>
+   <g id="text_33">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Space Grotesk'; text-anchor: start; fill: #1a1d21" x="432.987429" y="277.289083" transform="rotate(-0 432.987429 277.289083)">Cherry Hill Twp</text>
+   </g>
+  </g>
+  <g id="axes_8">
+   <g id="patch_23">
+    <path d="M 621.257143 405.504 
+L 766.08 405.504 
+L 766.08 300.214154 
+L 621.257143 300.214154 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_15">
+    <g id="xtick_15">
+     <g id="line2d_50">
+      <g>
+       <use xlink:href="#m4b4769e171" x="628.683956" y="405.504" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_34">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #1a1d21" x="628.683956" y="420.674" transform="rotate(-0 628.683956 420.674)">2019-20</text>
+     </g>
+    </g>
+    <g id="xtick_16">
+     <g id="line2d_51">
+      <g>
+       <use xlink:href="#m4b4769e171" x="758.653187" y="405.504" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_35">
+      <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="758.653187" y="420.674" transform="rotate(-0 758.653187 420.674)">2026-27</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_16">
+    <g id="ytick_22">
+     <g id="line2d_52">
+      <g>
+       <use xlink:href="#mc337120187" x="621.257143" y="389.418051" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_23">
+     <g id="line2d_53">
+      <g>
+       <use xlink:href="#mc337120187" x="621.257143" y="352.859077" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_24">
+     <g id="line2d_54">
+      <g>
+       <use xlink:href="#mc337120187" x="621.257143" y="316.300103" style="fill: #333333; stroke: #333333; stroke-width: 0.6"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_55">
+    <path d="M 628.683956 387.224513 
+L 647.250989 384.255924 
+L 665.818022 393.073949 
+L 684.385055 395.267487 
+L 702.952088 378.450359 
+L 721.519121 375.306287 
+L 740.086154 372.099334 
+L 758.653187 368.828037 
+" clip-path="url(#pcd4a056716)" style="fill: none; stroke: #458699; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="line2d_56">
+    <g clip-path="url(#pcd4a056716)">
+     <use xlink:href="#m829e762365" x="628.683956" y="387.224513" style="fill: #458699; stroke: #458699"/>
+     <use xlink:href="#m829e762365" x="758.653187" y="368.828037" style="fill: #458699; stroke: #458699"/>
+    </g>
+   </g>
+   <g id="patch_24">
+    <path d="M 621.257143 389.418051 
+L 621.257143 316.300103 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_25">
+    <path d="M 628.683956 405.504 
+L 758.653187 405.504 
+" style="fill: none; stroke: #999999; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_36">
+    <text style="font-size: 9px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #1a1d21" x="758.653187" y="359.547422" transform="rotate(-0 758.653187 359.547422)">$228,160</text>
+   </g>
+   <g id="text_37">
+    <text style="font-size: 8.5px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #5b6470" x="621.257143" y="291.346763" transform="rotate(-0 621.257143 291.346763)">2019-20 $203,000</text>
+   </g>
+   <g id="text_38">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'Space Grotesk'; text-anchor: start; fill: #1a1d21" x="621.257143" y="277.289083" transform="rotate(-0 621.257143 277.289083)">Toms River</text>
+   </g>
+  </g>
+  <g id="text_39">
+   <text style="font-weight: 700; font-size: 14px; font-family: 'Space Grotesk'; fill: #1a1d21" transform="translate(16.128 25.296)">Superintendent base salary rose in all 8 districts from 2019-20 to 2026-27, by $25,160 (Toms</text>
+   <text style="font-weight: 700; font-size: 14px; font-family: 'Space Grotesk'; fill: #1a1d21" transform="translate(16.128 43.16)">River) to $97,202 (Edison)</text>
+  </g>
+  <g id="text_40">
+   <text style="font-size: 10px; font-family: 'Space Grotesk'; fill: #5b6470" transform="translate(16.128 60.7744)">Superintendent base salary as reported to NJDOE, US dollars per year, 8 districts with a published salary guide; panels ordered by 2026-27</text>
+   <text style="font-size: 10px; font-family: 'Space Grotesk'; fill: #5b6470" transform="translate(16.128 73.5344)">salary, shared y-axis from $178,000 (not zero)</text>
+  </g>
+  <g id="text_41">
+   <text style="font-size: 7.5px; font-family: 'Space Grotesk'; text-anchor: start; fill: #5b6470" x="16.128" y="451.698" transform="rotate(-0 16.128 451.698)">Source: NJDOE User-Friendly Budget files 2019-20 to 2026-27, as published on k12comp.com (k12comp-web commit 59bdb5b). Values shown as reported; no gaps, none imputed.</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="paed178adac">
+   <rect x="56.448" y="131.7504" width="144.822857" height="105.289846"/>
+  </clipPath>
+  <clipPath id="p767bdca9d7">
+   <rect x="244.717714" y="131.7504" width="144.822857" height="105.289846"/>
+  </clipPath>
+  <clipPath id="p528cadbd3c">
+   <rect x="432.987429" y="131.7504" width="144.822857" height="105.289846"/>
+  </clipPath>
+  <clipPath id="pa4fb6b4168">
+   <rect x="621.257143" y="131.7504" width="144.822857" height="105.289846"/>
+  </clipPath>
+  <clipPath id="p1425dcc476">
+   <rect x="56.448" y="300.214154" width="144.822857" height="105.289846"/>
+  </clipPath>
+  <clipPath id="p7da1aa71a7">
+   <rect x="244.717714" y="300.214154" width="144.822857" height="105.289846"/>
+  </clipPath>
+  <clipPath id="p74f2fae25a">
+   <rect x="432.987429" y="300.214154" width="144.822857" height="105.289846"/>
+  </clipPath>
+  <clipPath id="pcd4a056716">
+   <rect x="621.257143" y="300.214154" width="144.822857" height="105.289846"/>
+  </clipPath>
+ </defs>
+</svg>
