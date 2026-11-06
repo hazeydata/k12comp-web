@@ -20,7 +20,7 @@ NEWSLETTER = (
     '<h2 id="nl-h">Know when the numbers change.</h2>'
     '<p>An email when we add new contracts, salary guides or corrections. Nothing else.</p>'
     '<form class="nl-form" action="https://hazeydata.ai/api/subscribe" method="post" novalidate>'
-    '<label><span class="sr-only">Email address</span><input type="email" name="email" placeholder="you@district.org" autocomplete="email" required aria-required="true"></label>'
+    '<label><span class="sr-only">Email address</span><input type="email" name="email" placeholder="you@example.org" autocomplete="email" required aria-required="true"></label>'
     '<input type="hidden" name="source" value="k12comp">'
     '<div style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" value=""></label></div>'
     '<button class="btn ghost" type="submit">Get updates</button></form>'

@@ -10,6 +10,7 @@ from html.parser import HTMLParser
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DISTRICT = re.compile(r"^nj/[a-z0-9-]+-\d{7}/index\.html$")
+SAFE_PLACEHOLDER = "you@example.org"
 
 
 class Forms(HTMLParser):
@@ -90,12 +91,20 @@ class AllNewsletterForms(unittest.TestCase):
             for bad in ("coming soon", "nothing was sent", "{{placeholder", "provider form action"):
                 self.assertNotIn(bad, low, f"{f}: {bad}")
 
+    def test_email_placeholder_is_exact_safe_value(self):
+        for k, f, _ in self.nl:
+            self.assertEqual(f["inputs"]["email"].get("placeholder"), SAFE_PLACEHOLDER, k)
+
     def test_other_pages_have_no_newsletter_form(self):
         for k in ("404.html", "about/index.html", "nj/index.html", "privacy/index.html", "terms/index.html"):
             self.assertEqual([f for f in self.pages[k].forms if f["newsletter"]], [], k)
 
 
 class GeneratorOutput(unittest.TestCase):
+    def test_generator_template_uses_safe_placeholder(self):
+        text = (ROOT / "tools" / "seo_postbuild.py").read_text(encoding="utf-8")
+        self.assertEqual(re.findall(r'placeholder="([^"]*)"', text), [SAFE_PLACEHOLDER])
+
     def test_generator_rewrites_inert_leftover_and_is_idempotent(self):
         src = ROOT / "nj" / "edison-twp-3404500" / "index.html"
         with tempfile.TemporaryDirectory() as d:
