@@ -5,7 +5,7 @@ Idempotent; everything comes from data already on each page (design.md,
 - title, meta description, og:title, og:description per the templates;
 - district pages: Dataset JSON-LD with name, licence and source URLs only;
 - source lines: collapse a doubled "Source: Source:" label;
-- revenue slots: newsletter signup (inert preview) and an empty, hidden
+- revenue slots: newsletter signup (live, wired by /newsletter.js) and an empty, hidden
   sponsor/licence slot.
 Sitemap regeneration is out of scope this cycle.
 Usage: python3 tools/seo_postbuild.py [site_root]
@@ -19,16 +19,14 @@ NEWSLETTER = (
     '<section class="newsletter" data-slot="newsletter" aria-labelledby="nl-h">'
     '<h2 id="nl-h">Know when the numbers change.</h2>'
     '<p>An email when we add new contracts, salary guides or corrections. Nothing else.</p>'
-    '<!-- form action: {{PLACEHOLDER: newsletter provider form action, Fred to pick provider}} -->'
-    '<form class="nl-form" novalidate data-inert="true">'
-    '<label><span class="sr-only">Email address</span><input type="email" name="email" placeholder="you@district.org" autocomplete="email"></label>'
+    '<form class="nl-form" action="https://hazeydata.ai/api/subscribe" method="post" novalidate>'
+    '<label><span class="sr-only">Email address</span><input type="email" name="email" placeholder="you@district.org" autocomplete="email" required aria-required="true"></label>'
+    '<input type="hidden" name="source" value="k12comp">'
+    '<div style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" value=""></label></div>'
     '<button class="btn ghost" type="submit">Get updates</button></form>'
     '<p class="nl-status" role="status" aria-live="polite"></p>'
     '<p class="note">Unsubscribe anytime. See our <a href="/privacy/">Privacy page</a>.</p>'
-    '<script>(function(){var s=document.currentScript.parentNode,f=s.querySelector("form"),i=f.querySelector("input"),o=s.querySelector(".nl-status");'
-    'f.addEventListener("submit",function(e){e.preventDefault();var v=i.value.trim();'
-    'if(!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(v)){o.className="nl-status err";o.textContent="That email doesn\'t look right. Try again.";i.focus();return;}'
-    'i.value="";o.className="nl-status ok";o.textContent="Coming soon. Signups aren\'t open yet, so nothing was sent or saved.";});})();</script>'
+    '<script src="/newsletter.js" defer></script>'
     '</section>')
 SPONSOR = '<section class="slot sponsor" data-slot="sponsor" hidden aria-label="Bulk data and licensing"></section>'
 
@@ -41,6 +39,14 @@ def meta(s, title, desc):
                      (r'<meta property="og:description" content="[^"]*">', f'<meta property="og:description" content="{e(desc)}">')):
         s = re.sub(pat, val, s, count=1)
     return s
+
+
+def set_newsletter(s, before):
+    """Insert the signup block, or replace an existing one (keeps reruns current)."""
+    if 'data-slot="newsletter"' in s:
+        return re.sub(r'<section class="newsletter" data-slot="newsletter".*?</section>',
+                      lambda _: NEWSLETTER, s, count=1, flags=re.S)
+    return insert_once(s, "newsletter", NEWSLETTER, before)
 
 
 def insert_once(s, marker, block, before):
@@ -58,7 +64,7 @@ for f in sorted(glob.glob(os.path.join(ROOT, "**", "*.html"), recursive=True)):
     if rel == "/":
         desc = re.search(r'<meta name="description" content="([^"]*)"', s).group(1)
         s = meta(s, "K12 Comp: NJ superintendent pay, sourced", html.unescape(desc))
-        s = insert_once(s, "newsletter", NEWSLETTER, '<section class="section" aria-labelledby="guides">')
+        s = set_newsletter(s, '<section class="section" aria-labelledby="guides">')
         s = insert_once(s, "sponsor", SPONSOR, '<footer class="site-footer">')
     elif rel == "/nj/":
         n = len(re.findall(r'<tr><th scope="row">', s))
@@ -89,7 +95,7 @@ for f in sorted(glob.glob(os.path.join(ROOT, "**", "*.html"), recursive=True)):
         ds = {"@context": "https://schema.org", "@type": "Dataset", "name": name, "license": LIC, "isBasedOn": srcs}
         s = re.sub(r'<script type="application/ld\+json"[^>]*>.*?</script>',
                    f'<script type="application/ld+json">{json.dumps(ds, sort_keys=True)}</script>', s, count=1, flags=re.S)
-        s = insert_once(s, "newsletter", NEWSLETTER, '<section aria-labelledby="dl">')
+        s = set_newsletter(s, '<section aria-labelledby="dl">')
         if len(title) >= 60 or len(desc) >= 155:
             over.append(rel)
     s = s.replace('<p class="source">Source: Source: ', '<p class="source">Source: ')

@@ -160,3 +160,30 @@ test("HTTP 400 invalid_email from backend shows exact invalid message, never suc
   assert.equal(t.email.value, "x@y.zz");
   assert.equal(t.email.focused, 1);
 });
+
+test("bootstrap wires a district-page form with mocked fetch (source k12comp, no live request)", async () => {
+  const fs = require("node:fs");
+  const page = fs.readFileSync(__dirname + "/../nj/edison-twp-3404500/index.html", "utf8");
+  assert.match(page, /<form class="nl-form" action="https:\/\/hazeydata\.ai\/api\/subscribe"/);
+  assert.match(page, /<script src="\/newsletter\.js" defer><\/script>/);
+  let handler;
+  const mk = (extra) => Object.assign({ value: "", disabled: false, setAttribute() {}, removeAttribute() {}, focus() {} }, extra);
+  const email = mk({ value: "a@b.org" }), website = mk(), button = mk(), status = mk({ className: "", textContent: "" });
+  const form = {
+    addEventListener(_, h) { handler = h; },
+    querySelector: (q) => (q.includes("email") ? email : q.includes("website") ? website : button)
+  };
+  const doc = { querySelector: (q) => (q === ".newsletter form.nl-form" ? form : status) };
+  const calls = [];
+  const realFetch = global.fetch;
+  global.fetch = (u, i) => { calls.push([u, i]); return Promise.resolve({ ok: true, status: 200, json: async () => ({ status: "subscribed" }) }); };
+  try {
+    require("../newsletter.js").bootstrap(doc);
+    handler({ preventDefault() {} });
+    await tick(); await tick();
+  } finally { global.fetch = realFetch; }
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0][0], "https://hazeydata.ai/api/subscribe");
+  assert.equal(new URLSearchParams(calls[0][1].body).get("source"), "k12comp");
+  assert.equal(status.textContent, MESSAGES.subscribed);
+});
