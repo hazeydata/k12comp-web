@@ -1,0 +1,32 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: hazeydata/k12comp
+          ref: 3c943e9f10bb80ba79100fc532ea798cc317a1a1
+          path: k12comp-data
+          token: ${{ secrets.K12_DATA_READ_TOKEN }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Unit tests (history, copy, privacy, existing)
+        env:
+          K12_DATA_REPO: ${{ github.workspace }}/k12comp-data
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Newsletter script test
+        run: node tests/newsletter.test.js
+      - name: Build the site with history
+        env:
+          K12_DATA_REPO: ${{ github.workspace }}/k12comp-data
+        run: python3 tools/nj_history_postbuild.py --out ${{ runner.temp }}/site

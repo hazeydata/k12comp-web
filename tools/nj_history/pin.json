@@ -1,0 +1,22 @@
+{
+  "copy_sha256": "3b1d5f361249a04d9e33e30b18a8805fa923c8902803f203f44f7275f3a6f0b8",
+  "data_commit": "3c943e9f10bb80ba79100fc532ea798cc317a1a1",
+  "data_repo": "hazeydata/k12comp",
+  "inputs": {
+    "data/nj-salary_cell.csv": "39f52c110a23d4bb47daf837591b86395f02bde6f02485e033d74f9328d82e7b",
+    "data/nj_district_staff_2019-20.csv": "e1eb64f444b8f940502fa1ef592deb326a60fced1ef730ba8e8ea382e6c706ac",
+    "data/nj_district_staff_2020-21.csv": "3603a96e842b3126c6da9d64d86d23f297a0c074e9f34599ed08850f60415515",
+    "data/nj_district_staff_2021-22.csv": "e59f1d027502d9410ad4ad725e1cd58dd3639bb9b7d0cbae9004f84d32bd209c",
+    "data/nj_district_staff_2022-23.csv": "c8678b302da34747a98e640b7b606d2664917078428b6f1c2212700b7a34e1e1",
+    "data/nj_district_staff_2023-24.csv": "2f676519e232c44764e7ee3bd7e24b9858ed6b2bc198dd8747ed6679343957b0",
+    "data/nj_district_staff_2024-25.csv": "931a572c0a2eae9d04f5dedfa25e7aca1e6356298dfa872acc39e21d9cf85b05",
+    "data/nj_district_staff_2025-26.csv": "a339ea80028dd53f4041f5797789cae76d471fa7a9cf8566f288be2ebe633348",
+    "data/nj_history_coverage.csv": "3ea4a0a23acbe4604ff42af719a8ef463229dcb51586645f29709d618f8c9f8a",
+    "sources/nj_cs_manifest.csv": "8d2bac48bca061bfa7bcee1a7656106eec47ba1890a1abefc90f4f68beaaa42b"
+  },
+  "names": {
+    "district_names.csv": "86300c90736f099f7e23463cf87b865ca0678b3157791dbd630cfa820fefdd5a",
+    "nj_staff_district_names.csv": "94775a51af409678797c21fa27bb586d26a545bdebe340c5c8cee5d840af77bd"
+  },
+  "snapshot_date": "2026-11-09"
+}
