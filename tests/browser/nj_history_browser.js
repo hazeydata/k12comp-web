@@ -32,7 +32,10 @@ function pageFn() {
     if (r.width === 0 && r.height === 0) return;
     if (r.height < 43.5 || r.width < 43.5) res.tapSmall.push({ text: el.textContent.slice(0, 50), w: r.width, h: r.height });
   });
-  root.querySelectorAll('svg.hist-svg').forEach(svg => {
+  const visibleSvgs = [...root.querySelectorAll('svg.hist-svg')].filter(s => s.getBoundingClientRect().width > 0);
+  res.svgVisible = visibleSvgs.length;
+  res.svgVariants = [...new Set(visibleSvgs.map(s => s.parentElement.className))];
+  visibleSvgs.forEach(svg => {
     const sr = svg.getBoundingClientRect();
     const texts = [...svg.querySelectorAll('text')].map(t => ({ el: t, r: t.getBoundingClientRect() }));
     const dots = [...svg.querySelectorAll('circle')].map(c => ({ el: c, r: c.getBoundingClientRect() }));
@@ -100,15 +103,28 @@ function axSummary(nodes) {
         const shot = `${p.name}-${w}-${mode}.png`;
         await page.screenshot({ path: path.join(out, 'shots', shot), fullPage: true });
         r.screenshot = shot;
-        if (mode === 'fonts' && w === 1280) {
+        if (mode === 'fonts' && p.name === 'toms-river' && (w === 1280 || w === 390)) {
+          // guide-year link: must reach the existing guide table (text fragment), opening the closed year block
+          const link = page.locator('.hist-guide .guide-years a').first();
+          r.guideLink = { href: await link.getAttribute('href') };
+          await link.click();
+          await page.waitForTimeout(600);
+          r.guideLink.result = await page.evaluate(() => {
+            const h = [...document.querySelectorAll('h3')].find(x => x.textContent.startsWith('Teacher salary guide, 2024-25'));
+            const d = h && h.closest('details');
+            const b = h && h.getBoundingClientRect();
+            return { found: !!h, detailsOpen: d ? d.open : null, top: b ? Math.round(b.top) : null, inViewport: b ? (b.top >= -2 && b.top < innerHeight) : null, scrollY: Math.round(scrollY), hash: location.hash.slice(0, 60) };
+          });
+        }
+        if (mode === 'fonts' && (w === 1280 || w === 390)) {
           const cdp = await ctx.newCDPSession(page);
           await cdp.send('Accessibility.enable');
           let tree = await cdp.send('Accessibility.getFullAXTree');
           for (let i = 0; i < 5 && tree.nodes.length < 20; i++) { await page.waitForTimeout(400); tree = await cdp.send('Accessibility.getFullAXTree'); }
           r.axNodes = tree.nodes.length;
-          fs.writeFileSync(path.join(out, 'ax', `${p.name}.ax-full.json`), JSON.stringify(tree.nodes));
-          fs.writeFileSync(path.join(out, 'ax', `${p.name}.ax-summary.json`), JSON.stringify(axSummary(tree.nodes), null, 1));
-          r.ax = `ax/${p.name}.ax-summary.json`;
+          fs.writeFileSync(path.join(out, 'ax', `${p.name}-${w}.ax-full.json`), JSON.stringify(tree.nodes));
+          fs.writeFileSync(path.join(out, 'ax', `${p.name}-${w}.ax-summary.json`), JSON.stringify(axSummary(tree.nodes), null, 1));
+          r.ax = `ax/${p.name}-${w}.ax-summary.json`;
           await cdp.detach();
         }
         results.push(r);

@@ -1,6 +1,6 @@
 """Add-on post-build step (OQ-1): copies the site tree to an output directory and adds the NJ history.
 
-Existing pages are only ever added to (section, Dataset block, links, guide-table ids); no generator runs.
+Existing pages are only ever added to (the history section, the Dataset block, links); old markup is never edited; no generator runs.
 Output is deterministic: two runs from the same pin and tree are byte-identical.
 """
 import json
@@ -47,15 +47,6 @@ def copy_tree(site_root, out_dir):
     shutil.copytree(site_root, out_dir, ignore=ignore, copy_function=shutil.copyfile)
 
 
-def add_guide_anchors(page, leaid, years):
-    for y in years:
-        old = f'<section class="grid teacher"><h3>Teacher salary guide, {y}'
-        if old not in page:
-            raise D.BuildError(f"{leaid}: no teacher guide table for {y} to link to")
-        page = page.replace(old, f'<section class="grid teacher" id="guide-teacher-{y}"><h3>Teacher salary guide, {y}', 1)
-    return page
-
-
 def edit_district(page, hist, leaid):
     if f'id="{C.D_ANCHOR}"' in page or 'id="ld-nj-history"' in page:
         raise D.BuildError(f"{leaid}: page already carries the history section (not a fresh tree)")
@@ -66,7 +57,6 @@ def edit_district(page, hist, leaid):
             break
     else:
         raise D.BuildError(f"{leaid}: no insertion point for the history section")
-    page = add_guide_anchors(page, leaid, hist.cov[leaid]["guide_years"])
     if hist.cov[leaid]["n"]:
         if "</head>" not in page:
             raise D.BuildError(f"{leaid}: no </head>")
@@ -84,6 +74,7 @@ def statewide_page(nj_index, newsletter, hist, page_paths):
                      (r'<meta property="og:title" content="[^"]*">', f'<meta property="og:title" content="{e(C.S_TITLE)}">'),
                      (r'<meta property="og:description" content="[^"]*">', f'<meta property="og:description" content="{e(C.S_DESC)}">'),
                      (r'<link rel="canonical" href="[^"]*">', f'<link rel="canonical" href="{R.SITE}{C.S_PATH}">'),
+                     (r'<meta property="og:image:alt" content="[^"]*">', f'<meta property="og:image:alt" content="{e(C.S_DESC)}">'),
                      (r'<meta property="og:url" content="[^"]*">', f'<meta property="og:url" content="{R.SITE}{C.S_PATH}">')):
         head, n = re.subn(pat, lambda _m, v=val: v, head, count=1)
         if n != 1:
@@ -135,6 +126,8 @@ def build(site_root, out_dir, hist, page_paths, nj_index_path=None):
         css = f.read()
     with open(os.path.join(out_dir, "history.css"), "wb") as f:
         f.write(css)
+    with open(os.path.join(D.HERE, "history.js"), "rb") as f, open(os.path.join(out_dir, "history.js"), "wb") as g:
+        g.write(f.read())
     # CSVs
     dd = os.path.join(out_dir, "data", "nj")
     write_text(os.path.join(dd, "nj-district-staff-history.csv"), R.csv_text(D.STAFF_PUB_COLS, hist.rows))

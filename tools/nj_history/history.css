@@ -5,21 +5,25 @@ main>.nj-hist{margin-top:0}
 .nj-hist section{margin-top:48px}
 .nj-hist section>h2{margin-top:0}
 .nj-hist h3{margin-top:32px}
-.hist-main{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;margin:24px 0 0}
+.hist-main{display:block;margin:24px 0 0}
+.hist-main>.hist-cov{margin-bottom:24px}
 .hist-cov{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--surface)}
 .hist-cov p:last-child{margin-bottom:0}
 .hist-cov .cov-line{font-size:18px;margin-bottom:8px}
 .partial{display:inline-flex;align-items:center;min-height:28px;padding:2px 12px;border:2px solid var(--ink);border-radius:8px;font-family:var(--mono);font-size:14px;font-weight:700}
 .hist-chart h3:first-child{margin-top:0}
 .hist-fig{margin:24px 0 0;padding:0}
-.hist-panels{display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
-.hist-svg{display:block;width:100%;max-width:360px;height:auto;overflow:visible}
-.hist-svg text{font-family:var(--sans);font-size:12px;fill:var(--ink)}
+.hist-panels{display:grid;grid-template-columns:repeat(auto-fill,minmax(304px,358px));gap:24px 20px}
+.hist-panel .panel-note{font-size:14px;margin:0 0 8px}
+.hist-v-d{display:none}
+.hist-svg{display:block;width:100%;height:auto;overflow:visible}
+.hist-svg text{font-family:var(--sans);font-size:12.5px;fill:#333}
 .hist-svg .num{font-family:var(--mono)}
-.hist-svg .axis{stroke:var(--muted);stroke-width:1}
-.hist-svg .ln{fill:none;stroke:var(--blue);stroke-width:2;stroke-linejoin:round}
-.hist-svg .dot{fill:var(--blue)}
-.hist-svg .st.missing{font-style:italic;fill:var(--muted)}
+.hist-svg .yr{font-size:12px}
+.hist-svg .axis{stroke:#999;stroke-width:1;fill:none}
+.hist-svg .ln{fill:none;stroke:#0072B2;stroke-width:2.1;stroke-linejoin:round;stroke-linecap:round}
+.hist-svg .dot{fill:#0072B2}
+.hist-svg .st.missing{font-style:italic}
 .hist-fig figcaption{color:var(--muted);font-size:14px;margin-top:12px;max-width:65ch}
 .rowlist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 .rowlist li{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
@@ -42,11 +46,13 @@ main>.nj-hist{margin-top:0}
 .credits li{font-size:14px;padding:8px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
 .credits a{text-decoration:underline}
 .hist-empty{border:1px dashed var(--line);border-radius:16px;padding:16px;margin:24px 0}
-@media (min-width:900px){
-  .hist-main{grid-template-columns:minmax(0,280px) minmax(0,1fr);gap:32px}
-  .hist-panels{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:1100px){
+  .hist-panels{grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 20px}
+  .hist-v-d{display:block}
+  .hist-panel h4{min-height:54px}
+  .hist-panel .panel-note{min-height:42px}
+  .hist-v-m{display:none}
 }
-@media (min-width:641px) and (max-width:899px){.hist-panels{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){
   .nj-hist{margin-top:32px}
   .nj-hist section{margin-top:32px}

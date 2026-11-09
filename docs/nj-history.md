@@ -1,24 +1,24 @@
 # NJ staff and salary-guide history (K12-SITE-NJ-HISTORY-001)
 
-> **Status: blocked local prototype.** Not deploy-ready and not approved for release. It waits on spec decisions and on external
-> authorization (see "Open items"). No remote issue or PR exists, nothing was pushed, and no preview was published.
+> **Status: local prototype, round 2. Not deploy-ready, not approved for release.** Nothing is pushed, no issue or PR exists, no preview is
+> published. Open questions below need a spec or product decision before it can ship.
 
-## Open items (not satisfied or not decided)
-- **AC 22 not fully satisfied.** `tests/test_nj_history_privacy.py` scans only the statewide page's `<main>` and the history Dataset block, not
-  the whole page as AC 22 names. The statewide head is inherited from `/nj/` (AC 25) and includes image alt text that mentions superintendents.
-  How AC 22 and AC 25 fit together is an unresolved interpretation.
-- **AC 24 not satisfied as written.** The build adds `id="guide-teacher-YYYY-YY"` to existing teacher guide tables. AC 24 allows only
-  sitemap-style date normalisation, so removing these ids exceeds the declared list. Unresolved; the test strips them and has not been weakened further.
-- **AC 3 and AC 16 are provisional.** The per-district CSV uses a union-header interpretation that no one has approved.
-- **Outside the approved copy:** the table status word "Published", the chart scale note, and the design deviations (value labels in a column
-  right of the dots; row lists for groups with 2 or fewer published values). These are blockers until writing and dataviz accept them.
-- **AC 29 is documentation only.** No executable publish guard was found or built, and no complete release gate was checked.
-- **No deploy-ready claim.** The CI secret (`K12_DATA_READ_TOKEN`) and the production build integration are not provisioned; the CI workflow has never run.
-- Accessibility: the check was a Chrome accessibility-tree dump (desktop width only). No spoken screen-reader walkthrough was done.
-- Quality leftover: the tests emit ResourceWarnings for unclosed file objects.
-
-An add-on post-build step (OQ-1, no generator migration). It copies the committed site tree to an output directory and adds
-the history there. Nothing in the committed tree changes, and the 4.7 MB statewide CSV is generated at build time, not committed.
+## Open questions and limits
+- **OPEN QUESTION for Lucille 2 (AC 3 and AC 16): the per-district CSV header.** The spec says each `/data/nj/history/<leaid>.csv` holds "staff rows
+  plus that district's coverage row" and that each CSV's key set equals its allowlist, but it names no combined header. The most literal reading is
+  used, with no invented column: one header that is the union of the staff allowlist and the coverage allowlist, staff rows leaving the coverage
+  columns empty, and one final coverage row (`school_year=ALL`) leaving the staff-only columns empty. AC 3 and AC 16 are provisional until this is answered.
+- **OPEN QUESTION (layout):** the approved dataviz design puts coverage above the four panels; writing's layout notes say beside the chart on desktop.
+  This build follows the dataviz geometry (four columns at 1100 px and up, needs the full width) and places the coverage block directly above the chart.
+- **OPEN QUESTION (scale note):** the approved dataviz note says the largest values "differ by more than 5 times between groups". The approved code shows it
+  on every page with a chart, so on pages where that is false it would be wrong. This build shows the exact approved sentence only when the claim is
+  true for that district, and shows no scale note otherwise. Dataviz to say what, if anything, should appear on the other pages.
+- The statewide head keeps `/nj/`'s head elements (AC 25). Its description, `og:title`, `og:description`, `og:image:alt`, title and canonical are the
+  approved history copy, so the whole page passes the AC 22 scan. The shared `og-image.png` file is unchanged and its pixels were not inspected.
+- Release: `tools/nj_history_release_guard.py` and the two workflows make the gates executable (see "Release guard"). The CI read secret
+  `K12_DATA_READ_TOKEN` and the gates secret `K12_RELEASE_GATES` do not exist yet (owner: chief / Fred); until they do, CI fails closed. Nothing deploys from this repo.
+- Accessibility: the check was a Chrome accessibility-tree dump. No spoken screen-reader walkthrough was done.
+- Charts follow the approved dataviz renderer; the approved files are pinned in `docs/nj-history-approved-files.json`.
 
 ## Run
 
@@ -51,27 +51,29 @@ regenerates the tables and `pin.json`. Recheck the snapshot date and coverage in
 ## What it adds
 
 - Every `/nj/<slug>-<leaid>/` page: one `<section class="nj-hist">` (heading id `staff-guide-history`) inserted before the newsletter
-  block, a separate Dataset JSON-LD block (`id="ld-nj-history"`, staff-rows pages only) before `</head>`, and an `id="guide-teacher-YYYY-YY"`
-  attribute on each existing teacher guide table in the window so each guide year links to its table. The existing `#history`,
-  `#guides-h`, `#dl` and `#src-*` anchors and the existing JSON-LD are untouched.
+  block, and a separate Dataset JSON-LD block (`id="ld-nj-history"`, staff-rows pages only) before `</head>`. Old markup is never edited: each
+  guide year links with `#guides-h:~:text=Teacher%20salary%20guide%2C%20<year>`, the existing `#guides-h` anchor plus a text-fragment directive that
+  that some browsers use to scroll to the existing teacher guide heading. A small same-origin `/history.js` (loaded from inside the section, `defer`) opens the closed year block and scrolls to the heading in every browser; without JavaScript the link lands on the guides section. This is one new script; the layout notes ask for no *external* scripts, and this one is not external.
 - `/nj/history/` (statewide page), built from `/nj/index.html`'s head, header and footer so head parity holds by construction.
-- `/history.css` (same-origin; loaded from inside the new sections, not from any head).
+- `/history.css` and `/history.js` (same-origin; loaded from inside the new sections, not from any head).
 - `/data/nj/nj-district-staff-history.csv` (18,732 rows), `/data/nj/nj-history-coverage.csv` (7 years plus ALL) and
   `/data/nj/history/<leaid>.csv` for the 585 districts with staff rows.
 - A link on `/nj/`, a methodology section on `/about/`, one sitemap entry (`/nj/history/`) and five appended `llms.txt` lines.
 - Unchanged: `robots.txt`, `CNAME`, the 586 `/api/v1/nj/*.json` files, and every other file.
 
-AC 24 declared normalisation list: removing the history section, the `ld-nj-history` block and the `guide-teacher-` id attributes
-leaves each district page byte-identical to k12comp-web 3b50ce1; `/nj/` differs only by the one added link paragraph, `/about/`
-only by the appended section.
+AC 24: removing the history section and the `ld-nj-history` block leaves each district page byte-identical to k12comp-web 3b50ce1; `/nj/` differs
+only by the one added link paragraph, `/about/` only by the appended section. There is no other normalisation (no id stripping).
 
 ## Data rules
 
 - fte_sum is the CSV string; the only change is a thousands comma. Nothing is summed, averaged, rounded, interpolated or turned into a change.
   headcount is never shown. Suppressed rows show no number anywhere and stay empty in CSV. A line never bridges a suppressed or missing year.
 - Suppressed `n_lt_10` and `complementary` have distinct wording. A year with no row says "no row in the NJDOE file" and is never zero.
-- A group with 3 or more published values gets a dot-and-line panel (own scale from 0, value labels in a column right of the dots);
-  a group with 2 or fewer gets a row list (the dataviz rule). Every panel set has a matching data table.
+- Charts follow the approved dataviz `render_lib.py panel()`: time down seven rows, FTE across from 0 on each group's own scale, the largest value
+  `plot_w - 64` from the axis so its label sits beside the dot (8 pt offset), dots joined only across consecutive published years; a group with 2 or
+  fewer published values is a table-first row list drawn in the same SVG grid. Two sizes are rendered (253 px wide for the 1120 px desktop four-column
+  design, 304 px for the stacked design) and CSS shows one. Chart data comes fresh from the pinned inputs; only the rules and fixed strings are pinned
+  (`tests/test_nj_history_dataviz.py`). Every panel set has a matching data table. "Published" and the panel and scale notes are the approved dataviz strings.
 - Per-district CSV: the spec says "staff rows plus that district's coverage row" in one file. It uses one header (the union of the staff
   and coverage allowlists) and a final coverage row with `school_year=ALL`; staff rows leave the coverage columns empty and the
   coverage row leaves the staff-only columns empty. This is an interpretation, flagged in the cycle decisions.
@@ -94,8 +96,8 @@ District coverage is `k of n school years (p%)` with n = years in the window wit
 `docs/nj-history-copy.md` is the approved writing copy and `docs/nj-history-layout-notes.md` its layout notes (caption and alt patterns); each is
 identical to the writing packet's file except the trailing lint line, which names a local path. `tools/nj_history/copy.py` holds the strings; `tests/test_nj_history_copy.py` pins every string to that file.
 `pin.json` `copy_sha256` is the sha256 of the writing packet's original copy.md (including its lint line).
-Strings that are not in the approved copy and were added by the build: the status word "Published" in the data table, and the short
-chart note "Each group has its own scale, starting at 0. Compare the printed values, not dot positions."
+Four short strings are not in copy.md; they are the approved dataviz strings (render_lib.py): "Published", "Dot chart: one dot per published school year",
+"Table first: 2 or fewer published values, so no chart is drawn", and the independent-scales note.
 
 ## Privacy
 
@@ -107,4 +109,16 @@ column, the salary-cell file and the PERC-signatory fixture, and scans all outpu
 
 Nothing merges to k12comp-web main and nothing deploys to k12comp.com until test-run PASS, Weatherman SHIP at the exact head,
 pre-deploy-check PASS and Fred's go relayed by chief. Before that the work exists only as a preview on k12comp-preview.
-The deploy path that publishes `--out` is not part of this change.
+
+`tools/nj_history_release_guard.py` enforces this for the build artifact and fails closed (no skip mode):
+
+- `preflight`: the CI read secret is present (value never printed), the data clone is at the pinned commit with every input equal to its lock hash,
+  the tree is clean, nothing generated is tracked (`data/nj/`, the statewide CSV) and no tracked file is over 1 MB.
+- `release --head <sha> --gates <file> --out <dir>`: additionally needs a gates file outside the repo with test-run PASS, Weatherman SHIP,
+  pre-deploy-check PASS, Fred's go relayed by chief and a pre-push scan with 0 findings, each recorded for that exact full head, which must equal the
+  checked-out head. It then builds into `--out` (outside the repo) and checks the output. Success prints that nothing was deployed.
+- `.github/workflows/ci.yml` runs preflight, the tests (ResourceWarning is an error) and the build, and uploads the output as an artifact.
+  `.github/workflows/release-build.yml` (manual) runs the release guard and uploads the artifact. Neither has a deploy step. Both fail at the first
+  step if `K12_DATA_READ_TOKEN` (and, for the release build, `K12_RELEASE_GATES`) is not set. Those secrets are not provisioned.
+- On the box, `guard.sh` (`guarded_push`) and `prepush-scan --base origin/main` still apply to every push.
+- Publishing the artifact (preview or live) is outside this repo and needs its own approval.

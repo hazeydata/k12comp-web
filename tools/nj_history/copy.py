@@ -122,6 +122,10 @@ LLMS_LINES = (
     "response citation. Provided as is.",
 )
 
-# ---- chart notes owned by dataviz, not in copy.md (kept short; listed in the implementation report)
-CHART_SCALE_NOTE = "Each group has its own scale, starting at 0. Compare the printed values, not dot positions."
-STATUS_PUBLISHED = "Published"
+# ---- chart strings from the approved dataviz files (render_lib.py), not in copy.md; pinned by tests/test_nj_history_dataviz.py
+PANEL_CHART_NOTE = "Dot chart: one dot per published school year"
+PANEL_TABLE_NOTE = "Table first: 2 or fewer published values, so no chart is drawn"
+SCALE_NOTE = ("Independent FTE scales: each group has its own horizontal axis starting at 0, because the largest published "
+              "values differ by more than 5 times between groups, so one shared scale would flatten the smaller groups. Do not compare "
+              "dot positions between groups; compare the printed values.")
+STATUS_PUBLISHED = "Published"  # dataviz status_text() for a published row

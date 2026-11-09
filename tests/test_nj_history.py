@@ -154,7 +154,7 @@ class P2Allowlist(unittest.TestCase):
 
     def test_ac3_names_come_only_from_the_tables(self):
         out, _ = H.built()
-        names = dict(csv.reader(open(os.path.join(D.HERE, "nj_staff_district_names.csv"))))
+        names = dict(csv.reader(io.StringIO(H.rt(os.path.join(D.HERE, "nj_staff_district_names.csv")))))
         rows = csv_rows(H.read(out, "data/nj/nj-district-staff-history.csv"))
         h = rows[0]
         for r in rows[1:]:
@@ -252,7 +252,7 @@ class P3Values(unittest.TestCase):
                 self.assertEqual(r[h.index("fte_sum")], "")
         # Pemberton teachers: the line breaks at 2021-22 (two path segments, no join across the gap)
         sec = H.history_section(H.read(self.out, "nj/pemberton-twp-3412810/index.html"))
-        d = re.search(r'<svg[^>]*teacher-t".*?<path class="ln" d="([^"]+)"', sec, re.S).group(1)
+        d = re.search(r'<svg[^>]*teacher-d-t".*?<path class="ln" d="([^"]+)"', sec, re.S).group(1)
         self.assertEqual(d.count("M"), 2)
 
     def test_ac5_suppressed_with_value_fails_the_build(self):
@@ -353,12 +353,22 @@ class P4District(unittest.TestCase):
         self.assertIn(f"<h3>{C.GUIDE_LABEL}</h3>", sec)
 
     def test_ac10_guide_links_reach_existing_guide_tables(self):
+        """Links are fragment links built in the new section; the old tables carry no new ids."""
         for l in ("3401260", "3416230", "3403300", "3404500", "3416800", "3417700"):
             p = self.page(l)
-            for y in re.findall(r'href="#guide-teacher-(\d{4}-\d\d)"', H.history_section(p)):
-                self.assertEqual(p.count(f'id="guide-teacher-{y}"'), 1)
-                i = p.index(f'id="guide-teacher-{y}"')
-                self.assertIn(f"Teacher salary guide, {y}", p[i:i + 120])
+            sec = H.history_section(p)
+            old = p.replace(sec, "")
+            for y, href in re.findall(r'<a href="(#guides-h:~:text=Teacher%20salary%20guide%2C%20(\d{4}-\d\d))">', sec)[:0] or []:
+                pass
+            hrefs = re.findall(r'href="(#guides-h:~:text=Teacher%20salary%20guide%2C%20(\d{4}-\d\d))"', sec)
+            self.assertEqual(len(hrefs), len(re.search(r'data-guide-years="([^"]*)"', sec).group(1).split(",")))
+            for href, y in hrefs:
+                self.assertIn(f"Teacher salary guide, {y}", old)  # the heading the fragment targets exists in the old markup
+                self.assertEqual(old.count(f"<h3>Teacher salary guide, {y}"), 1, (l, y))
+            self.assertIn('id="guides-h"', old)
+            self.assertIn('<script src="/history.js" defer></script>', sec)
+            self.assertTrue(os.path.exists(os.path.join(self.out, "history.js")))
+            self.assertNotIn("guide-teacher-", p)
 
     def test_ac10_held_and_cst_never_appear(self):
         for slug_leaid in ("3411340", "3401950"):  # Newark, East Orange (held in the data repo)
@@ -368,7 +378,7 @@ class P4District(unittest.TestCase):
         for l in paterson:
             self.assertNotIn("hist-guide", self.page(l))
         for l in ("3401260",):  # Bayonne also has CST cells; only teacher years are linked
-            self.assertEqual(H.history_section(self.page(l)).count("#guide-teacher-"), 3)
+            self.assertEqual(H.history_section(self.page(l)).count("#guides-h:~:text="), 3)
 
     def test_ac11_coverage_text_for_goldens(self):
         gold = {"3416230": "2 of 7 school years (28.6%)", "3401260": "3 of 7 school years (42.9%)",
@@ -583,7 +593,7 @@ class P7Downloads(unittest.TestCase):
         cls.rows = H.pinned_staff_rows()
 
     def test_ac16_statewide_staff_csv_equals_allowlist_applied_to_pinned_rows(self):
-        names = dict(csv.reader(open(os.path.join(D.HERE, "nj_staff_district_names.csv"))))
+        names = dict(csv.reader(io.StringIO(H.rt(os.path.join(D.HERE, "nj_staff_district_names.csv")))))
         man = {m["school_year"]: m["retrieved_at"] for m in csv.DictReader(io.StringIO(H.pinned("sources/nj_cs_manifest.csv")))}
         want = [D.STAFF_PUB_COLS]
         for r in self.rows:
@@ -613,7 +623,7 @@ class P7Downloads(unittest.TestCase):
 
     def test_ac16_bytes_are_utf8_lf_and_linked(self):
         for rel in ("data/nj/nj-district-staff-history.csv", "data/nj/nj-history-coverage.csv", "data/nj/history/3400660.csv"):
-            raw = open(os.path.join(self.out, rel), "rb").read()
+            raw = H.rb(os.path.join(self.out, rel))
             self.assertNotIn(b"\r", raw)
             raw.decode("utf-8")
             self.assertTrue(raw.endswith(b"\n"))
@@ -688,13 +698,13 @@ class P8Preservation(unittest.TestCase):
         self.assertEqual(len(paths), 2350)
         for p in paths:
             self.assertTrue(os.path.exists(os.path.join(self.out, p)), p)
-        self.assertEqual(open(os.path.join(self.out, "CNAME"), "rb").read(), H.git_base("CNAME"))
+        self.assertEqual(H.rb(os.path.join(self.out, "CNAME")), H.git_base("CNAME"))
 
     def test_ac24_no_collateral_change(self):
-        changed = {"sitemap.xml", "llms.txt", "nj/index.html", "about/index.html"}
+        changed = {"sitemap.xml", "llms.txt", "nj/index.html", "about/index.html"}  # each checked separately below
         n = 0
         for p in H.base_paths():
-            new = open(os.path.join(self.out, p), "rb").read()
+            new = H.rb(os.path.join(self.out, p))
             old = H.git_base(p)
             if p in changed:
                 continue
@@ -725,13 +735,13 @@ class P8Preservation(unittest.TestCase):
             files += [os.path.join(dp, f) for dp, _, fs in os.walk(os.path.join(H.ROOT, d)) for f in fs if f.endswith((".py", ".js", ".md", ".css", ".json"))]
         files += [os.path.join(H.ROOT, "tools", "nj_history_postbuild.py"), os.path.join(H.ROOT, "tests", "nj_history_helpers.py")]
         for f in files:
-            m = bad.search(open(f, "rb").read())
+            m = bad.search(H.rb(f))
             self.assertIsNone(m, (f, m and m.group(0)))
 
     def test_ac29_to_31_docs_exist_and_describe_the_code(self):
-        doc = open(os.path.join(H.ROOT, "docs", "nj-history.md")).read()
+        doc = H.rt(os.path.join(H.ROOT, "docs", "nj-history.md"))
         for needle in ("nj_history_postbuild.py", "pin.json", "K12_DATA_REPO", "K12_FIXTURE_MODE", "/nj/history/",
-                       "guide-teacher-", "K12-CLIFTON-IDENTITY-GUARD-001", "14 of 4,676", "Release guard"):
+                       "guides-h:~:text=", "K12-CLIFTON-IDENTITY-GUARD-001", "14 of 4,676", "Release guard"):
             self.assertIn(needle, doc)
 
 

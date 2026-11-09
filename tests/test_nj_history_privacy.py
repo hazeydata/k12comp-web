@@ -22,11 +22,11 @@ def fixture_files(mutate):
     for p, t in files.items():
         fp = os.path.join(d, *p.split("/"))
         os.makedirs(os.path.dirname(fp), exist_ok=True)
-        open(fp, "w", encoding="utf-8", newline="").write(t)
+        H.wt(fp, t)
     # the M4 PERC-signatory fixture, planted with the canary; it is not an allowed input and must never be read
     fx = os.path.join(d, "tests", "fixtures", "nj_cs")
     os.makedirs(fx)
-    open(os.path.join(fx, "perc_signatory.txt"), "w").write(f"Agreement between the Alpha Board and the Association.\nSigned: {PLANT}, President\n")
+    H.wt(os.path.join(fx, "perc_signatory.txt"), f"Agreement between the Alpha Board and the Association.\nSigned: {PLANT}, President\n")
     return d
 
 
@@ -34,7 +34,7 @@ def leaks(out):
     hits = []
     for dp, _, fs in os.walk(out):
         for f in fs:
-            raw = open(os.path.join(dp, f), "rb").read().lower()
+            raw = H.rb(os.path.join(dp, f)).lower()
             if NAME.lower().encode() in raw or ID.lower().encode() in raw:
                 hits.append(os.path.join(dp, f))
     return hits
@@ -108,11 +108,11 @@ class Canary(unittest.TestCase):
         import shutil
         shutil.copytree(H.site_tree(), os.path.join(site, "s"))
         p = os.path.join(site, "s", "api", "v1", "nj", "3416230.json")
-        d = json.load(open(p))
+        d = json.loads(H.rt(p))
         for c in d["salary_cells"]:
             c["guide_name"] = PLANT
             c["lane_label"] = PLANT
-        json.dump(d, open(p, "w"), sort_keys=True)
+        H.wt(p, json.dumps(d, sort_keys=True))
         out = os.path.join(H.tmpdir("k12nj-canary-out-"), "site")
         B.run(site_root=os.path.join(site, "s"), out_dir=out, data_repo=H.DATA_REPO)
         hits = [h for h in leaks(out) if "/api/v1/" not in h]  # the copied API file itself is the unchanged site input
@@ -138,14 +138,23 @@ class NoUfbOrPerson(unittest.TestCase):
             if m:
                 self.assertIsNone(FORBIDDEN.search(m.group(1)), leaid)
         sw = H.read(out, "nj/history/index.html")
-        main = sw[sw.index('<main id="main">'):sw.index("</main>")]
-        self.assertIsNone(FORBIDDEN.search(main))
+        # AC 22 names the whole statewide page: head, header, main, newsletter, footer. No exclusions.
+        self.assertIsNone(FORBIDDEN.search(sw), FORBIDDEN.search(sw) and sw[max(0, FORBIDDEN.search(sw).start() - 80):FORBIDDEN.search(sw).end() + 40])
         self.assertIsNone(FORBIDDEN.search(re.search(r'id="ld-nj-history">(.*?)</script>', sw, re.S).group(1)))
         for dp, _, fs in os.walk(os.path.join(out, "data", "nj")):
             for f in fs:
-                t = open(os.path.join(dp, f), encoding="utf-8").read()
+                t = H.rt(os.path.join(dp, f))
                 self.assertIsNone(FORBIDDEN.search(t), f)
                 self.assertTrue(csv.reader(io.StringIO(t)).__next__() in (D.STAFF_PUB_COLS, D.COVERAGE_COLS, D.DISTRICT_FILE_COLS), f)
+
+    def test_ac22_scan_is_not_vacuous_and_head_metadata_is_history_copy(self):
+        out, _ = H.built()
+        nj_head = H.read(out, "nj/index.html").split("</head>")[0]
+        self.assertIsNotNone(FORBIDDEN.search(nj_head), "the inherited /nj/ head carries the role word, so the whole-page scan matters")
+        sw = H.read(out, "nj/history/index.html")
+        from nj_history import copy as C
+        self.assertIn(f'<meta property="og:image:alt" content="{C.S_DESC}">', sw)
+        self.assertIn(f'<meta property="og:title" content="{C.S_TITLE}">', sw)
 
     def test_ac22_no_person_types_or_names_in_history_jsonld(self):
         out, _ = H.built()

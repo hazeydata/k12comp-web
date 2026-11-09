@@ -4,6 +4,7 @@ import csv
 import io
 import json
 import os
+import pathlib
 import re
 import shutil
 import subprocess
@@ -20,6 +21,18 @@ LOCK = D.load_lock()
 COMMIT = LOCK["data_commit"]
 WINDOW = D.WINDOW
 _tmp = []
+
+
+def rb(path):
+    return pathlib.Path(path).read_bytes()
+
+
+def rt(path):
+    return pathlib.Path(path).read_text(encoding="utf-8")
+
+
+def wt(path, text):
+    pathlib.Path(path).write_text(text, encoding="utf-8", newline="")
 
 
 def tmpdir(prefix="k12nj-test-"):
@@ -92,10 +105,9 @@ def history_section(page):
 
 
 def strip_history(page):
-    """Remove everything the history adds to an existing page (the declared normalisation list)."""
+    """Remove everything the history adds to an existing page: the history section and the history Dataset block (nothing else)."""
     page = re.sub(r'<section class="nj-hist".*?</section>', "", page, flags=re.S)
     page = re.sub(r'<script type="application/ld\+json" id="ld-nj-history">.*?</script>', "", page, flags=re.S)
-    page = re.sub(r' id="guide-teacher-\d{4}-\d\d"', "", page)
     return page
 
 
@@ -115,13 +127,8 @@ def chart_data(section):
         out[(m.group(1), m.group(2))] = ("published", m.group(3))
     for m in re.finditer(r'<text class="st \w+" data-year="([^"]+)" data-group="([^"]+)" data-status="([^"]+)"', section):
         out[(m.group(1), m.group(2))] = (m.group(3), None)
-    for m in re.finditer(r'<li data-year="([^"]+)" data-group="([^"]+)" data-status="([^"]+)">(.*?)</li>', section, re.S):
-        y, g, st, inner = m.groups()
-        if st == "published":
-            nums = re.findall(r'<span class="num">([^<]+)</span>', inner)
-            out[(y, g)] = ("published", nums[-1].replace(",", ""))
-        else:
-            out[(y, g)] = (st, None)
+    for m in re.finditer(r'<text class="tv num"[^>]*data-year="([^"]+)" data-group="([^"]+)" data-fte="([^"]+)"', section):
+        out[(m.group(1), m.group(2))] = ("published", m.group(3))
     return out
 
 

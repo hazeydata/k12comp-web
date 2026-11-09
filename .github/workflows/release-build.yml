@@ -1,0 +1,47 @@
+name: release-build
+# Builds the release artifact only after the release guard passes for the exact head. It has no deploy step:
+# publishing the artifact (preview or live) is a separate, separately approved action.
+on:
+  workflow_dispatch:
+    inputs:
+      head_sha:
+        description: Full 40-character commit sha being released (must equal the checked-out head)
+        required: true
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      K12_DATA_READ_TOKEN: ${{ secrets.K12_DATA_READ_TOKEN }}
+      K12_RELEASE_GATES: ${{ secrets.K12_RELEASE_GATES }}
+    steps:
+      - name: Require secrets
+        run: |
+          for v in K12_DATA_READ_TOKEN K12_RELEASE_GATES; do
+            if [ -z "${!v}" ]; then echo "::error::$v is not set (owner: chief / Fred). The release build fails closed without it."; exit 1; fi
+          done
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.head_sha }}
+      - uses: actions/checkout@v4
+        with:
+          repository: hazeydata/k12comp
+          ref: 3c943e9f10bb80ba79100fc532ea798cc317a1a1
+          path: k12comp-data
+          token: ${{ secrets.K12_DATA_READ_TOKEN }}
+          fetch-depth: 1
+      - name: Move the data clone out of the repo tree (it must never be copied into the site output)
+        run: mv k12comp-data "$RUNNER_TEMP/k12comp-data"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Release guard and build
+        env:
+          K12_DATA_REPO: ${{ runner.temp }}/k12comp-data
+        run: python3 tools/nj_history_release_guard.py release --head "${{ inputs.head_sha }}" --out "$RUNNER_TEMP/site"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: k12comp-site-release-${{ inputs.head_sha }}
+          path: ${{ runner.temp }}/site
+          retention-days: 7

@@ -58,7 +58,8 @@ def main():
         srv.server_close()
     print(json.dumps(res, indent=1))
     if a.out:
-        open(a.out, "w").write(json.dumps(res, indent=1) + "\n")
+        with open(a.out, "w") as f:
+            f.write(json.dumps(res, indent=1) + "\n")
     return 1 if bad else 0
 
 

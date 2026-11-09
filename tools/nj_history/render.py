@@ -56,12 +56,18 @@ def group_cells(hist, leaid, group):
     return [(y, hist.by_leaid.get(leaid, {}).get(y, {}).get(group)) for y in D.WINDOW]
 
 
-# ---------- SVG panel (dataviz design: time down, FTE across, dots joined only across consecutive published years) ----------
-W, ROW, TOP, X0, PW = 300, 34, 6, 62, 148
-LABEL_X = X0 + PW + 14  # value labels sit in a column right of every dot, so no connector can reach a label
+# ---------- SVG panels: geometry follows the approved dataviz renderer (render_lib.py panel())
+# time runs down 7 rows, FTE across from 0; plot_w = width - gutter - 4; the largest value sits (plot_w - 64) from the axis so its
+# label fits beside the dot; dots joined only across consecutive published years; a group with 2 or fewer published values is
+# drawn as a table-first row list. Two sizes, like the approved desktop (4 columns) and 390 (stacked) designs.
+GUTTER, RESERVE, PLOT_PAD = 62, 64, 4
+LABEL_DX = 8 * 100 / 72  # annotate offset of 8 pt at 100 dpi
+VARIANTS = (("d", 253, 36), ("m", 304, 34))  # key, viewBox width, row pitch
+CH = 6.6  # estimated px per character at 12.5 px, for wrapping status text like the approved textwrap
+LINE = 12.5 * 1.15
 
 
-def wrap(text, limit=34):
+def wrap(text, limit):
     words, lines, cur = text.split(" "), [], ""
     for w in words:
         if cur and len(cur) + 1 + len(w) > limit:
@@ -73,63 +79,73 @@ def wrap(text, limit=34):
     return lines
 
 
-def panel_svg(uid, district, group, cells):
+def n_published(cells):
+    return sum(1 for _, r in cells if cell_state(r) == "published")
+
+
+def panel_svg(uid, district, group, cells, variant):
+    key, W, pitch = variant
     label = C.GROUP_LABELS[group]
-    vals = [float(r["fte_sum"]) for _, r in cells if r is not None and r["suppressed"] == "false"]
-    m = max(vals) or 1.0
-    height = TOP * 2 + ROW * len(cells)
+    chart = n_published(cells) > 2
+    plot_w = W - GUTTER - PLOT_PAD
+    height = 7 * pitch
+    vals = [float(r["fte_sum"]) for _, r in cells if cell_state(r) == "published"]
+    vmax = (max(vals) if vals else 0) or 1.0
     out = [f'<svg class="hist-svg" viewBox="0 0 {W} {height}" role="img" aria-labelledby="{uid}-t" focusable="false">',
-           f'<title id="{uid}-t">{esc(label)}: published FTE by school year, {esc(district)}</title>',
-           f'<line class="axis" x1="{X0}" y1="{TOP}" x2="{X0}" y2="{height - TOP}"/>']
+           f'<title id="{uid}-t">{esc(label)}: published FTE by school year, {esc(district)}</title>']
+    if chart:
+        cy0, cy6 = pitch / 2, height - pitch / 2
+        ticks = "".join(f" M{GUTTER - 3.5} {pitch * (i + 0.5):g} H{GUTTER}" for i in range(7))
+        out.append(f'<path class="axis" d="M{GUTTER} {cy0:g} V{cy6:g}{ticks}"/>')
     path, dots, texts = [], [], []
     prev = None
     for i, (y, r) in enumerate(cells):
-        cy = TOP + ROW * i + ROW / 2
+        cy = pitch * (i + 0.5)
         st = cell_state(r)
-        texts.append(f'<text class="yr num" x="0" y="{cy + 4:g}">{esc(y)}</text>')
+        texts.append(f'<text class="yr num" x="{GUTTER - (8 if chart else 6)}" y="{cy + 4:g}" text-anchor="end">{esc(y)}</text>')
+        data = f'data-year="{esc(y)}" data-group="{esc(group)}"'
         if st == "published":
-            x = X0 + float(r["fte_sum"]) / m * PW
-            dots.append(f'<circle class="dot" cx="{x:.1f}" cy="{cy:g}" r="4.5" data-year="{esc(y)}" data-group="{esc(group)}" '
-                        f'data-fte="{esc(r["fte_sum"])}"/>')
-            texts.append(f'<text class="val num" x="{LABEL_X}" y="{cy + 4:g}" data-year="{esc(y)}" data-group="{esc(group)}">'
-                         f'{esc(D.fmt_fte(r["fte_sum"]))}</text>')
-            path.append(("L" if prev == i - 1 else "M") + f"{x:.1f} {cy:g}")
-            prev = i
+            fte = esc(r["fte_sum"])
+            if chart:
+                x = GUTTER + float(r["fte_sum"]) / vmax * (plot_w - RESERVE)
+                dots.append(f'<circle class="dot" cx="{x:.1f}" cy="{cy:g}" r="4" {data} data-fte="{fte}"/>')
+                texts.append(f'<text class="val num" x="{x + LABEL_DX:.1f}" y="{cy + 4:g}" {data}>{esc(D.fmt_fte(r["fte_sum"]))}</text>')
+                path.append(("L" if prev == i - 1 else "M") + f"{x:.1f} {cy:g}")
+                prev = i
+            else:
+                texts.append(f'<text class="tv num" x="{GUTTER + 6}" y="{cy + 4:g}" {data} data-fte="{fte}">{esc(D.fmt_fte(r["fte_sum"]))}</text>')
         else:
-            lines = wrap(STATE_TEXT[st])
-            y0 = cy + 4 if len(lines) == 1 else cy - 3
-            tsp = "".join(f'<tspan x="{X0 + 10}" y="{y0 + 14 * j:g}">{esc(t)}{" " if j < len(lines) - 1 else ""}</tspan>'
+            x0 = GUTTER + (0.03 * plot_w if chart else 6)
+            lines = wrap(STATE_TEXT[st], int(((plot_w - 10) if chart else (plot_w - 4)) / CH))
+            y0 = cy + 4.2 - (len(lines) - 1) * LINE / 2
+            tsp = "".join(f'<tspan x="{x0:.1f}" y="{y0 + LINE * j:.1f}">{esc(t)}{" " if j < len(lines) - 1 else ""}</tspan>'
                           for j, t in enumerate(lines))
-            texts.append(f'<text class="st {st}" data-year="{esc(y)}" data-group="{esc(group)}" data-status="{st}">{tsp}</text>')
+            texts.append(f'<text class="st {st}" {data} data-status="{st}">{tsp}</text>')
     if path:
         out.append(f'<path class="ln" d="{" ".join(path)}"/>')
     out += dots + texts + ["</svg>"]
     return "".join(out)
 
 
-def rowlist(group, cells):
-    """Table-first list for a group with 2 or fewer published values (dataviz rule)."""
-    li = []
-    for y, r in cells:
-        st = cell_state(r)
-        val = f'<span class="num">{esc(D.fmt_fte(r["fte_sum"]))}</span>' if st == "published" else esc(STATE_TEXT[st])
-        li.append(f'<li data-year="{esc(y)}" data-group="{esc(group)}" data-status="{st}"><span class="num">{esc(y)}</span> {val}</li>')
-    return f'<ul class="rowlist">{"".join(li)}</ul>'
-
-
 def staff_panels(hist, leaid, district):
     out = []
     for g in D.GROUPS:
         cells = group_cells(hist, leaid, g)
-        n_pub = sum(1 for _, r in cells if cell_state(r) == "published")
         all_sup = all(cell_state(r) in ("small", "comp") for _, r in cells)
-        uid = f"h{leaid}-{g}"
-        if n_pub >= 3:
-            body = panel_svg(uid, district, g, cells)
-        else:
-            body = (f'<p class="note">{esc(C.ALL_SUPPRESSED)}</p>' if all_sup else "") + rowlist(g, cells)
-        out.append(f'<div class="hist-panel" data-group="{g}"><h4>{esc(C.GROUP_LABELS[g])}</h4>{body}</div>')
+        note = C.ALL_SUPPRESSED if all_sup else (C.PANEL_CHART_NOTE if n_published(cells) > 2 else C.PANEL_TABLE_NOTE)
+        svgs = "".join(f'<div class="hist-v-{v[0]}">{panel_svg(f"h{leaid}-{g}-{v[0]}", district, g, cells, v)}</div>' for v in VARIANTS)
+        out.append(f'<div class="hist-panel" data-group="{g}"><h4>{esc(C.GROUP_LABELS[g])}</h4><p class="note panel-note">{esc(note)}</p>{svgs}</div>')
     return "".join(out)
+
+
+def scale_note_applies(hist, leaid):
+    """The approved note says the largest values differ by more than 5 times between groups; show it only when that is true."""
+    tops = []
+    for g in D.GROUPS:
+        cells = group_cells(hist, leaid, g)
+        if n_published(cells) > 2:
+            tops.append(max(float(r["fte_sum"]) for _, r in cells if cell_state(r) == "published"))
+    return len(tops) > 1 and min(tops) > 0 and max(tops) / min(tops) > 5
 
 
 def staff_alt(hist, leaid, district):
@@ -250,11 +266,17 @@ def downloads(leaid, with_district):
     return f'<ul class="hist-dl">{"".join(li)}</ul>'
 
 
+def guide_href(year):
+    """Existing guide table, found without touching old markup: the existing #guides-h anchor plus a text-fragment directive
+    that some browsers use to scroll to the matching 'Teacher salary guide, <year>' heading; /history.js opens and scrolls to it everywhere."""
+    return f"#guides-h:~:text=Teacher%20salary%20guide%2C%20{year}"
+
+
 def guide_slot(hist, leaid, district):
     ys = hist.cov[leaid]["guide_years"]
     if not ys:
         return ""
-    links = "".join(f'<li><a href="#guide-teacher-{y}">{esc(C.GUIDE_YEAR_LINK.format(school_year=y))}</a></li>' for y in ys)
+    links = "".join(f'<li><a href="{guide_href(y)}">{esc(C.GUIDE_YEAR_LINK.format(school_year=y))}</a></li>' for y in ys)
     alt = C.GUIDE_ALT.format(district=district, years=", ".join(ys))
     return (f'<div class="hist-guide" data-guide-years="{",".join(ys)}"><h3>{esc(C.GUIDE_LABEL)}</h3>'
             f'<p>{esc(C.GUIDE_EXPLAIN)}</p>'
@@ -266,12 +288,13 @@ def guide_slot(hist, leaid, district):
 def district_section(hist, leaid):
     district = hist.district_names[leaid]
     c = hist.cov[leaid]
-    head = (f'<link rel="stylesheet" href="/history.css"><h2 id="{C.D_ANCHOR}">{esc(C.D_HEADING)}</h2>'
+    head = (f'<link rel="stylesheet" href="/history.css"><script src="/history.js" defer></script><h2 id="{C.D_ANCHOR}">{esc(C.D_HEADING)}</h2>'
             f'<p>{esc(C.D_INTRO)}</p>')
     if c["n"] == 0:
         body = (f'<p class="hist-empty">{esc(C.NO_ROWS)}</p>{coverage_block(0, 0)}{downloads(leaid, False)}'
                 f'<p class="note">{esc(C.AS_IS)}</p>')
         return f'<section class="nj-hist" data-nj-history="district" data-leaid="{leaid}" aria-labelledby="{C.D_ANCHOR}">{head}{body}</section>'
+    note_html = f'<p class="note">{esc(C.SCALE_NOTE)}</p>' if scale_note_applies(hist, leaid) else ""
     cap_id = f"cap-{leaid}"
     cap = C.STAFF_CAPTION.format(district=district, first=D.WINDOW[0], last=D.WINDOW[-1])
     alt = staff_alt(hist, leaid, district)
@@ -279,7 +302,7 @@ def district_section(hist, leaid):
              f'<figure class="hist-fig" role="group" aria-labelledby="{cap_id}" aria-describedby="alt-{leaid}">'
              f'<p id="alt-{leaid}" class="sr-only">{esc(alt)}</p>'
              f'<div class="hist-panels">{staff_panels(hist, leaid, district)}</div>'
-             f'<p class="note">{esc(C.CHART_SCALE_NOTE)}</p>'
+             f'{note_html}'
              f'<figcaption id="{cap_id}">{esc(cap)}</figcaption></figure>{status_key()}{staff_table(hist, leaid, cap_id)}</div>')
     credits = (f'<h3>{esc(C.S_STAFF_CREDITS)}</h3>{staff_credits(hist.manifest)}')
     body = (f'<div class="hist-main">{coverage_block(c["k"], c["n"])}<div class="hist-chart">{staff}</div></div>'

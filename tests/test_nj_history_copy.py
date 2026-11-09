@@ -8,10 +8,10 @@ import unittest
 import nj_history_helpers as H
 from nj_history import copy as C
 
-MD = open(os.path.join(H.ROOT, "docs", "nj-history-copy.md"), encoding="utf-8").read()
-LAYOUT = open(os.path.join(H.ROOT, "docs", "nj-history-layout-notes.md"), encoding="utf-8").read()
+MD = H.rt(os.path.join(H.ROOT, "docs", "nj-history-copy.md"))
+LAYOUT = H.rt(os.path.join(H.ROOT, "docs", "nj-history-layout-notes.md"))
 MD_SHA256 = "2495d917f14d43d90529ea923ccf398a93b07481c8c9978ab6541787e8246b24"
-DATAVIZ_OWNED = {"CHART_SCALE_NOTE", "STATUS_PUBLISHED"}  # not in copy.md; listed in docs/nj-history.md
+DATAVIZ_OWNED = {"PANEL_CHART_NOTE", "PANEL_TABLE_NOTE", "SCALE_NOTE", "STATUS_PUBLISHED"}  # approved dataviz strings; pinned in test_nj_history_dataviz.py
 NOT_COPY = {"S_PATH"}
 
 
@@ -48,11 +48,6 @@ class Copy(unittest.TestCase):
         self.assertGreater(n, 80)
         self.assertEqual(missing, [])
 
-    def test_dataviz_owned_strings_are_listed_in_the_docs(self):
-        doc = open(os.path.join(H.ROOT, "docs", "nj-history.md"), encoding="utf-8").read()
-        self.assertIn(C.CHART_SCALE_NOTE, doc)
-        self.assertIn(f'"{C.STATUS_PUBLISHED}"', doc)
-
     def test_rendered_pages_carry_the_bound_strings(self):
         out, _ = H.built()
         t = H.text_of(H.history_section(H.read(out, "nj/toms-river-regional-3416230/index.html")))
@@ -84,7 +79,7 @@ class Copy(unittest.TestCase):
         out, _ = H.built()
         import glob
         for f in glob.glob(os.path.join(out, "nj", "*-[0-9][0-9][0-9][0-9][0-9][0-9][0-9]", "index.html")):
-            sec = H.history_section(open(f, encoding="utf-8").read())
+            sec = H.history_section(H.rt(f))
             self.assertNotRegex(H.text_of(sec), r"\{[a-z_]+\}", f)
 
     def test_ac5_wording_distinguishes_the_two_reasons(self):

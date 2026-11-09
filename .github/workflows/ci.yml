@@ -8,7 +8,16 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      K12_DATA_READ_TOKEN: ${{ secrets.K12_DATA_READ_TOKEN }}
     steps:
+      # Fail closed: without the read secret the pinned inputs cannot be read, so the job fails here. It never skips.
+      - name: Require the data-repo read secret
+        run: |
+          if [ -z "$K12_DATA_READ_TOKEN" ]; then
+            echo "::error::K12_DATA_READ_TOKEN is not set. Provision a read-only token for hazeydata/k12comp as this repo secret (owner: chief / Fred). The NJ history build and tests need the pinned data and will not skip."
+            exit 1
+          fi
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
@@ -17,16 +26,27 @@ jobs:
           path: k12comp-data
           token: ${{ secrets.K12_DATA_READ_TOKEN }}
           fetch-depth: 1
+      - name: Move the data clone out of the repo tree (it must never be copied into the site output)
+        run: mv k12comp-data "$RUNNER_TEMP/k12comp-data"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Unit tests (history, copy, privacy, existing)
+      - name: Preflight (pinned inputs match the lock; tree clean; nothing generated is tracked)
         env:
-          K12_DATA_REPO: ${{ github.workspace }}/k12comp-data
-        run: python3 -m unittest discover -s tests -p 'test_*.py'
+          K12_DATA_REPO: ${{ runner.temp }}/k12comp-data
+        run: python3 tools/nj_history_release_guard.py preflight
+      - name: Tests (ResourceWarning is an error)
+        env:
+          K12_DATA_REPO: ${{ runner.temp }}/k12comp-data
+        run: python3 -X dev -W error::ResourceWarning -m unittest discover -s tests -p 'test_*.py'
       - name: Newsletter script test
         run: node tests/newsletter.test.js
-      - name: Build the site with history
+      - name: Build the site with history (output stays outside the repo; the 4.7 MB CSV is never committed)
         env:
-          K12_DATA_REPO: ${{ github.workspace }}/k12comp-data
-        run: python3 tools/nj_history_postbuild.py --out ${{ runner.temp }}/site
+          K12_DATA_REPO: ${{ runner.temp }}/k12comp-data
+        run: python3 tools/nj_history_postbuild.py --out "$RUNNER_TEMP/site"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: k12comp-site-with-history
+          path: ${{ runner.temp }}/site
+          retention-days: 7
