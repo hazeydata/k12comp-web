@@ -1,5 +1,22 @@
 # NJ staff and salary-guide history (K12-SITE-NJ-HISTORY-001)
 
+> **Status: blocked local prototype.** Not deploy-ready and not approved for release. It waits on spec decisions and on external
+> authorization (see "Open items"). No remote issue or PR exists, nothing was pushed, and no preview was published.
+
+## Open items (not satisfied or not decided)
+- **AC 22 not fully satisfied.** `tests/test_nj_history_privacy.py` scans only the statewide page's `<main>` and the history Dataset block, not
+  the whole page as AC 22 names. The statewide head is inherited from `/nj/` (AC 25) and includes image alt text that mentions superintendents.
+  How AC 22 and AC 25 fit together is an unresolved interpretation.
+- **AC 24 not satisfied as written.** The build adds `id="guide-teacher-YYYY-YY"` to existing teacher guide tables. AC 24 allows only
+  sitemap-style date normalisation, so removing these ids exceeds the declared list. Unresolved; the test strips them and has not been weakened further.
+- **AC 3 and AC 16 are provisional.** The per-district CSV uses a union-header interpretation that no one has approved.
+- **Outside the approved copy:** the table status word "Published", the chart scale note, and the design deviations (value labels in a column
+  right of the dots; row lists for groups with 2 or fewer published values). These are blockers until writing and dataviz accept them.
+- **AC 29 is documentation only.** No executable publish guard was found or built, and no complete release gate was checked.
+- **No deploy-ready claim.** The CI secret (`K12_DATA_READ_TOKEN`) and the production build integration are not provisioned; the CI workflow has never run.
+- Accessibility: the check was a Chrome accessibility-tree dump (desktop width only). No spoken screen-reader walkthrough was done.
+- Quality leftover: the tests emit ResourceWarnings for unclosed file objects.
+
 An add-on post-build step (OQ-1, no generator migration). It copies the committed site tree to an output directory and adds
 the history there. Nothing in the committed tree changes, and the 4.7 MB statewide CSV is generated at build time, not committed.
 
