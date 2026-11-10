@@ -114,9 +114,14 @@ class RepoAndSecret(unittest.TestCase):
         big, bh = mkrepo({"big.bin": "x" * (G.MAX_TRACKED + 1)})
         with self.assertRaisesRegex(G.GuardError, "over 1 MB"):
             G.check_repo(big, bh)
-        gen, gh = mkrepo({"data/nj/nj-district-staff-history.csv": "a\n"})
-        with self.assertRaisesRegex(G.GuardError, "generated output is tracked"):
-            G.check_repo(gen, gh)
+        sw, sh = mkrepo({"data/nj/nj-district-staff-history.csv": "a\n"})
+        self.assertEqual(G.check_repo(sw, sh), sh)  # the statewide CSV is tracked and allowed
+        swbig, swh = mkrepo({"data/nj/nj-district-staff-history.csv": "x" * (G.MAX_TRACKED + 1)})
+        self.assertEqual(G.check_repo(swbig, swh), swh)  # and may exceed 1 MB
+        self.assertEqual(G.MAX_STATEWIDE, 50 * 1024 * 1024)
+        other, oth = mkrepo({"data/nj/other.csv": "x" * (G.MAX_TRACKED + 1)})
+        with self.assertRaisesRegex(G.GuardError, "over 1 MB"):
+            G.check_repo(other, oth)
         ok, oh = mkrepo({"data/nj/history/3400001.csv": "a\n", "data/nj/nj-history-coverage.csv": "a\n"})
         self.assertEqual(G.check_repo(ok, oh), oh)  # the small committed CSVs are allowed
         bld, bh = mkrepo({"build/x.html": "a\n"})

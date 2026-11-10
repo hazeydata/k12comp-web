@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Preflight (pinned inputs match the lock; tree clean; statewide CSV untracked)
+      - name: Preflight (pinned inputs match the lock; tree clean; statewide CSV tracked and under 50 MB)
         env:
           K12_DATA_REPO: ${{ runner.temp }}/k12comp-data
         run: python3 tools/nj_history_release_guard.py preflight
@@ -43,7 +43,7 @@ jobs:
         run: python3 -X dev -W error::ResourceWarning -m unittest discover -s tests -p 'test_*.py'
       - name: Newsletter script test
         run: node tests/newsletter.test.js
-      - name: Build the site with history (input is the pristine base commit; output stays outside the repo; the 4.7 MB CSV is never committed)
+      - name: Build the site with history (input is the pristine base commit; output stays outside the repo; the committed statewide CSV is checked against this build)
         env:
           K12_DATA_REPO: ${{ runner.temp }}/k12comp-data
         run: |

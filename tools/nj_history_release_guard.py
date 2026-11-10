@@ -2,11 +2,12 @@
 
     python3 tools/nj_history_release_guard.py preflight [--repo .]
         CI preflight: needs the data-repo read secret (K12_DATA_READ_TOKEN, only checked for presence, never printed) when CI is set,
-        a data repo clone at the pinned commit with every input matching its lock hash, and a clean tree with no build/ output, no tracked statewide CSV and no tracked file over 1 MB.
+        a data repo clone at the pinned commit with every input matching its lock hash, and a clean tree with no tracked build/ output. The statewide CSV at data/nj/nj-district-staff-history.csv is committed so GitHub Pages can serve it;
+        it may exceed 1 MB but must stay under 50 MB. Every other tracked file stays under 1 MB.
     python3 tools/nj_history_release_guard.py release --head <40-hex sha> --gates <file outside the repo> --out <dir outside the repo>
         Requires, for that exact head: test-run PASS, Weatherman SHIP, pre-deploy-check PASS, Fred's go relayed by chief, and a
         pre-push scan with 0 findings. Then runs the preflight checks, builds the site into --out and checks the output.
-        Success only means "a build for this head may go to a preview or deploy step"; the deploy itself is not part of this tool.
+        Success only means "a build for this head may go to a preview or deploy step"; this tool does not publish (a merge to main does, via GitHub Pages).
 
 Any missing, malformed, stale or untrusted input exits non-zero with the reason. There is no skip mode.
 Gates file: JSON {"test_run": {"status": "PASS", "head": sha}, "weatherman": {"status": "SHIP", "head": sha},
@@ -28,6 +29,8 @@ from nj_history import build, data  # noqa: E402
 SITE_BASE_COMMIT = "3b50ce10b88e80188e6c8265634b68b482c1a81f"
 SECRET = "K12_DATA_READ_TOKEN"
 MAX_TRACKED = 1024 * 1024
+STATEWIDE_CSV = "data/nj/nj-district-staff-history.csv"
+MAX_STATEWIDE = 50 * 1024 * 1024  # GitHub's file-size warning threshold
 HEAD_RE = re.compile(r"[0-9a-f]{40}")
 REQUIRED = (("test_run", "status", "PASS"), ("weatherman", "status", "SHIP"), ("pre_deploy_check", "status", "PASS"),
             ("fred_go", "status", "GO"), ("prepush_scan", "findings", 0))
@@ -106,11 +109,17 @@ def check_repo(repo, head=None):
         raise GuardError("working tree is not clean")
     tracked = git(repo, "ls-files", "-z").split("\0")
     for t in filter(None, tracked):
-        # The small built files (data/nj/history/*.csv, data/nj/nj-history-coverage.csv) are committed so GitHub Pages can serve them.
-        if t.startswith("build/") or t.endswith("nj-district-staff-history.csv"):
+        # The built CSVs under data/nj/ are committed so GitHub Pages can serve them; only the statewide CSV may exceed 1 MB.
+        if t.startswith("build/"):
             raise GuardError(f"generated output is tracked in git: {t}")
         fp = os.path.join(repo, t)
-        if os.path.isfile(fp) and os.path.getsize(fp) > MAX_TRACKED:
+        if not os.path.isfile(fp):
+            continue
+        size = os.path.getsize(fp)
+        if t == STATEWIDE_CSV:
+            if size > MAX_STATEWIDE:
+                raise GuardError(f"tracked file over 50 MB: {t}")
+        elif size > MAX_TRACKED:
             raise GuardError(f"tracked file over 1 MB: {t}")
     return actual
 
@@ -147,7 +156,7 @@ def check_output(out, lock):
 def release(repo, head, gates_path, out, data_repo, env, lock_path=None):
     repo_real, out_real = os.path.realpath(repo), os.path.realpath(out)
     if out_real == repo_real or out_real.startswith(repo_real + os.sep):
-        raise GuardError("--out must be outside the repo (generated files are never committed)")
+        raise GuardError("--out must be outside the repo (the release build writes a fresh tree)")
     gates = load_gates(gates_path, env.get("K12_RELEASE_GATES"), repo)
     check_gates(gates, head)
     check_repo(repo, head)

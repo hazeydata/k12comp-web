@@ -1,4 +1,4 @@
-"""The committed (in-place) NJ history build: _config.yml excludes, byte-identity with a fresh build, and the untracked statewide CSV."""
+"""The committed (in-place) NJ history build: _config.yml excludes, byte-identity with a fresh build, and the tracked statewide CSV."""
 import glob
 import os
 import subprocess
@@ -11,7 +11,7 @@ STATEWIDE = "data/nj/nj-district-staff-history.csv"
 
 def committed_files(out):
     rels = ["about/index.html", "llms.txt", "sitemap.xml", "nj/index.html", "nj/history/index.html", "history.css", "history.js",
-            "data/nj/nj-history-coverage.csv"]
+            "data/nj/nj-history-coverage.csv", STATEWIDE]
     rels += [os.path.relpath(p, out).replace(os.sep, "/") for p in glob.glob(os.path.join(out, "nj", "*", "index.html"))]
     rels += [os.path.relpath(p, out).replace(os.sep, "/") for p in glob.glob(os.path.join(out, "data", "nj", "history", "*.csv"))]
     return sorted(set(rels))
@@ -69,12 +69,16 @@ class CommittedBuild(unittest.TestCase):
         self.assertEqual(have, fresh)
 
 
-class Untracked(unittest.TestCase):
-    def test_statewide_csv_is_not_tracked(self):
+class StatewideCsv(unittest.TestCase):
+    def test_statewide_csv_is_tracked_not_ignored(self):
         tracked = subprocess.run(["git", "-C", H.ROOT, "ls-files", "-z"], capture_output=True, check=True).stdout.decode().split("\0")
-        self.assertNotIn(STATEWIDE, tracked)
-        self.assertEqual([t for t in tracked if t.endswith("nj-district-staff-history.csv")], [])
-        self.assertIn(STATEWIDE, H.rt(os.path.join(H.ROOT, ".gitignore")).splitlines())
+        self.assertIn(STATEWIDE, tracked)
+        self.assertNotIn(STATEWIDE, H.rt(os.path.join(H.ROOT, ".gitignore")).splitlines())
+
+    @unittest.skipUnless(H.DATA_REPO, "K12_DATA_REPO is needed for the fresh build")
+    def test_statewide_csv_matches_a_fresh_build(self):
+        out, _ = H.built()
+        self.assertEqual(H.rb(os.path.join(H.ROOT, *STATEWIDE.split("/"))), H.rb(os.path.join(out, *STATEWIDE.split("/"))))
 
 
 if __name__ == "__main__":

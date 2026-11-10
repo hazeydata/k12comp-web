@@ -3,8 +3,8 @@
 > **Status: web PR #3 is open on `feat/2026-11-09-k12-site-nj-history`. Not merged, not production-deployed.** This follow-up commits the `_config.yml`
 > excludes (docs, tests, tools) and the built NJ history pages in place, so a merge to main can publish them through GitHub Pages (legacy Jekyll, no `.nojekyll`).
 > Test-run round 3 was READY yes at `4449f693`. The Weatherman re-gate, pre-deploy-check and Fred's merge/deploy go are still outstanding. A preview is already
-> published; production is unchanged. The 4.7 MB statewide CSV (`/data/nj/nj-district-staff-history.csv`) is still generated at build time and is **not** committed
-> (1 MB git limit); the per-district CSVs and the small coverage CSV are committed so GitHub Pages can serve them.
+> published; production is unchanged. The 4.7 MB statewide CSV (`/data/nj/nj-district-staff-history.csv`) is committed with the per-district CSVs and the small
+> coverage CSV so GitHub Pages can serve them; it is under GitHub's file-size limits.
 
 ## Final rulings (Lucille 2, Nov 9, 2026, 3:21 PM ET, relayed by the parent)
 1. **Per-district CSV header (AC 3, AC 16): approved.** One header that is the union of the staff allowlist and the coverage allowlist; staff rows leave the
@@ -20,7 +20,7 @@
   page passes the AC 22 scan. The shared `og-image.png` is unchanged and its pixels were not inspected.
 - Guide-year links: with JavaScript (`/history.js`) they open and scroll to the existing guide table; without it they land on the guides section.
   One same-origin script is added; the layout notes forbid external scripts.
-- Release: `tools/nj_history_release_guard.py` and the two workflows make the gates executable (see "Release guard"). The CI read secret `K12_DATA_READ_TOKEN` is set; chief provides the release gates input `K12_RELEASE_GATES` at release time, and CI fails closed until it is set. Nothing deploys from this repo.
+- Release: `tools/nj_history_release_guard.py` and the two workflows make the gates executable (see "Release guard"). The CI read secret `K12_DATA_READ_TOKEN` is set; chief provides the release gates input `K12_RELEASE_GATES` at release time, and CI fails closed until it is set. k12comp.com is GitHub Pages (legacy Jekyll, built from `main`), so a merge to `main` publishes the committed tree; the workflows only build and upload an artifact. The gates below still apply before any merge.
 - Verification (104 Python tests under `-X dev -W error::ResourceWarning`, newsletter JS 12/12, 48 local browser renders, byte-identical builds, 1,185 local HTTP
   checks) was run on web commit `a078085`. Later commits changed more than documentation: `ci.yml` now fetches full history, and this follow-up adds the built pages,
   `_config.yml`, a narrowed release guard, new tests and the CI `--site` base-archive step. Re-run the suite for the current head. This is not a test-run, Weatherman or quality-gate result.
@@ -35,8 +35,9 @@
 `--out` must be a new or empty directory outside the repo (the existing tests glob the repo tree for pages). After this follow-up the working tree is no longer a
 fresh unbuilt site (the history pages are committed in place), so the default `--site .` fails with "page already carries the history section". `--site` must be a
 `git archive` of base commit `3b50ce10b88e80188e6c8265634b68b482c1a81f` (the `BASE_COMMIT` constant in `tests/nj_history_helpers.py`). The committed pages are
-the output of exactly that build; `tests/test_nj_history_committed.py` checks them byte for byte. The statewide CSV only exists in `--out`.
-This repo does not deploy anything (see Release guard).
+the output of exactly that build; `tests/test_nj_history_committed.py` checks them byte for byte. The statewide CSV is committed at
+`data/nj/nj-district-staff-history.csv` (so Pages can serve it) and is also written to `--out`; the test checks the committed copy against that build.
+The build tool does not publish; a merge to `main` does (see Release guard).
 
 Tests: `K12_DATA_REPO=<clone> python3 -m unittest discover -s tests -p 'test_*.py'`, plus `node tests/newsletter.test.js`.
 Real-browser layout, clipping and accessibility checks: `tests/browser/run_browser_check.py --build <out>` (local headless Chrome, local HTTP
@@ -124,7 +125,7 @@ pre-deploy-check PASS and Fred's go relayed by chief. Before that the work exist
 `tools/nj_history_release_guard.py` enforces this for the build artifact and fails closed (no skip mode):
 
 - `preflight`: the CI read secret is present (value never printed), the data clone is at the pinned commit with every input equal to its lock hash,
-  the tree is clean, the 4.7 MB statewide CSV and `build/` are not tracked, and no tracked file is over 1 MB. The in-place built HTML and the small CSVs (`data/nj/history/*.csv`, `data/nj/nj-history-coverage.csv`) are committed and allowed.
+  the tree is clean, `build/` is not tracked, and every tracked file is under 1 MB except the statewide CSV, which is tracked and allowed (it may exceed 1 MB; cap 50 MB). The in-place built HTML and the small CSVs (`data/nj/history/*.csv`, `data/nj/nj-history-coverage.csv`) are committed and allowed.
 - `release --head <sha> --gates <file> --out <dir>`: additionally needs a gates file outside the repo with test-run PASS, Weatherman SHIP,
   pre-deploy-check PASS, Fred's go relayed by chief and a pre-push scan with 0 findings, each recorded for that exact full head, which must equal the
   checked-out head. It then builds into `--out` (outside the repo) and checks the output. Success prints that nothing was deployed.
@@ -132,4 +133,4 @@ pre-deploy-check PASS and Fred's go relayed by chief. Before that the work exist
   `.github/workflows/release-build.yml` (manual) runs the release guard and uploads the artifact. Neither has a deploy step. Both fail at the first
   step if `K12_DATA_READ_TOKEN` (and, for the release build, `K12_RELEASE_GATES`) is not set. `K12_DATA_READ_TOKEN` is now a repo secret; `K12_RELEASE_GATES` is still filled by chief at release time.
 - On the box, `guard.sh` (`guarded_push`) and `prepush-scan --base origin/main` still apply to every push.
-- Publishing the artifact (preview or live) is outside this repo and needs its own approval.
+- A merge to `main` publishes the committed tree to k12comp.com via GitHub Pages (legacy Jekyll). `release-build.yml` only builds an artifact and does not publish. Merge and publish still need the gates above and Fred's go.
