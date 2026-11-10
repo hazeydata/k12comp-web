@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Preflight (pinned inputs match the lock; tree clean; nothing generated is tracked)
+      - name: Preflight (pinned inputs match the lock; tree clean; statewide CSV untracked)
         env:
           K12_DATA_REPO: ${{ runner.temp }}/k12comp-data
         run: python3 tools/nj_history_release_guard.py preflight
@@ -43,10 +43,13 @@ jobs:
         run: python3 -X dev -W error::ResourceWarning -m unittest discover -s tests -p 'test_*.py'
       - name: Newsletter script test
         run: node tests/newsletter.test.js
-      - name: Build the site with history (output stays outside the repo; the 4.7 MB CSV is never committed)
+      - name: Build the site with history (input is the pristine base commit; output stays outside the repo; the 4.7 MB CSV is never committed)
         env:
           K12_DATA_REPO: ${{ runner.temp }}/k12comp-data
-        run: python3 tools/nj_history_postbuild.py --out "$RUNNER_TEMP/site"
+        run: |
+          mkdir "$RUNNER_TEMP/base"
+          git archive 3b50ce10b88e80188e6c8265634b68b482c1a81f | tar -x -C "$RUNNER_TEMP/base"
+          python3 tools/nj_history_postbuild.py --site "$RUNNER_TEMP/base" --out "$RUNNER_TEMP/site"
       - uses: actions/upload-artifact@v4
         with:
           name: k12comp-site-with-history

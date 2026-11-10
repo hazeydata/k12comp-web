@@ -28,6 +28,8 @@ def mkrepo(files=None, tree=None):
         os.makedirs(os.path.dirname(os.path.join(repo, rel)) or repo, exist_ok=True)
         H.wt(os.path.join(repo, rel), text)
     subprocess.run(["git", "-C", repo, "init", "-q"], check=True)
+    # the guard builds from an archive of the base commit, so the throwaway repo must contain it
+    subprocess.run(["git", "-C", repo, "fetch", "-q", H.ROOT, H.BASE_COMMIT], check=True)
     subprocess.run(["git", "-C", repo, "add", "-A"], check=True)
     subprocess.run(["git", "-C", repo, *GIT_ID, "commit", "-q", "-m", "t"], check=True)
     head = subprocess.run(["git", "-C", repo, "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
@@ -115,6 +117,11 @@ class RepoAndSecret(unittest.TestCase):
         gen, gh = mkrepo({"data/nj/nj-district-staff-history.csv": "a\n"})
         with self.assertRaisesRegex(G.GuardError, "generated output is tracked"):
             G.check_repo(gen, gh)
+        ok, oh = mkrepo({"data/nj/history/3400001.csv": "a\n", "data/nj/nj-history-coverage.csv": "a\n"})
+        self.assertEqual(G.check_repo(ok, oh), oh)  # the small committed CSVs are allowed
+        bld, bh = mkrepo({"build/x.html": "a\n"})
+        with self.assertRaisesRegex(G.GuardError, "generated output is tracked"):
+            G.check_repo(bld, bh)
 
     def test_inputs_must_exist_and_match_the_lock(self):
         with self.assertRaisesRegex(G.GuardError, "data repo clone not found"):
@@ -183,6 +190,30 @@ class Release(unittest.TestCase):
             self.assertTrue(os.path.exists(os.path.join(out, *rel.split("/"))), rel)
         status = subprocess.run(["git", "-C", self.repo, "status", "--porcelain"], capture_output=True, text=True).stdout
         self.assertEqual(status, "")  # the 4.7 MB CSV is generated outside the repo, never tracked
+
+    def test_release_succeeds_when_working_tree_already_has_history_pages(self):
+        built = H.built()[0]
+        files = {}
+        for rel in ("nj/history/index.html", "data/nj/nj-history-coverage.csv"):
+            files[rel] = H.rt(os.path.join(built, *rel.split("/")))
+        page = sorted(n for n in os.listdir(os.path.join(built, "nj")) if n != "history")[0]
+        files[f"nj/{page}/index.html"] = H.rt(os.path.join(built, "nj", page, "index.html"))
+        repo, head = mkrepo(tree=H.site_tree(), files=files)
+        out = self.out()
+        rc, so, se = run_main(["release", "--repo", repo, "--head", head, "--gates", gates_file(gates_for(head)),
+                               "--out", out, "--data-repo", H.DATA_REPO], self.env)
+        self.assertEqual((rc, se), (0, ""), so)
+        self.assertTrue(os.path.exists(os.path.join(out, "nj", "history", "index.html")))
+
+    def test_base_commit_constant_matches_ci_and_helpers(self):
+        self.assertEqual(G.SITE_BASE_COMMIT, H.BASE_COMMIT)
+        self.assertIn(G.SITE_BASE_COMMIT, H.rt(os.path.join(H.ROOT, ".github", "workflows", "ci.yml")))
+
+    def test_archive_failure_is_a_guard_error(self):
+        d = H.tmpdir("k12nj-guard-")
+        with self.assertRaises(G.GuardError) as cm:
+            G.extract_base(os.path.join(d, "not-a-repo"), d)
+        self.assertIn("git archive", str(cm.exception))
 
     def test_gates_from_env_json_are_accepted_and_checked(self):
         env = dict(self.env, K12_RELEASE_GATES=json.dumps(gates_for("f" * 40)))

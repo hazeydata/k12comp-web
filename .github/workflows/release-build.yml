@@ -24,6 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.head_sha }}
+          fetch-depth: 0
       - uses: actions/checkout@v4
         with:
           repository: hazeydata/k12comp

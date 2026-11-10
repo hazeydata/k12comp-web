@@ -2,7 +2,7 @@
 
     python3 tools/nj_history_release_guard.py preflight [--repo .]
         CI preflight: needs the data-repo read secret (K12_DATA_READ_TOKEN, only checked for presence, never printed) when CI is set,
-        a data repo clone at the pinned commit with every input matching its lock hash, and a clean tree with nothing generated tracked.
+        a data repo clone at the pinned commit with every input matching its lock hash, and a clean tree with no build/ output, no tracked statewide CSV and no tracked file over 1 MB.
     python3 tools/nj_history_release_guard.py release --head <40-hex sha> --gates <file outside the repo> --out <dir outside the repo>
         Requires, for that exact head: test-run PASS, Weatherman SHIP, pre-deploy-check PASS, Fred's go relayed by chief, and a
         pre-push scan with 0 findings. Then runs the preflight checks, builds the site into --out and checks the output.
@@ -19,10 +19,13 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from nj_history import build, data  # noqa: E402
 
+# Pristine site the history build starts from; must equal the sha in .github/workflows/ci.yml and tests/nj_history_helpers.py.
+SITE_BASE_COMMIT = "3b50ce10b88e80188e6c8265634b68b482c1a81f"
 SECRET = "K12_DATA_READ_TOKEN"
 MAX_TRACKED = 1024 * 1024
 HEAD_RE = re.compile(r"[0-9a-f]{40}")
@@ -39,6 +42,23 @@ def git(repo, *args):
     if p.returncode != 0:
         raise GuardError(f"git {args[0]} failed in {repo}")
     return p.stdout.decode()
+
+
+def extract_base(repo, dest):
+    """Extract a git archive of SITE_BASE_COMMIT from repo into the empty directory dest."""
+    git_p = subprocess.Popen(["git", "-C", repo, "archive", SITE_BASE_COMMIT], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        tar_p = subprocess.run(["tar", "-x", "-C", dest], stdin=git_p.stdout, capture_output=True)
+    finally:
+        git_p.stdout.close()
+        git_err = git_p.stderr.read()
+        git_p.stderr.close()
+        git_rc = git_p.wait()
+    if git_rc != 0:
+        raise GuardError(f"git archive of base commit {SITE_BASE_COMMIT[:12]} failed (is the full history checked out?): "
+                         + git_err.decode(errors="replace").strip()[:200])
+    if tar_p.returncode != 0:
+        raise GuardError(f"extracting the base commit archive failed: {tar_p.stderr.decode(errors='replace').strip()[:200]}")
 
 
 def check_gates(gates, head):
@@ -86,7 +106,8 @@ def check_repo(repo, head=None):
         raise GuardError("working tree is not clean")
     tracked = git(repo, "ls-files", "-z").split("\0")
     for t in filter(None, tracked):
-        if re.match(r"(data/nj/|build/)", t) or t.endswith("nj-district-staff-history.csv"):
+        # The small built files (data/nj/history/*.csv, data/nj/nj-history-coverage.csv) are committed so GitHub Pages can serve them.
+        if t.startswith("build/") or t.endswith("nj-district-staff-history.csv"):
             raise GuardError(f"generated output is tracked in git: {t}")
         fp = os.path.join(repo, t)
         if os.path.isfile(fp) and os.path.getsize(fp) > MAX_TRACKED:
@@ -132,10 +153,12 @@ def release(repo, head, gates_path, out, data_repo, env, lock_path=None):
     check_repo(repo, head)
     check_secret(env)
     lock = check_inputs(data_repo, lock_path)
-    try:
-        build.run(site_root=repo, out_dir=out, data_repo=data_repo, lock_path=lock_path)
-    except data.BuildError as e:
-        raise GuardError(f"build failed: {e}")
+    with tempfile.TemporaryDirectory(prefix="k12nj-base-") as base:
+        extract_base(repo, base)
+        try:
+            build.run(site_root=base, out_dir=out, data_repo=data_repo, lock_path=lock_path)
+        except data.BuildError as e:
+            raise GuardError(f"build failed: {e}")
     check_output(out, lock)
     return f"GUARD OK: build for {head} written to {out}. Nothing was deployed; deploy needs its own approval."
 
