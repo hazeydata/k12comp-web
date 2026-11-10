@@ -1,0 +1,7 @@
+{
+  "note": "sha256 of the approved packet files this build follows. The files live outside the repo; tests/test_nj_history_dataviz.py verifies them when K12_APPROVED_DIR points at the packet root (it holds dataviz/ and writing/).",
+  "dataviz/render_lib.py": "5606c07d6be367abe729fc0c064c27b6b6f2e9ddb033698665f7ed7d3b13cf6a",
+  "dataviz/build_html.py": "d18422af553be07084d6cc35731a3b3133f22c0ab249ea6c7cca8679144dcf5a",
+  "writing/copy.md": "3b1d5f361249a04d9e33e30b18a8805fa923c8902803f203f44f7275f3a6f0b8",
+  "writing/layout-notes.md": "add67c086fa9a42a54183db08d041ed9e662c63ca6b7a49cfffc838db15479a7"
+}

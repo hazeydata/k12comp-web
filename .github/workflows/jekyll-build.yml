@@ -1,0 +1,28 @@
+# Build-only check. This job only builds the site and uploads _site as a regular
+# Actions artifact, using the same github-pages gem GitHub Pages uses.
+# It does not publish to k12comp.com or to GitHub Pages.
+name: jekyll-build
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+permissions:
+  contents: read
+jobs:
+  jekyll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Pre-create the destination so it exists after the Docker action (runs as root).
+      - run: mkdir -p _site
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+      # The Docker action writes as root; make the tree readable for the upload step.
+      - run: sudo chmod -R a+rX _site
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jekyll-site
+          path: _site
+          retention-days: 7

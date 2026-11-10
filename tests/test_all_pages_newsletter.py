@@ -53,7 +53,7 @@ class AllNewsletterForms(unittest.TestCase):
         cls.nl = [(k, f, p) for k, p in cls.pages.items() for f in p.forms if f["newsletter"]]
 
     def test_expected_pages_have_exactly_one_form(self):
-        expected = {k for k in self.pages if k == "index.html" or DISTRICT.match(k)}
+        expected = {k for k in self.pages if k in ("index.html", "nj/history/index.html") or DISTRICT.match(k)}
         self.assertGreater(len(expected), 500)
         for k in expected:
             self.assertEqual(sum(1 for f in self.pages[k].forms if f["newsletter"]), 1, k)

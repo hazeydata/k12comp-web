@@ -1,0 +1,14 @@
+# GitHub Pages (legacy Jekyll 3.9). A custom exclude replaces the defaults, so
+# restate Jekyll's defaults plus docs/tests/tools. Dotfiles such as .github and
+# .gitignore stay hidden. This file is not a published page.
+exclude:
+  - docs
+  - tests
+  - tools
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
