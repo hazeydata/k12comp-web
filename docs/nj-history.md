@@ -2,8 +2,8 @@
 
 > **Status: web PR #3 is open on `feat/2026-11-09-k12-site-nj-history`. Not merged, not production-deployed.** This follow-up commits the `_config.yml`
 > excludes (docs, tests, tools) and the built NJ history pages in place, so a merge to main can publish them through GitHub Pages (legacy Jekyll, no `.nojekyll`).
-> Test-run round 3 was READY yes at `4449f693`. The Weatherman re-gate, pre-deploy-check and Fred's merge/deploy go are still outstanding. A preview is already
-> published; production is unchanged. The 4.7 MB statewide CSV (`/data/nj/nj-district-staff-history.csv`) is committed with the per-district CSVs and the small
+> Test-run round 3 was READY yes at `4449f693`. The Weatherman re-gate, pre-deploy-check and Fred's merge/deploy go are still outstanding. The preview at
+> https://nj-history-da0572d.k12comp-preview.pages.dev (deploy `06d471b9`) was built from `da0572d`, not this head; production is unchanged. The 4.7 MB statewide CSV (`/data/nj/nj-district-staff-history.csv`) is committed with the per-district CSVs and the small
 > coverage CSV so GitHub Pages can serve them; it is under GitHub's file-size limits.
 
 ## Final rulings (Lucille 2, Nov 9, 2026, 3:21 PM ET, relayed by the parent)
