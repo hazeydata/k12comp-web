@@ -1,14 +1,16 @@
-"""PR #5 fix list, fix 1 (K12-SITE-NJ-HISTORY-001): mobile salary-guide tables keep their caption and say they scroll sideways.
+"""PR #5 fix list, fix 1 (K12-SITE-NJ-HISTORY-001): salary-guide tables retain a visually hidden native caption and say they scroll sideways.
 
-At 336/390 px a guide table with several lanes scrolls sideways inside its `.table-wrap` region (leftover 7a). The table's
-<caption> sat inside that scroller, so it was cut off ("Teacher salary guide, 2026-2...") and nothing said more columns exist.
+At 336/390 px a guide table with several lanes scrolls sideways inside its `.table-wrap` region (leftover 7a).
+Lucille 2's follow-up keeps the full native <caption> for accessibility but visually hides it at every width;
+the unchanged h3 remains the visible heading.
 This rewrites each guide table on the committed district pages (the 8 pages with `<section class="grid ...">`):
 
-- The caption text moves, unchanged, into `<p class="guide-caption" id="guide-cap-N">` just above the scroller. The table
+- The unchanged caption text stays inside `<table>` as `<caption class="sr-only" id="guide-cap-N">`. The table
   keeps its accessible name through `aria-labelledby="guide-cap-N"` (N counts the guide tables on that page from 1).
+  The source accepts both original build markup and the previous visible-caption publication markup.
   The region's `aria-label`, the heading, the source line, the note and every table cell are untouched.
-- Tables with more than one lane column (3+ header cells) get `<p class="guide-cue" aria-hidden="true">SCROLL_CUE</p>` between
-  the caption and the scroller. style.css shows it at <=640 px only. Step + one lane tables fit at 336 px and get no cue.
+- Tables with more than one lane column (3+ header cells) get `<p class="guide-cue" aria-hidden="true">SCROLL_CUE</p>` above
+  the scroller. style.css shows it at <=640 px only. Step + one lane tables fit at 336 px and get no cue.
 
 The history build still writes the old markup (from base 3b50ce10), so re-run --write after copying a fresh build in place;
 tests/test_nj_history_committed.py allows exactly this rewrite on these pages and nothing more.
@@ -32,21 +34,29 @@ CUE_MIN_HEADER_CELLS = 3  # Step + 2 lanes or more: these overflow at 336 and 39
 SECTION = re.compile(r'(<section class="grid [a-z]+">)(.*?)(</section>)', re.S)
 # the build's markup: the region label and the caption carry the same text
 OLD = re.compile(r'<div class="table-wrap" tabindex="0" role="region" aria-label="([^"<>]*)"><table><caption>([^<>]*)</caption>')
-NEW = re.compile(r'<p class="guide-caption" id="guide-cap-(\d+)">([^<>]*)</p>(?:<p class="guide-cue" aria-hidden="true">[^<>]*</p>)?'
+VISIBLE = re.compile(r'<p class="guide-caption" id="guide-cap-(\d+)">([^<>]*)</p>(?:<p class="guide-cue" aria-hidden="true">[^<>]*</p>)?'
                  r'<div class="table-wrap" tabindex="0" role="region" aria-label="([^"<>]*)"><table aria-labelledby="guide-cap-\1">')
+NEW = re.compile(r'(?:<p class="guide-cue" aria-hidden="true">[^<>]*</p>)?'
+                 r'<div class="table-wrap" tabindex="0" role="region" aria-label="([^"<>]*)"><table aria-labelledby="guide-cap-(\d+)">'
+                 r'<caption class="sr-only" id="guide-cap-\2">([^<>]*)</caption>')
 
 
 def undo(body):
     """One guide section's body back in the build's markup. Raises on anything else."""
-    n_old, n_new = len(OLD.findall(body)), len(NEW.findall(body))
-    if (n_old, n_new) == (1, 0):
+    counts = (len(OLD.findall(body)), len(VISIBLE.findall(body)), len(NEW.findall(body)))
+    if counts == (1, 0, 0):
         return body
-    if (n_old, n_new) != (0, 1):
-        raise ValueError(f"guide section has {n_old} build tables and {n_new} rewritten tables; expected exactly one table")
-    m = NEW.search(body)
-    if m.group(2) != m.group(3):
-        raise ValueError(f"caption {m.group(2)!r} differs from the region label {m.group(3)!r}")
-    return body[:m.start()] + f'<div class="table-wrap" tabindex="0" role="region" aria-label="{m.group(3)}"><table><caption>{m.group(2)}</caption>' + body[m.end():]
+    if counts == (0, 1, 0):
+        m = VISIBLE.search(body)
+        label, caption = m.group(3), m.group(2)
+    elif counts == (0, 0, 1):
+        m = NEW.search(body)
+        label, caption = m.group(1), m.group(3)
+    else:
+        raise ValueError(f"guide section has build/visible/hidden table counts {counts}; expected exactly one table")
+    if caption != label:
+        raise ValueError(f"caption {caption!r} differs from the region label {label!r}")
+    return body[:m.start()] + f'<div class="table-wrap" tabindex="0" role="region" aria-label="{label}"><table><caption>{caption}</caption>' + body[m.end():]
 
 
 def rewrite(page):
@@ -63,8 +73,8 @@ def rewrite(page):
         count += 1
         cells = len(re.findall(r"<th scope=\"col\"", body[m.end():body.index("</thead>", m.end())]))
         cue = f'<p class="guide-cue" aria-hidden="true">{SCROLL_CUE}</p>' if cells >= CUE_MIN_HEADER_CELLS else ""
-        new = (f'<p class="guide-caption" id="guide-cap-{count}">{caption}</p>{cue}'
-               f'<div class="table-wrap" tabindex="0" role="region" aria-label="{label}"><table aria-labelledby="guide-cap-{count}">')
+        new = (f'{cue}<div class="table-wrap" tabindex="0" role="region" aria-label="{label}"><table aria-labelledby="guide-cap-{count}">'
+               f'<caption class="sr-only" id="guide-cap-{count}">{caption}</caption>')
         return sec.group(1) + body[:m.start()] + new + body[m.end():] + sec.group(3)
 
     out = SECTION.sub(one, page)

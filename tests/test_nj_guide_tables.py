@@ -1,4 +1,4 @@
-"""PR #5 fix list, fix 1 (K12-SITE-NJ-HISTORY-001): guide-table caption outside the mobile scroller, swipe cue, sticky Step column,
+"""PR #5 fix list, fix 1 (K12-SITE-NJ-HISTORY-001): native sr-only guide-table caption at every width, swipe cue, sticky Step column,
 source line wrapping. Static checks of the committed tree against web main a41b5838; no data repo needed.
 The real-browser checks (336/390/1280 px, initial and scrolled right) are in tests/test_nj_guide_tables_browser.py."""
 import contextlib
@@ -38,8 +38,8 @@ def at_base(rel):
 def by_hand_undo(page):
     """Written here, not through the tool: the committed page with fix 1's markup taken back out."""
     page = re.sub(r'<p class="guide-cue" aria-hidden="true">[^<>]*</p>', "", page)
-    return re.sub(r'<p class="guide-caption" id="guide-cap-\d+">([^<>]*)</p>(<div class="table-wrap" [^>]*>)<table aria-labelledby="guide-cap-\d+">',
-                  r"\2<table><caption>\1</caption>", page)
+    return re.sub(r'<table aria-labelledby="guide-cap-\d+"><caption class="sr-only" id="guide-cap-\d+">',
+                  "<table><caption>", page)
 
 
 def sections(page):
@@ -84,20 +84,25 @@ class Markup(unittest.TestCase):
             self.assertEqual(by_hand_undo(now), base, rel)
             self.assertEqual(G.rewrite(base), now, rel)
 
-    def test_caption_text_unchanged_outside_the_scroller_and_named_table(self):
+    def test_previous_visible_caption_publication_migrates_without_copy_changes(self):
+        for rel in GUIDE_PAGES:
+            previous = subprocess.run(["git", "-C", ROOT, "show", f"16f00528:{rel}"], capture_output=True, check=True).stdout.decode()
+            self.assertEqual(G.rewrite(previous), rt(rel), rel)
+
+    def test_native_sr_only_caption_text_unchanged_and_named_table(self):
         for rel in GUIDE_PAGES:
             base_caps = re.findall(r"<caption>([^<>]*)</caption>", at_base(rel))
             page = rt(rel)
-            self.assertNotIn("<caption", "".join(sections(page)), rel)
+            self.assertNotIn('class="guide-caption"', page, rel)
             caps = []
             for i, body in enumerate(sections(page), 1):
                 h3 = re.search(r"<h3>([^<>]*)</h3>", body).group(1)
-                m = re.search(rf'<p class="guide-caption" id="guide-cap-{i}">([^<>]*)</p>(?:<p class="guide-cue"[^>]*>[^<>]*</p>)?'
-                              rf'<div class="table-wrap" tabindex="0" role="region" aria-label="([^"]*)"><table aria-labelledby="guide-cap-{i}">', body)
+                m = re.search(rf'<div class="table-wrap" tabindex="0" role="region" aria-label="([^"]*)"><table aria-labelledby="guide-cap-{i}">'
+                              rf'<caption class="sr-only" id="guide-cap-{i}">([^<>]*)</caption>', body)
                 self.assertIsNotNone(m, (rel, i))
                 self.assertEqual(m.group(1), m.group(2))
                 self.assertEqual(m.group(1), h3)
-                self.assertLess(body.index('class="guide-caption"'), body.index('class="table-wrap"'))
+                self.assertLess(body.index('class="table-wrap"'), body.index('<caption class="sr-only"'))
                 caps.append(m.group(1))
             self.assertEqual(caps, base_caps, rel)
             ids = re.findall(r'id="(guide-cap-\d+)"', page)
@@ -139,7 +144,7 @@ class Markup(unittest.TestCase):
 class Css(unittest.TestCase):
     def test_fix_1_rules(self):
         css = rt("style.css")
-        self.assertIn(".guide-caption{font-weight:700;font-size:18px;margin:0 0 8px}.guide-cue{display:none}", css)
+        self.assertIn(".grid caption.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.guide-cue{display:none}", css)
         mobile = re.search(r"@media \(max-width:640px\)\{\.guide-cue\{display:block;[^\n]*", css).group(0)
         for rule in (".grid tr>th:first-child{position:sticky;left:0;", ".grid .src-short{text-wrap:balance}",
                      "main .grid .src-short a{display:inline;padding:12px 0}"):

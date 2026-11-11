@@ -2,7 +2,7 @@
 
 One committed file may differ from the fresh build, by one exact substitution: /nj/index.html's Dataset contentUrl (leftover 10,
 tools/nj_api_index.py). SCOPED_EDITS names it. The 8 district pages with salary-guide tables (GUIDE_PAGES) may differ by PR #5 fix 1's
-guide-table markup only (tools/nj_guide_tables.py: caption outside the scroller, swipe cue). Every other committed file must equal the
+guide-table markup only (tools/nj_guide_tables.py: native sr-only caption, swipe cue). Every other committed file must equal the
 build byte for byte.
 """
 import glob
@@ -102,13 +102,13 @@ class CommittedBuild(unittest.TestCase):
         # the build pages with guide tables are exactly these 8
         self.assertEqual(sorted(os.path.relpath(p, out).replace(os.sep, "/") for p in G.guide_pages(out)), sorted(GUIDE_PAGES))
         cue = re.compile(r'<p class="guide-cue" aria-hidden="true">[^<>]*</p>')
-        cap = re.compile(r'<p class="guide-caption" id="guide-cap-\d+">([^<>]*)</p>(<div class="table-wrap" [^>]*>)<table aria-labelledby="guide-cap-\d+">')
+        cap = re.compile(r'<table aria-labelledby="guide-cap-\d+"><caption class="sr-only" id="guide-cap-\d+">')
         for rel in GUIDE_PAGES:
             built = H.rb(os.path.join(out, *rel.split("/"))).decode("utf-8")
             committed = H.rb(os.path.join(H.ROOT, *rel.split("/"))).decode("utf-8")
             self.assertNotEqual(committed, built)
             # undone here by hand, not through the tool: taking fix 1's markup out gives the build page back exactly
-            self.assertEqual(cap.sub(r"\2<table><caption>\1</caption>", cue.sub("", committed)), built, rel)
+            self.assertEqual(cap.sub("<table><caption>", cue.sub("", committed)), built, rel)
             self.assertEqual(expected_committed(rel, built.encode()), committed.encode())
             # any other difference on the page is still a failure
             self.assertNotEqual(expected_committed(rel, built.replace("$", "USD ", 1).encode()), committed.encode())

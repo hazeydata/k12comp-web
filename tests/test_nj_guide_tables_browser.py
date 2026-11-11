@@ -1,7 +1,7 @@
 """PR #5 fix list, fix 1 (K12-SITE-NJ-HISTORY-001), in a real browser: all 8 guide pages, all 40 guide tables, at 336, 390 and 1280 px.
 
-- The caption is outside the horizontal scroller, fully inside the viewport and not clipped, before and after scrolling right,
-  and it is still the table's accessible name (Chrome's own accessibility tree).
+- The native caption has class sr-only and a clipped 1 x 1 px box at every width, initially and scrolled right; the unchanged
+  heading remains visible. The caption is still the table's accessible name (Chrome's own accessibility tree).
 - The swipe cue shows above the scroller at 336/390 exactly on the tables that overflow, and is hidden at 1280.
 - The Step column stays at the scroller's left edge after scrolling right, and the last column becomes fully visible beside it.
 - Salary cells keep every digit on one line at 16 px; the page itself never scrolls sideways.
@@ -41,12 +41,12 @@ MEASURE = """() => {
   document.querySelectorAll('section.grid').forEach(sec => {
     const wrap = sec.querySelector('.table-wrap'), table = wrap.querySelector('table');
     const cap = document.getElementById(table.getAttribute('aria-labelledby')) || table.querySelector('caption') || sec.querySelector('.guide-caption');
-    const cue = sec.querySelector('.guide-cue');
+    const cue = sec.querySelector('.guide-cue'), heading = sec.querySelector('h3'), cs = getComputedStyle(cap);
     const tds = [...table.querySelectorAll('td.num')];
     const lastCol = [...table.querySelectorAll('tr')].map(tr => tr.lastElementChild);
     const firstCol = [...table.querySelectorAll('tr')].map(tr => tr.firstElementChild);
     const state = () => ({
-      wrap: box(wrap), cap: box(cap), capSw: cap.scrollWidth, capCw: cap.clientWidth,
+      wrap: box(wrap), cap: box(cap), heading: box(heading),
       cueShown: !!cue && getComputedStyle(cue).display !== 'none', cue: cue ? box(cue) : null,
       first: firstCol.map(box), last: lastCol.map(box),
     });
@@ -60,6 +60,10 @@ MEASURE = """() => {
     rng.selectNodeContents(trail);
     const trailRects = [...rng.getClientRects()];
     out.push({
+      capTag: cap.tagName, capSrOnly: cap.classList.contains('sr-only'), heading: heading.textContent,
+      headingVisible: getComputedStyle(heading).display !== 'none' && getComputedStyle(heading).visibility === 'visible',
+      capCss: {position: cs.position, clip: cs.clip, overflow: cs.overflow, whiteSpace: cs.whiteSpace,
+               padding: cs.padding, margin: cs.margin, borderWidth: cs.borderWidth},
       caption: cap.textContent, capInWrap: !!cap.closest('.table-wrap'), cueInWrap: !!(cue && cue.closest('.table-wrap')),
       cueText: cue ? cue.textContent : null, cols: table.querySelectorAll('thead th').length,
       sw: wrap.scrollWidth, cw: wrap.clientWidth, scrolled, s0, s1,
@@ -142,15 +146,24 @@ class GuideTablesInChrome(unittest.TestCase):
         for (w, path), r in self.res.items():
             self.assertLessEqual(r["docSw"], r["vw"], (w, path))
 
-    def test_caption_outside_the_scroller_and_fully_visible_initially_and_scrolled_right(self):
+    def test_native_caption_sr_only_at_every_width_and_heading_still_visible(self):
         for w, path, i, r, t in self.each((336, 390, 1280)):
-            self.assertFalse(t["capInWrap"], (w, path, i))
+            context = (w, path, i)
+            self.assertEqual(t["capTag"], "CAPTION", context)
+            self.assertTrue(t["capSrOnly"], context)
+            self.assertTrue(t["capInWrap"], context)
+            self.assertEqual(t["caption"], t["heading"], context)
+            self.assertTrue(t["headingVisible"], context)
+            self.assertEqual(t["capCss"], {"position": "absolute", "clip": "rect(0px, 0px, 0px, 0px)",
+                                         "overflow": "hidden", "whiteSpace": "nowrap", "padding": "0px",
+                                         "margin": "-1px", "borderWidth": "0px"}, context)
             for s in (t["s0"], t["s1"]):
-                self.assertLessEqual(s["capSw"], s["capCw"], (w, path, i))
-                self.assertGreaterEqual(s["cap"]["l"], -0.5)
-                self.assertLessEqual(s["cap"]["r"], r["vw"] + 0.5, (w, path, i))
-                self.assertLessEqual(s["cap"]["b"], s["wrap"]["t"] + 0.5, (w, path, i))  # above the scroller, not in it
-            self.assertEqual(t["s0"]["cap"], t["s1"]["cap"])  # scrolling the table does not move or cut the caption
+                self.assertAlmostEqual(s["cap"]["w"], 1, delta=0.05, msg=context)
+                self.assertAlmostEqual(s["cap"]["h"], 1, delta=0.05, msg=context)
+                self.assertGreater(s["heading"]["w"], 1, context)
+                self.assertGreater(s["heading"]["h"], 1, context)
+                self.assertGreaterEqual(s["heading"]["l"], 0, context)
+                self.assertLessEqual(s["heading"]["r"], r["vw"], context)
 
     def test_caption_is_still_the_tables_accessible_name(self):
         for path in PAGES:
@@ -168,7 +181,7 @@ class GuideTablesInChrome(unittest.TestCase):
                 self.assertFalse(t["cueInWrap"])
                 for s in (t["s0"], t["s1"]):
                     self.assertGreater(s["cue"]["h"], 0)
-                    self.assertGreaterEqual(s["cue"]["t"], s["cap"]["b"] - 0.5)
+                    self.assertGreaterEqual(s["cue"]["t"], s["heading"]["b"] - 0.5)
                     self.assertLessEqual(s["cue"]["b"], s["wrap"]["t"] + 0.5)
                     self.assertLessEqual(s["cue"]["r"], r["vw"] + 0.5)
         self.assertEqual(shown, 46)  # 23 tables at each width

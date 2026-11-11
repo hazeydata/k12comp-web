@@ -149,7 +149,7 @@ The CI and release artifacts are still built from base `3b50ce10` alone, so they
 - **Leftover 7a, guide tables at 336/390 px.** The site-wide `overflow-wrap:anywhere` on `body` let guide-table cells shrink to one digit per line.
   One added `style.css` line, mobile only: `.grid th` (column and step headers) and `.grid td.num` get `white-space:nowrap`, so the
   table scrolls sideways inside its existing focusable `.table-wrap` region. Only the 8 district pages with guide tables (`section.grid`) are affected.
-  PR #5 fix 1 (section below) adds the caption outside the scroller, the swipe cue and the sticky Step column.
+  PR #5 fix 1 (section below) keeps a native sr-only caption at every width, and adds the swipe cue and the sticky Step column.
 - **Leftover 7b, "Base salary by year" mobile charts.** `tools/nj_mobile_chart_fit.py --write` rewrote the 572 of 573 `charts/d/<leaid>-mobile.svg`
   that misfit their 390 px box: an end-value label whose estimated right edge passes x=384 is right-aligned at x=384 and set 10 px above its dot
   (below it when the line comes down into the dot); a year label that overlaps the final year's label is dropped (first and final years always stay;
@@ -185,17 +185,21 @@ as "Source:" / link / ", pages 58–62". Visible on the site: yes. Fix 2 (mobile
 (`k12comp/specs/k12-chart-mobile-text-001.md`, owner implement), and no chart, SVG or chart tool is changed here.
 
 - `tools/nj_guide_tables.py --write` rewrites the 40 guide tables on the 8 district pages with `section.grid`; `--check` exits 1 if any page is stale.
-  It is a static transform of the committed pages, not a generator change, and it is idempotent (it undoes its own markup, then applies it).
-  - The caption text moves, unchanged, out of the table into `<p class="guide-caption" id="guide-cap-N">` just above the scroller; the table
-    keeps the same accessible name through `aria-labelledby="guide-cap-N"`. The region's `aria-label`, heading, source line, note and cells are unchanged.
-  - Tables with 3+ header cells (23 of 40) get `<p class="guide-cue" aria-hidden="true">Swipe to see more columns →</p>` between the caption and the
+  It is the static publication source transform (not a change to the historical base generator), and is idempotent. It accepts both the original
+  build markup and the previous visible-caption publication markup, then emits the current committed markup.
+  - Lucille 2's follow-up ruling keeps the full unchanged caption inside the table as `<caption class="sr-only" id="guide-cap-N">` at **every width**;
+    the table keeps the same accessible name through `aria-labelledby="guide-cap-N"`. The existing `h3` stays visible. No copy changes: the region's
+    `aria-label`, heading, caption, source line, note and cells are unchanged.
+  - Tables with 3+ header cells (23 of 40) get `<p class="guide-cue" aria-hidden="true">Swipe to see more columns →</p>` above the
     scroller. The wording is the approved copy (Lindsay, `SCROLL_CUE`, pinned in `tests/test_nj_guide_tables.py`); to change it, edit `SCROLL_CUE`,
     update the pin and re-run `--write`. Step + one column tables (Bayonne, Edison) fit at 336 px and get no cue.
-- `style.css` gains two lines for this (after the newsletter rules; a third line, below, is for `/api/v1/nj/`). All widths: `.guide-caption` (bold 18 px, like the old caption) and `.guide-cue{display:none}`.
+- `style.css` gains two lines for this (after the newsletter rules; a third line, below, is for `/api/v1/nj/`). All widths: `.grid caption.sr-only` uses the standard clip pattern
+  (`position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0`),
+  and `.guide-cue{display:none}`. The scoped caption rule overrides the generic caption padding without changing other tables.
   At <=640 px: the cue shows (14 px, muted); the Step column (`.grid tr>th:first-child`) is `position:sticky; left:0` with a background and a
   1 px edge, so row context stays when scrolled right; the source line is `text-wrap:balance` and its link is `display:inline` with 12 px vertical
   padding (a 44 px target), so the link starts on the "Source:" line and ", pages 58–62" stays with it. No copy is shortened; values keep 16 px and `nowrap`.
-  At 1280 px the only visible change is that the caption now sits above the table's border instead of inside it.
+  At 1280 px the caption is also visually hidden; the existing heading still shows and the cue stays hidden. The cue and sticky Step rules are unchanged by this follow-up.
 - AC 23/24: the history build still writes the old guide markup, so `tests/test_nj_history_committed.py` allows, on exactly these 8 pages
   (`GUIDE_PAGES`), the committed page to equal `nj_guide_tables.rewrite(build page)`, and checks by hand that removing fix 1's markup gives the
   build page back byte for byte. Every other committed file must still equal the build. Like leftovers 7 and 10, release artifacts built from
@@ -203,7 +207,7 @@ as "Source:" / link / ", pages 58–62". Visible on the site: yes. Fix 2 (mobile
 - Tests: `tests/test_nj_guide_tables.py` (static: copy pin, the old placeholder cue wording appears nowhere, the 8 pages / 40 tables, idempotence,
   diff from web main is fix 1's markup only, captions unchanged, cue placement, cells unchanged, CSS rules). `tests/test_nj_guide_tables_browser.py`
   (real local Chrome through the Python `playwright` package, skipped without it; 127.0.0.1 server, throwaway profile, other requests aborted) checks
-  all 40 tables at 336, 390 and 1280 px, initial and scrolled right: caption outside the scroller and unclipped, still the table's accessible name
+  all 40 tables at 336, 390 and 1280 px, initial and scrolled right: native sr-only caption has a clipped 1 × 1 px box at every width, the unchanged heading remains visible, and the caption is still the table's accessible name
   in Chrome's accessibility tree; cue shown above the scroller at 336/390 exactly where columns are hidden and hidden at 1280; Step column stuck at
   the left edge with the last column fully visible beside it; salary cells on one line at 16 px; source line wrapping as described; no page-level sideways scroll.
 
