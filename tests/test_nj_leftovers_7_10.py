@@ -1,17 +1,32 @@
-"""Leftovers 7 and 10 of K12-SITE-NJ-HISTORY-001: mobile guide tables and charts fit at 336/390 px; /api/v1/nj/ has an index.
-Static checks against the committed tree and web main a41b5838 (the tree these fixes start from). Real-browser widths are builder evidence."""
+"""Leftovers 7 and 10 of K12-SITE-NJ-HISTORY-001: mobile guide tables and charts fit at 336/390 px; the /nj/ Dataset JSON-LD
+points at a real JSON file (/api/v1/nj/index.json) and /api/v1/nj/ has an index page for people.
+Static checks against the committed tree, web main a41b5838 (the tree these fixes start from) and history base 3b50ce10.
+No data repo is needed. Real-browser widths are builder evidence. tests/test_jsonld_content_urls.py reads every JSON-LD target."""
+import contextlib
+import io
+import json
 import os
 import re
 import subprocess
 import sys
+import tempfile
 import unittest
+from unittest import mock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import nj_api_index as A  # noqa: E402
 import nj_mobile_chart_fit as F  # noqa: E402
+from nj_history import render as R  # noqa: E402
 
 FIX_BASE = "a41b583835f15b30bb5a398c94beaa1e22e8297d"  # web main before these fixes
+HISTORY_BASE = "3b50ce10b88e80188e6c8265634b68b482c1a81f"  # the base the history build starts from (AC 23/24)
+# Everything these fixes may change since FIX_BASE, by exact path or one exact pattern. Site files first, then unpublished files.
+SITE_MODIFIED = re.compile(r"style\.css|charts/d/\d{7}-mobile\.svg|nj/index\.html")  # nj/index.html: only the contentUrl, checked below
+SITE_ADDED = {"api/v1/nj/index.html", "api/v1/nj/index.json"}
+OTHER_MODIFIED = {"docs/nj-history.md", "tests/test_nj_history_committed.py"}
+OTHER_ADDED = {"tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_10.py", "tools/jsonld_content_urls.py",
+               "tools/nj_api_index.py", "tools/nj_mobile_chart_fit.py"}
 
 
 def rt(rel):
@@ -19,8 +34,26 @@ def rt(rel):
         return f.read()
 
 
+def rb(rel):
+    with open(os.path.join(ROOT, *rel.split("/")), "rb") as f:
+        return f.read()
+
+
+def show(commit, rel):
+    return subprocess.run(["git", "-C", ROOT, "show", f"{commit}:{rel}"], capture_output=True, check=True).stdout
+
+
 def at_base(rel):
-    return subprocess.run(["git", "-C", ROOT, "show", f"{FIX_BASE}:{rel}"], capture_output=True, check=True).stdout.decode()
+    return show(FIX_BASE, rel).decode()
+
+
+def district_files():
+    return sorted(n for n in os.listdir(A.API) if re.fullmatch(r"\d{7}\.json", n))
+
+
+def quiet_main(argv):
+    with contextlib.redirect_stdout(io.StringIO()):
+        return A.main(argv)
 
 
 def svg_labels_removed(svg):
@@ -83,34 +116,123 @@ class Leftover7bMobileCharts(unittest.TestCase):
 
 
 class Leftover10ApiIndex(unittest.TestCase):
-    def test_index_exists_and_is_fresh(self):
+    def test_index_files_exist_and_are_fresh(self):
         self.assertEqual(rt("api/v1/nj/index.html"), A.render())
+        self.assertEqual(rt("api/v1/nj/index.json"), A.render_json())
+        self.assertEqual(quiet_main(["--check"]), 0)
+
+    def test_api_directory_holds_the_586_district_files_and_the_two_indexes_only(self):
+        self.assertEqual(len(district_files()), 586)
+        self.assertEqual(sorted(os.listdir(A.API)), sorted(district_files() + ["index.html", "index.json"]))
 
     def test_index_lists_every_json_file_once(self):
         page = rt("api/v1/nj/index.html")
-        files = sorted(os.path.basename(f) for f in A.glob.glob(os.path.join(A.API, "*.json")))
-        self.assertEqual(len(files), 586)
-        self.assertEqual(sorted(re.findall(r'<a href="/api/v1/nj/(\d{7}\.json)">', page)), files)
+        self.assertEqual(sorted(re.findall(r'<a href="/api/v1/nj/(\d{7}\.json)">', page)), district_files())
 
     def test_district_links_resolve(self):
         for p in re.findall(r'<a href="/nj/([a-z0-9-]+-\d{7})/">', rt("api/v1/nj/index.html")):
             self.assertTrue(os.path.isfile(os.path.join(ROOT, "nj", p, "index.html")), p)
 
-    def test_jsonld_content_url_now_resolves(self):
-        self.assertIn('"contentUrl": "/api/v1/nj/"', rt("nj/index.html"))
-        self.assertTrue(os.path.isfile(os.path.join(ROOT, "api", "v1", "nj", "index.html")))
+    def test_index_json_lists_every_file_once_and_agrees_with_each_file(self):
+        raw = rt("api/v1/nj/index.json")
+        doc = json.loads(raw)
+        self.assertEqual(set(doc), {"count", "description", "files", "license", "state"})
+        self.assertEqual((doc["count"], doc["state"], doc["license"]), (586, "NJ", "https://creativecommons.org/licenses/by/4.0/"))
+        self.assertEqual(len(doc["files"]), 586)
+        self.assertEqual([os.path.basename(e["url"]) for e in doc["files"]], district_files())
+        for e in doc["files"]:
+            self.assertEqual(set(e), {"district", "nces_leaid", "page", "url"})
+            self.assertEqual(e["url"], f"/api/v1/nj/{e['nces_leaid']}.json")
+            with open(os.path.join(ROOT, *e["url"].strip("/").split("/")), encoding="utf-8") as f:
+                d = json.load(f)
+            self.assertEqual((e["district"], e["nces_leaid"]), (d["district"], d["nces_leaid"]), e["url"])
+            self.assertRegex(e["page"], rf"^/nj/[a-z0-9-]+-{e['nces_leaid']}/$")
+            self.assertTrue(os.path.isfile(os.path.join(ROOT, *e["page"].strip("/").split("/"), "index.html")), e["page"])
 
-    def test_no_existing_file_changes_except_leftover_7(self):
+    def test_index_json_is_written_like_the_district_files(self):
+        for rel in ("api/v1/nj/index.json", "api/v1/nj/" + district_files()[0]):
+            raw = rt(rel)
+            self.assertEqual(raw, json.dumps(json.loads(raw), indent=1, sort_keys=True) + "\n", rel)
+
+    def test_html_and_json_indexes_list_the_same_rows(self):
+        rows = re.findall(r'<tr><td><a href="(/api/v1/nj/\d{7}\.json)">[^<]*</a></td><td>(.*?)</td><td><a href="(/nj/[^"]+/)">', rt("api/v1/nj/index.html"))
+        doc = json.loads(rt("api/v1/nj/index.json"))
+        self.assertEqual([(u, A.html.unescape(n), p) for u, n, p in rows], [(e["url"], e["district"], e["page"]) for e in doc["files"]])
+        self.assertIn('<a href="/api/v1/nj/index.json">index.json</a>', rt("api/v1/nj/index.html"))
+
+    def test_nj_dataset_distribution_names_the_json_index(self):
+        blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', rt("nj/index.html"), re.S)
+        self.assertEqual(len(blocks), 1)
+        ds = json.loads(blocks[0])
+        self.assertEqual(ds["distribution"], {"@type": "DataDownload", "contentUrl": "/api/v1/nj/index.json", "encodingFormat": "application/json"})
+        self.assertIsInstance(json.loads(rt("api/v1/nj/index.json")), dict)  # the target parses as JSON; see also test_jsonld_content_urls.py
+
+    def test_nj_page_differs_from_web_main_by_the_content_url_only(self):
+        old = show(FIX_BASE, "nj/index.html")
+        self.assertEqual((old.count(A.JSONLD_OLD.encode()), old.count(A.JSONLD_NEW.encode())), (1, 0))
+        self.assertEqual(rb("nj/index.html"), old.replace(A.JSONLD_OLD.encode(), A.JSONLD_NEW.encode(), 1))
+
+    def test_ac24_nj_page_differs_from_history_base_by_the_history_link_and_the_content_url_only(self):
+        new = rb("nj/index.html")
+        self.assertEqual((new.count(A.JSONLD_NEW.encode()), new.count(R.nj_link().encode())), (1, 1))
+        back = new.replace(A.JSONLD_NEW.encode(), A.JSONLD_OLD.encode(), 1).replace(R.nj_link().encode(), b"", 1)
+        self.assertEqual(back, show(HISTORY_BASE, "nj/index.html"))
+
+    def test_ac23_every_history_base_path_still_exists_and_the_json_files_are_byte_identical(self):
+        paths = subprocess.run(["git", "-C", ROOT, "ls-tree", "-r", "--name-only", HISTORY_BASE], capture_output=True, check=True, text=True).stdout.splitlines()
+        self.assertEqual(len(paths), 2350)
+        self.assertEqual([p for p in paths if not os.path.isfile(os.path.join(ROOT, *p.split("/")))], [])
+        api = [p for p in paths if p.startswith("api/v1/nj/")]
+        self.assertEqual([os.path.basename(p) for p in api], district_files())
+        changed = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", HISTORY_BASE, "--", *api, "CNAME", "robots.txt"],
+                                 capture_output=True, check=True, text=True).stdout.split()
+        self.assertEqual(changed, [])
+
+    def test_nj_page_edit_is_scoped_idempotent_and_refuses_anything_else(self):
+        old, new = A.JSONLD_OLD.encode(), A.JSONLD_NEW.encode()
+        page = b'<head>{"distribution": {' + old + b', "encodingFormat": "application/json"}}</head><p>"/api/v1/nj/"</p>'
+        once = A.nj_page(page)
+        self.assertEqual(once, page.replace(old, new))
+        self.assertEqual(len(once) - len(page), len(b"index.json"))
+        self.assertEqual(A.nj_page(once), once)
+        for bad in (b"<head></head>", page + old, once + new, page + new):
+            with self.assertRaises(SystemExit):
+                A.nj_page(bad)
+
+    def test_check_fails_on_a_stale_tree_and_write_repairs_it_without_touching_the_repo(self):
+        with tempfile.TemporaryDirectory(prefix="k12-api-index-test-") as tmp:
+            paths = {"OUT": os.path.join(tmp, "index.html"), "OUT_JSON": os.path.join(tmp, "index.json"), "NJ_PAGE": os.path.join(tmp, "nj.html")}
+            with open(paths["NJ_PAGE"], "wb") as f:
+                f.write(show(FIX_BASE, "nj/index.html"))  # still has the old contentUrl
+            with mock.patch.multiple(A, **paths):
+                self.assertEqual(quiet_main(["--check"]), 1)  # all three missing or stale
+                self.assertEqual(quiet_main(["--write"]), 0)
+                self.assertEqual(quiet_main(["--check"]), 0)
+                for name, rel in (("OUT", "api/v1/nj/index.html"), ("OUT_JSON", "api/v1/nj/index.json"), ("NJ_PAGE", "nj/index.html")):
+                    with open(paths[name], "rb") as f:
+                        self.assertEqual(f.read(), rb(rel), rel)
+                with open(paths["OUT_JSON"], "w", encoding="utf-8") as f:
+                    f.write("<!doctype html>")
+                self.assertEqual(quiet_main(["--check"]), 1)
+
+    def test_no_file_changes_since_web_main_except_the_scoped_leftover_7_and_10_edits(self):
         out = subprocess.run(["git", "-C", ROOT, "diff", "--name-status", FIX_BASE], capture_output=True, check=True, text=True).stdout.splitlines()
-        allowed = re.compile(r"(style\.css|charts/d/\d{7}-mobile\.svg|docs/nj-history\.md)")
-        modified = [ln.split("\t", 1)[1] for ln in out if ln.startswith("M")]
-        self.assertEqual([p for p in modified if not allowed.fullmatch(p)], [])
-        self.assertEqual([ln for ln in out if ln[0] not in "MA"], [])
+        self.assertEqual([ln for ln in out if ln[0] not in "MA"], [])  # nothing deleted, renamed or retyped
+        modified = {ln.split("\t", 1)[1] for ln in out if ln.startswith("M")}
+        added = {ln.split("\t", 1)[1] for ln in out if ln.startswith("A")}
+        unpublished = ("docs/", "tests/", "tools/")
+        self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p)), [])
+        self.assertEqual({p for p in added if not p.startswith(unpublished)}, SITE_ADDED)
+        self.assertEqual({p for p in modified if p.startswith(unpublished)}, OTHER_MODIFIED)
+        self.assertEqual({p for p in added if p.startswith(unpublished)}, OTHER_ADDED)
 
-    def test_no_person_fields_in_index(self):
-        page = rt("api/v1/nj/index.html").lower()
-        for word in ("superintendent_name", "first_name", "last_name", "employee"):
-            self.assertNotIn(word, page)
+    def test_no_person_fields_in_either_index(self):
+        for rel in ("api/v1/nj/index.html", "api/v1/nj/index.json"):
+            page = rt(rel).lower()
+            for word in ("superintendent_name", "first_name", "last_name", "employee", "salary", "contract"):
+                if word in ("salary", "contract") and rel.endswith(".html"):
+                    continue  # the page's one sentence says what the files hold
+                self.assertNotIn(word, page, (rel, word))
 
 
 if __name__ == "__main__":

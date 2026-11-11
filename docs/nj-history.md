@@ -35,7 +35,9 @@
 `--out` must be a new or empty directory outside the repo (the existing tests glob the repo tree for pages). After this follow-up the working tree is no longer a
 fresh unbuilt site (the history pages are committed in place), so the default `--site .` fails with "page already carries the history section". `--site` must be a
 `git archive` of base commit `3b50ce10b88e80188e6c8265634b68b482c1a81f` (the `BASE_COMMIT` constant in `tests/nj_history_helpers.py`). The committed pages are
-the output of exactly that build; `tests/test_nj_history_committed.py` checks them byte for byte. The statewide CSV is committed at
+the output of exactly that build; `tests/test_nj_history_committed.py` checks them byte for byte, with one named exception: the committed
+`/nj/index.html` carries the leftover 10 `contentUrl` edit (one exact substitution, `SCOPED_EDITS` in that test; see "Follow-up fixes"). After copying a
+fresh build in place, run `python3 tools/nj_api_index.py --write` to put that edit back. The statewide CSV is committed at
 `data/nj/nj-district-staff-history.csv` (so Pages can serve it) and is also written to `--out`; the test checks the committed copy against that build.
 The build tool does not publish; a merge to `main` does (see Release guard).
 
@@ -74,7 +76,9 @@ regenerates the tables and `pin.json`. Recheck the snapshot date and coverage in
 - Unchanged: `robots.txt`, `CNAME`, the 586 `/api/v1/nj/*.json` files, and every other file.
 
 AC 24: removing the history section and the `ld-nj-history` block leaves each district page byte-identical to k12comp-web 3b50ce1; `/nj/` differs
-only by the one added link paragraph, `/about/` only by the appended section. There is no other normalisation (no id stripping).
+only by the one added link paragraph, `/about/` only by the appended section. There is no other normalisation (no id stripping). That is the build
+output, and `tests/test_nj_history.py` still checks it unchanged. The committed `/nj/index.html` has one more difference, made after the build: its
+Dataset `contentUrl` (leftover 10, below). The committed tree also has two new files under `/api/v1/nj/` (`index.html`, `index.json`); the 586 district JSON files are byte-identical.
 
 ## Data rules
 
@@ -135,10 +139,12 @@ pre-deploy-check PASS and Fred's go relayed by chief. Before that the work exist
 - On the box, `guard.sh` (`guarded_push`) and `prepush-scan --base origin/main` still apply to every push.
 - A merge to `main` publishes the committed tree to k12comp.com via GitHub Pages (legacy Jekyll). `release-build.yml` only builds an artifact and does not publish. Merge and publish still need the gates above and Fred's go.
 
-## Follow-up fixes outside the history build (leftovers 7 and 10, rewake 2026-11-11)
+## Follow-up fixes outside the history build (leftovers 7 and 10, 2026-11-11)
 
-These change committed site files that the history build copies unchanged from base `3b50ce10`; the build, its pin and its tests are untouched
-(AC 23/24 still compare the build output with `3b50ce10`). They start from web main `a41b5838`. Visible on the site: yes (Lucille 2 narrative review before merge).
+These change committed site files after the history build; the build, its pin and its own tests (`tests/test_nj_history.py`, AC 23/24 against
+`3b50ce10`) are untouched. They start from web main `a41b5838`. Visible on the site: yes (leftover 7 and the new `/api/v1/nj/` page; Lucille 2 narrative review before merge).
+The CI and release artifacts are still built from base `3b50ce10` alone, so they do not carry these fixes; the published site is the committed tree
+(a merge to `main`), which does. The release guard and both workflows are unchanged and still fail closed.
 
 - **Leftover 7a, guide tables at 336/390 px.** The site-wide `overflow-wrap:anywhere` on `body` let guide-table cells shrink to one digit per line.
   One added `style.css` line, mobile only: `.grid th` (column and step headers) and `.grid td.num` get `white-space:nowrap`, so the
@@ -147,9 +153,24 @@ These change committed site files that the history build copies unchanged from b
   that misfit their 390 px box: an end-value label whose estimated right edge passes x=384 is right-aligned at x=384 and set 10 px above its dot
   (below it when the line comes down into the dot); a year label that overlaps the final year's label is dropped (first and final years always stay;
   the alt text still lists every year and value). Lines, dots, gridlines, y labels, alt text and the desktop SVGs are unchanged. `--check` exits 1 on any misfit; re-running `--write` changes nothing.
-- **Leftover 10, `/api/v1/nj/` JSON-LD.** `/nj/index.html` (a pinned build output, not edited) names `/api/v1/nj/` as its Dataset `contentUrl`,
-  which was a 404. `tools/nj_api_index.py --write` adds `api/v1/nj/index.html`: one row per JSON file (586) with the file link, the file's own
-  `district` value and a link to the district page, in the site header and footer. It is not added to `sitemap.xml` (a build output). `--check` exits 1 if it is stale.
-  The Dataset still says `encodingFormat: application/json` while the index itself is HTML that links the JSON files; changing that needs an `/nj/` edit, out of scope here.
-- Tests: `tests/test_nj_leftovers_7_10.py` (no data repo needed) checks the CSS line, every mobile chart against the fit rules, idempotence,
-  that only labels moved (values, first and final years unchanged), that no desktop chart changed, the index is fresh and complete, and that no other committed file changed since `a41b5838`.
+- **Leftover 10, the `/nj/` Dataset JSON-LD.** `/nj/index.html` named `/api/v1/nj/` as its Dataset `contentUrl` with `encodingFormat: application/json`.
+  That URL was a 404. A first fix (commit `d501474`) put an HTML index there, which made the URL resolve but left the metadata saying JSON about an HTML page.
+  `tools/nj_api_index.py --write` now writes three things, and `--check` exits 1 if any is missing or stale:
+  - `api/v1/nj/index.json`: `{count, description, files: [{district, nces_leaid, page, url}], license, state}`, one entry per district JSON file (586),
+    each `district` and `nces_leaid` read from that file, written like the district files (indent 1, sorted keys, final newline). No person field.
+  - `api/v1/nj/index.html`: the same list as a page for people, in the site header and footer, with a link to `index.json`. No metadata calls this page JSON.
+  - `/nj/index.html`: one scoped edit. `"contentUrl": "/api/v1/nj/"` becomes `"contentUrl": "/api/v1/nj/index.json"`; `encodingFormat` stays `application/json`.
+    Nothing else on the page changes. The tool refuses to edit unless it finds that text exactly once. The generator and the history build are not changed:
+    the build still writes the old value, so `tests/test_nj_history_committed.py` expects the committed page to equal the build output with exactly this
+    substitution (`SCOPED_EDITS`), and every other committed file to equal it byte for byte.
+  Neither index file is added to `sitemap.xml` or `llms.txt` (build outputs).
+- **JSON-LD check.** `python3 tools/jsonld_content_urls.py` walks every JSON-LD block of every published page (594 pages, 1,173 blocks). For each
+  `contentUrl` whose `encodingFormat` is `application/json` (1, the `/nj/` Dataset) or `text/csv` (586, the history Datasets) it finds the file GitHub Pages
+  would serve, and requires that it exists, is published, has the matching extension (a directory URL is `index.html`, so it fails) and parses.
+  It reads from disk only: root-relative, page-relative and `https://k12comp.com/` URLs are mapped to files; a URL on any other host is a failure, not a fetch. Exit 1 on any problem.
+- Tests (no data repo needed): `tests/test_nj_leftovers_7_10.py` checks the CSS line, every mobile chart against the fit rules, idempotence,
+  that only labels moved (values, first and final years unchanged), that no desktop chart changed, both index files are fresh, complete and agree with each
+  district file, that `/nj/index.html` differs from `a41b5838` by the `contentUrl` only and from `3b50ce10` by that and the history link only, that every
+  `3b50ce10` path still exists, and that nothing else changed since `a41b5838` (explicit lists, no pattern wider than the mobile chart names).
+  `tests/test_jsonld_content_urls.py` runs the JSON-LD check on the committed tree and on small bad sites: missing target, directory URL with an HTML index
+  (the first fix), HTML under a `.json` name, JSON under an `.html` name, truncated JSON, another host, a path above the site root, an unpublished path. It fails if anything opens a network socket.
