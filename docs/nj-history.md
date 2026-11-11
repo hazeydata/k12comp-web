@@ -252,7 +252,7 @@ size is font units x ancestor transform scale x content width / viewBox width. T
   change the layout, restore the original from git and re-run. Title, subtitle and source note keep their words and are rewrapped (title 13 units
   bold, everything else 12). The two outlier notes move clear of the stems (`OUTLIERS`). "Newark City / $330,978" keeps its line breaks.
   "Hampton Twp / $56,225" goes one word per line, left-aligned near the first low-tail stem and just below the "20" tick level, at least
-  6 units clear of the "20" label (PR #6 review fix 1). As two lines, "Hampton Twp" would run into the $120-130k stems there. The plot is
+  6 units clear of the "20" label (PR #6 review fix 1). As two lines, "Hampton Twp" would run into the $140-160k stems there. The plot is
   only translated (`translate(8 dy)`), never scaled. The viewBox is 304 x 507.5, so the chart renders 507.5 px tall at 304 (was 405).
   Nothing moved to HTML, so no wording went to Lindsay.
 - Tests: `tests/test_k12_chart_mobile_text.py` (no data repo needed). The gate passes on the tree and reproduces the PR #5 review's browser counts

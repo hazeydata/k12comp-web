@@ -303,7 +303,7 @@ GROUP_TEXT = re.compile(r'(<g id="(text_1[1-5])">\n)(.*?)(\n {2,3}</g>)', re.S)
 LINE_TEXT = re.compile(r'<text style="([^"]*)" transform="translate\([\d.]+ [\d.]+\)">([^<]*)</text>')
 # Outlier notes in plot coordinates: (x, anchor, first baseline, baseline step, wrap width or None to keep matplotlib's lines). Chosen clear
 # of every stem and dot (tests check the boxes). Hampton Twp sits over the low tail it names, left-aligned near its first stem and below
-# the "20" tick row: two lines would run into the stems at $120-130k there, so its words go one per line.
+# the "20" tick row: two lines would run into the stems at $140-160k there, so its words go one per line.
 OUTLIERS = {"text_11": (45.0, "start", 258.1, 13, 52), "text_12": (292.0, "end", 245.0, 14, None)}
 
 
