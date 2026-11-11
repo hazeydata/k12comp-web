@@ -134,3 +134,22 @@ pre-deploy-check PASS and Fred's go relayed by chief. Before that the work exist
   step if `K12_DATA_READ_TOKEN` (and, for the release build, `K12_RELEASE_GATES`) is not set. `K12_DATA_READ_TOKEN` is now a repo secret; `K12_RELEASE_GATES` is still filled by chief at release time.
 - On the box, `guard.sh` (`guarded_push`) and `prepush-scan --base origin/main` still apply to every push.
 - A merge to `main` publishes the committed tree to k12comp.com via GitHub Pages (legacy Jekyll). `release-build.yml` only builds an artifact and does not publish. Merge and publish still need the gates above and Fred's go.
+
+## Follow-up fixes outside the history build (leftovers 7 and 10, rewake 2026-11-11)
+
+These change committed site files that the history build copies unchanged from base `3b50ce10`; the build, its pin and its tests are untouched
+(AC 23/24 still compare the build output with `3b50ce10`). They start from web main `a41b5838`. Visible on the site: yes (Lucille 2 narrative review before merge).
+
+- **Leftover 7a, guide tables at 336/390 px.** The site-wide `overflow-wrap:anywhere` on `body` let guide-table cells shrink to one digit per line.
+  One added `style.css` line, mobile only: `.grid th` (column and step headers) and `.grid td.num` get `white-space:nowrap`, so the
+  table scrolls sideways inside its existing focusable `.table-wrap` region. Only the 8 district pages with guide tables (`section.grid`) are affected.
+- **Leftover 7b, "Base salary by year" mobile charts.** `tools/nj_mobile_chart_fit.py --write` rewrote the 572 of 573 `charts/d/<leaid>-mobile.svg`
+  that misfit their 390 px box: an end-value label whose estimated right edge passes x=384 is right-aligned at x=384 and set 10 px above its dot
+  (below it when the line comes down into the dot); a year label that overlaps the final year's label is dropped (first and final years always stay;
+  the alt text still lists every year and value). Lines, dots, gridlines, y labels, alt text and the desktop SVGs are unchanged. `--check` exits 1 on any misfit; re-running `--write` changes nothing.
+- **Leftover 10, `/api/v1/nj/` JSON-LD.** `/nj/index.html` (a pinned build output, not edited) names `/api/v1/nj/` as its Dataset `contentUrl`,
+  which was a 404. `tools/nj_api_index.py --write` adds `api/v1/nj/index.html`: one row per JSON file (586) with the file link, the file's own
+  `district` value and a link to the district page, in the site header and footer. It is not added to `sitemap.xml` (a build output). `--check` exits 1 if it is stale.
+  The Dataset still says `encodingFormat: application/json` while the index itself is HTML that links the JSON files; changing that needs an `/nj/` edit, out of scope here.
+- Tests: `tests/test_nj_leftovers_7_10.py` (no data repo needed) checks the CSS line, every mobile chart against the fit rules, idempotence,
+  that only labels moved (values, first and final years unchanged), that no desktop chart changed, the index is fresh and complete, and that no other committed file changed since `a41b5838`.
