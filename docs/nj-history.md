@@ -237,17 +237,28 @@ size is font units x ancestor transform scale x content width / viewBox width. T
   axis range (the desktop's first to last year slot). The desktop has one slot per source year, so in 34 charts where the source skips a year the
   desktop spaces years unevenly; it is byte-frozen and keeps that. Value labels take the first spot, in a fixed order, that stays inside the plot,
   clears every dot, line and other label, and is no nearer another dot than its own (`place_value`).
+- **Value-label leaders and early last dots (PR #6 review, fixes 2 and 3).** A value label more than 20 units from its dot (nearest point of
+  its box to the dot's centre) gets a leader: a #999 line, 0.75 wide, no arrowhead, from that nearest box edge to the dot, drawn under the
+  dots. Nearer labels get none. The rule is generic (8 charts have one: 3403930, 3405550, 3406870, 3410320, 3411280, 3411310, 3412390,
+  3414880). When the labelled dot is not at the rightmost year slot, the years to its right are empty, so the label is never right-aligned
+  at the plot edge: it goes level 8 units right of the dot, else start-aligned 6 units right of it, above or below (6 charts; 3414220's
+  $20,000 now starts at x=214 beside its 2024-25 dot at x=208). `--check` fails on a missing, extra or misplaced leader and on a label
+  right-aligned past such a dot.
 - **Year labels (review-web5-r1 nit).** One rule: the latest axis year, then every k-th year counting back from it, k the smallest whole step
   whose label pitch is at least one label width plus 6 units. On an 8-year axis that is 2020-21, 2022-23, 2024-25, 2026-27. The labels are evenly
   spaced because the years they mark are; the first year is labelled only when it falls on the step. No plotted position moves. The visible
   figcaption and the alt text list every year and value.
 - **NJ distribution.** `--write` reflows the original matplotlib SVG once, inside the SVG. A file already in the 304 viewBox is left alone, so to
   change the layout, restore the original from git and re-run. Title, subtitle and source note keep their words and are rewrapped (title 13 units
-  bold, everything else 12). The two outlier notes move clear of the stems; their line breaks are unchanged. The plot is only translated
-  (`translate(8 dy)`), never scaled. The viewBox is 304 x 507.5, so the chart renders 507.5 px tall at 304 (was 405). Nothing moved to HTML, so no
-  wording went to Lindsay.
+  bold, everything else 12). The two outlier notes move clear of the stems (`OUTLIERS`). "Newark City / $330,978" keeps its line breaks.
+  "Hampton Twp / $56,225" goes one word per line, left-aligned near the first low-tail stem and just below the "20" tick level, at least
+  6 units clear of the "20" label (PR #6 review fix 1). As two lines, "Hampton Twp" would run into the $120-130k stems there. The plot is
+  only translated (`translate(8 dy)`), never scaled. The viewBox is 304 x 507.5, so the chart renders 507.5 px tall at 304 (was 405).
+  Nothing moved to HTML, so no wording went to Lindsay.
 - Tests: `tests/test_k12_chart_mobile_text.py` (no data repo needed). The gate passes on the tree and reproduces the PR #5 review's browser counts
   at base. `--write` on the base SVGs gives the committed ones. Each district's dot years equal its page's alt text, at true positions. Heights,
-  values, lines and gridlines are kept, and lines join the same dots. The year-label rule holds. NJ words are verbatim and its marks are only
-  translated. Its text stays inside the viewBox, clear of stems, dots and other text. Only the in-scope mobile SVGs change on the site, and desktop
-  charts equal web main.
+  values, lines and gridlines are kept, and lines join the same dots. The year-label rule holds. Every label more than 20 units from its dot
+  has exactly one leader joining its box edge and the dot, and nearer labels have none. A label whose dot is before the last year slot starts
+  6 to 8 units right of it. NJ words are verbatim and its marks are only translated. Its text stays inside the viewBox, clear of stems, dots
+  and other text, and the Hampton note is at least 6 units from every tick label. Only the in-scope mobile SVGs change on the site, and
+  desktop charts equal web main.
