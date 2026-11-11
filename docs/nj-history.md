@@ -154,6 +154,7 @@ The CI and release artifacts are still built from base `3b50ce10` alone, so they
   that misfit their 390 px box: an end-value label whose estimated right edge passes x=384 is right-aligned at x=384 and set 10 px above its dot
   (below it when the line comes down into the dot); a year label that overlaps the final year's label is dropped (first and final years always stay;
   the alt text still lists every year and value). Lines, dots, gridlines, y labels, alt text and the desktop SVGs are unchanged. `--check` exits 1 on any misfit; re-running `--write` changes nothing.
+  Superseded by K12-CHART-MOBILE-TEXT-001 (section at the end): the same tool now redraws these charts in a 304-unit viewBox.
 - **Leftover 10, the `/nj/` Dataset JSON-LD.** `/nj/index.html` named `/api/v1/nj/` as its Dataset `contentUrl` with `encodingFormat: application/json`.
   That URL was a 404. A first fix (commit `d501474`) put an HTML index there, which made the URL resolve but left the metadata saying JSON about an HTML page.
   `tools/nj_api_index.py --write` now writes three things, and `--check` exits 1 if any is missing or stale:
@@ -170,7 +171,7 @@ The CI and release artifacts are still built from base `3b50ce10` alone, so they
   would serve, and requires that it exists, is published, has the matching extension (a directory URL is `index.html`, so it fails) and parses.
   It reads from disk only: root-relative, page-relative and `https://k12comp.com/` URLs are mapped to files; a URL on any other host is a failure, not a fetch. Exit 1 on any problem.
 - Tests (no data repo needed): `tests/test_nj_leftovers_7_10.py` checks the CSS line, every mobile chart against the fit rules, idempotence,
-  that only labels moved (values, first and final years unchanged), that no desktop chart changed, both index files are fresh, complete and agree with each
+  that values and dot heights stay (K12-CHART-MOBILE-TEXT-001 now redraws x), that no desktop chart changed, both index files are fresh, complete and agree with each
   district file, that `/nj/index.html` differs from `a41b5838` by the `contentUrl` only and from `3b50ce10` by that and the history link only, that every
   `3b50ce10` path still exists, and that nothing else changed since `a41b5838` (explicit lists, no pattern wider than the mobile chart names;
   the PR #5 fix list adds its 8 guide pages by exact path and its four new files).
@@ -220,3 +221,33 @@ instead of the site-wide `anywhere`), and uses 6 px cell padding with none on th
 columns fit the 304 px column at 336 px. `index.json`, `/nj/index.html`, the rows and their text are unchanged; desktop is unchanged.
 `tests/test_nj_api_index_browser.py` (same local-Chrome setup as the guide test, skipped without it) checks at 336, 390 and 1280 px: all 586
 file names whole on one line with a 44 px link, no cell broken inside a word, no page-level sideways scroll, and the table inside the content column.
+
+## K12-CHART-MOBILE-TEXT-001: readable mobile chart text (2026-11-11)
+
+`figure.chart img` is `width:100%`, so a mobile SVG renders at the content width: 304 px at a 336 px viewport, 358 px at 390. Effective text
+size is font units x ancestor transform scale x content width / viewBox width. The district charts (390-unit viewBox, 12/14-unit text) gave
+9.35/10.91 px at 304; the `/nj/` distribution (matplotlib, 280.8-unit viewBox, 6 to 11-unit text) gave 6.50 px. No CSS change.
+- **Gate.** `python3 tools/nj_mobile_chart_fit.py --check` measures every text node of the 573 district mobile charts and the `/nj/` distribution
+  mobile chart at 304 and 358 px content (`CONTENT_PX`) and exits 1 on any node under 12 px, listing each chart with its count and smallest size,
+  then the chart count and the nodes under 12 px. The box-fit checks still run, retargeted to the new geometry, and also fail on a value label
+  that covers a dot or line or sits nearer another dot than its own.
+- **District charts.** `--write` redraws each `charts/d/<leaid>-mobile.svg` in a 304-unit viewBox (1 unit = 1 CSS px at 336) from itself and its
+  desktop twin, which it reads only. Kept byte for byte: every y coordinate, label text, colour, the `<style>` block (12-unit text, 14-unit bold
+  values) and the height. The plot runs from x=48 to x=272. Each dot sits at its true school-year position, linear in the start year over the
+  axis range (the desktop's first to last year slot). The desktop has one slot per source year, so in 34 charts where the source skips a year the
+  desktop spaces years unevenly; it is byte-frozen and keeps that. Value labels take the first spot, in a fixed order, that stays inside the plot,
+  clears every dot, line and other label, and is no nearer another dot than its own (`place_value`).
+- **Year labels (review-web5-r1 nit).** One rule: the latest axis year, then every k-th year counting back from it, k the smallest whole step
+  whose label pitch is at least one label width plus 6 units. On an 8-year axis that is 2020-21, 2022-23, 2024-25, 2026-27. The labels are evenly
+  spaced because the years they mark are; the first year is labelled only when it falls on the step. No plotted position moves. The visible
+  figcaption and the alt text list every year and value.
+- **NJ distribution.** `--write` reflows the original matplotlib SVG once, inside the SVG. A file already in the 304 viewBox is left alone, so to
+  change the layout, restore the original from git and re-run. Title, subtitle and source note keep their words and are rewrapped (title 13 units
+  bold, everything else 12). The two outlier notes move clear of the stems; their line breaks are unchanged. The plot is only translated
+  (`translate(8 dy)`), never scaled. The viewBox is 304 x 507.5, so the chart renders 507.5 px tall at 304 (was 405). Nothing moved to HTML, so no
+  wording went to Lindsay.
+- Tests: `tests/test_k12_chart_mobile_text.py` (no data repo needed). The gate passes on the tree and reproduces the PR #5 review's browser counts
+  at base. `--write` on the base SVGs gives the committed ones. Each district's dot years equal its page's alt text, at true positions. Heights,
+  values, lines and gridlines are kept, and lines join the same dots. The year-label rule holds. NJ words are verbatim and its marks are only
+  translated. Its text stays inside the viewBox, clear of stems, dots and other text. Only the in-scope mobile SVGs change on the site, and desktop
+  charts equal web main.
