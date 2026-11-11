@@ -17,7 +17,12 @@ each from itself and its desktop twin (<leaid>-desktop.svg, read only):
   - a value label takes the first spot, in a fixed order (`place_value`), that stays inside the plot, clears every dot, line and other
     value label, and is no nearer another dot than its own: 8 units right of its dot; else right-aligned at MOBILE_W - MARGIN, LIFT above
     or below the dot (the side the incoming line is not on first); then beside or left of the dot; then right-aligned further out.
-    `--check` fails on any label that covers a mark or sits nearer another dot.
+    A dot before the last year slot has empty years to its right, so its label is never right-aligned at the edge: those spots become
+    start-aligned NEAR (6) units right of the dot, above or below it;
+  - a value label more than LEADER_OVER (20) units from its dot (nearest point of its box to the dot's centre) gets a leader: a #999,
+    0.75-wide line, no arrowhead, from that nearest point to the dot's centre, drawn under the dots. Nearer labels get none.
+    `--check` fails on any label that covers a mark or sits nearer another dot, on a missing, extra or misplaced leader, and on a label
+    right-aligned past a dot that is not at the last year slot.
 NJ distribution (charts/chart3-nj-salary-distribution-mobile.svg, matplotlib output, no generator in this repo): `--write` reflows the
 original once (a file already in the 304-unit viewBox is left alone). Title, subtitle and source note keep their words verbatim and are
 rewrapped at 13 (title, bold) and 12 units; tick, axis and note labels become 12 units; the two outlier notes move clear of the stems.
@@ -43,6 +48,9 @@ MOBILE_W = 304  # viewBox width of the mobile charts: the content width at a 336
 PLOT_L, PLOT_R = 48, 272  # first and last year of the axis; PLOT_R + half a year label + MARGIN stays inside MOBILE_W
 YLABEL_X = PLOT_L - 8
 MARGIN, TICK_GAP, LIFT = 6, 6, 10
+NEAR = 6  # a label beside a dot that is not at the last year slot starts this far right of it (above or below; level is x + 8)
+LEADER_OVER = 20  # a value label farther than this from its dot gets a leader line
+LEADER = 'stroke="#999" stroke-width="0.75"'
 PLOT_BOTTOM = 256  # x-axis line at y=260; a label below its dot must stay above it
 DISTRIBUTION = os.path.join(ROOT, "charts", "chart3-nj-salary-distribution-mobile.svg")  # the /nj/ histogram, also gated for text size
 CONTENT_PX = (304, 358)  # rendered chart width at a 336 and a 390 px viewport (16 px page padding each side); spec D2
@@ -61,12 +69,14 @@ DISTRICT = re.compile(
     r'<line x1="[\d.]+" x2="[\d.]+" y1="260" y2="260" stroke="#999999"/>'
     r'(?P<ticks>(?:<text x="[\d.]+" y="284" text-anchor="middle">[^<]*</text>)*)'
     r'(?P<lines>(?:<polyline fill="none" stroke="#458699" stroke-width="3" points="[^"]*"/>)*)'
+    r'(?P<leaders>(?:<line x1="[\d.]+" y1="[\d.]+" x2="[\d.]+" y2="[\d.]+" ' + LEADER + r'/>)*)'
     r'(?P<dots>(?:<circle cx="[\d.]+" cy="[\d.]+" r="4" fill="#458699"/>)*)'
     r'(?P<values>(?:<text class="v" x="[\d.]+" y="[\d.]+"(?: text-anchor="end")?>[^<]*</text>)*)</svg>\Z')
 GRID = re.compile(r'<line x1="[\d.]+" x2="[\d.]+" y1="([\d.]+)" y2="([\d.]+)" stroke="#e3e6ea"/><text x="[\d.]+" y="([\d.]+)" text-anchor="end">([^<]*)</text>')
 POLYLINE = re.compile(r'points="([^"]*)"')
 DESKTOP_TICK = re.compile(r'<text x="([\d.]+)" y="304" text-anchor="middle">(\d{4})-\d\d</text>')
 DESKTOP_DOT = re.compile(r'<circle cx="([\d.]+)" cy="([\d.]+)" r="4"')
+LEADER_LINE = re.compile(r'<line x1="([\d.]+)" y1="([\d.]+)" x2="([\d.]+)" y2="([\d.]+)" ' + LEADER + r'/>')
 DESKTOP_VALUE = re.compile(r'<text class="v" x="([\d.]+)" y="([\d.]+)"(?: text-anchor="end")?>([^<]*)</text>')
 
 
@@ -117,10 +127,17 @@ def problems(svg, desktop=None):
         if float(m.group(2)) > PLOT_BOTTOM or float(m.group(2)) < VALUE_PX:
             out.append(f"value label {m.group(4)!r} leaves the plot")
     if desktop is not None:
+        leaders = []
         for (_, owner), m in zip(value_owners(desktop), VALUE.finditer(svg)):
             box = value_box(float(m.group(1)), bool(m.group(3)), float(m.group(2)), m.group(4))
             if nearer_dot(box, dots[owner], dots):
                 out.append(f"value label {m.group(4)!r} sits nearer another dot than its own")
+            if box_distance(box, dots[owner]) > LEADER_OVER:
+                leaders.append(leader(box, dots[owner]))
+            if dots[owner][0] < PLOT_R - 0.5 and m.group(3) and float(m.group(1)) > dots[owner][0]:
+                out.append(f"value label {m.group(4)!r} is right-aligned over the empty years after its dot")
+        if LEADER_LINE.findall(svg) != [LEADER_LINE.match(ln).groups() for ln in leaders]:
+            out.append(f"leader lines do not match the value labels more than {LEADER_OVER} units from their dot")
     ticks = [(float(x), t) for x, t in TICK.findall(svg)]
     out += [f"year labels {a[1]} and {b[1]} overlap" for a, b in zip(ticks, ticks[1:]) if tick_overlaps(a, b)]
     out += [f"year label {t} runs past the edge" for x, t in ticks if x - width_of(t, TICK_PX) / 2 < 0 or x + width_of(t, TICK_PX) / 2 > w]
@@ -170,18 +187,20 @@ def place_value(text, dot, dots, segments, placed):
     """(x, anchor_end, baseline) of a value label: the first candidate inside the plot that clears every dot, line and earlier label.
     Order: beside the dot (x + 8); right-aligned at MOBILE_W - MARGIN, LIFT above the dot, then below it (below first when the line comes
     down into the dot); beside, above then below; left of the dot (x - 8), level, above, below; then right-aligned, 4 units further out each
-    try, above and below in turn. A candidate also has to be nearer its own dot than any other dot. If nothing qualifies, the first candidate
-    inside the plot (the gate then reports the collision)."""
+    try, above and below in turn. A dot before the last year slot (PLOT_R) has empty years to its right, so its label is never right-aligned
+    at the edge: every right-aligned try becomes start-aligned NEAR units right of the dot. A candidate also has to be nearer its own dot
+    than any other dot. If nothing qualifies, the first candidate inside the plot (the gate then reports the collision)."""
     cx, cy = dot
     prev = [d for d in dots if d[0] < cx]
     above, below = cy - LIFT, cy + LIFT + VALUE_PX
-    right = [(MOBILE_W - MARGIN, True, above), (MOBILE_W - MARGIN, True, below)]
+    side = (MOBILE_W - MARGIN, True) if cx >= PLOT_R - 0.5 else (cx + NEAR, False)
+    right = [(*side, above), (*side, below)]
     if bool(prev) and max(prev)[1] < cy:
         right.reverse()
     tries = ([(cx + 8, False, cy + 5)] + right + [(cx + 8, False, above), (cx + 8, False, below)]
              + [(cx - 8, True, y) for y in (cy + 5, above, below)])
     for k in range(1, 40):
-        tries += [(MOBILE_W - MARGIN, True, above - 4 * k), (MOBILE_W - MARGIN, True, below + 4 * k)]
+        tries += [(*side, above - 4 * k), (*side, below + 4 * k)]
     inside = [t for t in tries if t[2] >= VALUE_PX and t[2] <= PLOT_BOTTOM and value_box(*t, text)[0] >= 0
               and value_box(*t, text)[2] <= MOBILE_W - MARGIN + 0.01]
     for t in inside:
@@ -191,12 +210,22 @@ def place_value(text, dot, dots, segments, placed):
     return inside[0]
 
 
+def box_distance(box, dot):
+    """Distance from a dot's centre to the nearest point of a label box (0 inside it)."""
+    return math.hypot(max(box[0] - dot[0], 0, dot[0] - box[2]), max(box[1] - dot[1], 0, dot[1] - box[3]))
+
+
 def nearer_dot(box, own, dots):
     """True when another dot is nearer the label box than its own dot (by more than half a unit; equal values tie), so a label never
     reads as another point's."""
-    def dist(d):
-        return math.hypot(max(box[0] - d[0], 0, d[0] - box[2]), max(box[1] - d[1], 0, d[1] - box[3]))
-    return any(dist(d) < dist(own) - 0.5 for d in dots)
+    return any(box_distance(box, d) < box_distance(box, own) - 0.5 for d in dots)
+
+
+def leader(box, dot):
+    """Leader line from the point of the label box nearest the dot to the dot's centre; drawn under the dots, so it shows from the label
+    edge to the dot's rim."""
+    x, y = min(max(dot[0], box[0]), box[2]), min(max(dot[1], box[1]), box[3])
+    return f'<line x1="{x:.1f}" y1="{y:.1f}" x2="{dot[0]:.1f}" y2="{dot[1]:.1f}" {LEADER}/>'
 
 
 def value_owners(desktop):
@@ -241,17 +270,22 @@ def fit(svg, desktop):
             cx, cy = p.split(",")
             moved.append(f"{new_x[where[(cx, cy)]]},{cy}")
         out.append(f'<polyline fill="none" stroke="#458699" stroke-width="3" points="{" ".join(moved)}"/>')
-    out += [f'<circle cx="{new_x[i]}" cy="{cy}" r="4" fill="#458699"/>' for i, (_, cy) in enumerate(old_dots)]
 
     values = value_owners(desktop)
     if [v[0] for v in values] != [v[3] for v in VALUE.findall(m.group("values"))]:
         raise ValueError("mobile and desktop value labels differ")
     segments = [seg for pl in out if pl.startswith("<polyline") for seg in polyline_segments(pl)]
-    placed = []
+    placed, labels, leaders = [], [], []
     for text, i in values:
         x, end, y = place_value(text, dots[i], dots, segments, placed)
+        x, y = round(x, 1), round(y, 1)  # as written, so the leader meets the label the gate reads back
         placed.append(value_box(x, end, y, text))
-        out.append(f'<text class="v" x="{x:.1f}" y="{y:.1f}" text-anchor="end">{text}</text>' if end else f'<text class="v" x="{x:.1f}" y="{y:.1f}">{text}</text>')
+        if box_distance(placed[-1], dots[i]) > LEADER_OVER:
+            leaders.append(leader(placed[-1], dots[i]))
+        labels.append(f'<text class="v" x="{x:.1f}" y="{y:.1f}" text-anchor="end">{text}</text>' if end else f'<text class="v" x="{x:.1f}" y="{y:.1f}">{text}</text>')
+    out += leaders  # under the dots, over the line
+    out += [f'<circle cx="{new_x[i]}" cy="{cy}" r="4" fill="#458699"/>' for i, (_, cy) in enumerate(old_dots)]
+    out += labels
     return "".join(out) + "</svg>"
 
 
