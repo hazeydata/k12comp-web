@@ -35,7 +35,9 @@
 `--out` must be a new or empty directory outside the repo (the existing tests glob the repo tree for pages). After this follow-up the working tree is no longer a
 fresh unbuilt site (the history pages are committed in place), so the default `--site .` fails with "page already carries the history section". `--site` must be a
 `git archive` of base commit `3b50ce10b88e80188e6c8265634b68b482c1a81f` (the `BASE_COMMIT` constant in `tests/nj_history_helpers.py`). The committed pages are
-the output of exactly that build; `tests/test_nj_history_committed.py` checks them byte for byte. The statewide CSV is committed at
+the output of exactly that build; `tests/test_nj_history_committed.py` checks them byte for byte, with one named exception: the committed
+`/nj/index.html` carries the leftover 10 `contentUrl` edit (one exact substitution, `SCOPED_EDITS` in that test; see "Follow-up fixes"). After copying a
+fresh build in place, run `python3 tools/nj_api_index.py --write` to put that edit back. The statewide CSV is committed at
 `data/nj/nj-district-staff-history.csv` (so Pages can serve it) and is also written to `--out`; the test checks the committed copy against that build.
 The build tool does not publish; a merge to `main` does (see Release guard).
 
@@ -74,7 +76,9 @@ regenerates the tables and `pin.json`. Recheck the snapshot date and coverage in
 - Unchanged: `robots.txt`, `CNAME`, the 586 `/api/v1/nj/*.json` files, and every other file.
 
 AC 24: removing the history section and the `ld-nj-history` block leaves each district page byte-identical to k12comp-web 3b50ce1; `/nj/` differs
-only by the one added link paragraph, `/about/` only by the appended section. There is no other normalisation (no id stripping).
+only by the one added link paragraph, `/about/` only by the appended section. There is no other normalisation (no id stripping). That is the build
+output, and `tests/test_nj_history.py` still checks it unchanged. The committed `/nj/index.html` has one more difference, made after the build: its
+Dataset `contentUrl` (leftover 10, below). The committed tree also has two new files under `/api/v1/nj/` (`index.html`, `index.json`); the 586 district JSON files are byte-identical.
 
 ## Data rules
 
@@ -134,3 +138,85 @@ pre-deploy-check PASS and Fred's go relayed by chief. Before that the work exist
   step if `K12_DATA_READ_TOKEN` (and, for the release build, `K12_RELEASE_GATES`) is not set. `K12_DATA_READ_TOKEN` is now a repo secret; `K12_RELEASE_GATES` is still filled by chief at release time.
 - On the box, `guard.sh` (`guarded_push`) and `prepush-scan --base origin/main` still apply to every push.
 - A merge to `main` publishes the committed tree to k12comp.com via GitHub Pages (legacy Jekyll). `release-build.yml` only builds an artifact and does not publish. Merge and publish still need the gates above and Fred's go.
+
+## Follow-up fixes outside the history build (leftovers 7 and 10, 2026-11-11)
+
+These change committed site files after the history build; the build, its pin and its own tests (`tests/test_nj_history.py`, AC 23/24 against
+`3b50ce10`) are untouched. They start from web main `a41b5838`. Visible on the site: yes (leftover 7 and the new `/api/v1/nj/` page; Lucille 2 narrative review before merge).
+The CI and release artifacts are still built from base `3b50ce10` alone, so they do not carry these fixes; the published site is the committed tree
+(a merge to `main`), which does. The release guard and both workflows are unchanged and still fail closed.
+
+- **Leftover 7a, guide tables at 336/390 px.** The site-wide `overflow-wrap:anywhere` on `body` let guide-table cells shrink to one digit per line.
+  One added `style.css` line, mobile only: `.grid th` (column and step headers) and `.grid td.num` get `white-space:nowrap`, so the
+  table scrolls sideways inside its existing focusable `.table-wrap` region. Only the 8 district pages with guide tables (`section.grid`) are affected.
+  PR #5 fix 1 (section below) keeps a native sr-only caption at every width, and adds the swipe cue and the sticky Step column.
+- **Leftover 7b, "Base salary by year" mobile charts.** `tools/nj_mobile_chart_fit.py --write` rewrote the 572 of 573 `charts/d/<leaid>-mobile.svg`
+  that misfit their 390 px box: an end-value label whose estimated right edge passes x=384 is right-aligned at x=384 and set 10 px above its dot
+  (below it when the line comes down into the dot); a year label that overlaps the final year's label is dropped (first and final years always stay;
+  the alt text still lists every year and value). Lines, dots, gridlines, y labels, alt text and the desktop SVGs are unchanged. `--check` exits 1 on any misfit; re-running `--write` changes nothing.
+- **Leftover 10, the `/nj/` Dataset JSON-LD.** `/nj/index.html` named `/api/v1/nj/` as its Dataset `contentUrl` with `encodingFormat: application/json`.
+  That URL was a 404. A first fix (commit `d501474`) put an HTML index there, which made the URL resolve but left the metadata saying JSON about an HTML page.
+  `tools/nj_api_index.py --write` now writes three things, and `--check` exits 1 if any is missing or stale:
+  - `api/v1/nj/index.json`: `{count, description, files: [{district, nces_leaid, page, url}], license, state}`, one entry per district JSON file (586),
+    each `district` and `nces_leaid` read from that file, written like the district files (indent 1, sorted keys, final newline). No person field.
+  - `api/v1/nj/index.html`: the same list as a page for people, in the site header and footer, with a link to `index.json`. No metadata calls this page JSON. Its table has class `api-files` (PR #5 fix list, below).
+  - `/nj/index.html`: one scoped edit. `"contentUrl": "/api/v1/nj/"` becomes `"contentUrl": "/api/v1/nj/index.json"`; `encodingFormat` stays `application/json`.
+    Nothing else on the page changes. The tool refuses to edit unless it finds that text exactly once. The generator and the history build are not changed:
+    the build still writes the old value, so `tests/test_nj_history_committed.py` expects the committed page to equal the build output with exactly this
+    substitution (`SCOPED_EDITS`), and every other committed file to equal it byte for byte.
+  Neither index file is added to `sitemap.xml` or `llms.txt` (build outputs).
+- **JSON-LD check.** `python3 tools/jsonld_content_urls.py` walks every JSON-LD block of every published page (594 pages, 1,173 blocks). For each
+  `contentUrl` whose `encodingFormat` is `application/json` (1, the `/nj/` Dataset) or `text/csv` (586, the history Datasets) it finds the file GitHub Pages
+  would serve, and requires that it exists, is published, has the matching extension (a directory URL is `index.html`, so it fails) and parses.
+  It reads from disk only: root-relative, page-relative and `https://k12comp.com/` URLs are mapped to files; a URL on any other host is a failure, not a fetch. Exit 1 on any problem.
+- Tests (no data repo needed): `tests/test_nj_leftovers_7_10.py` checks the CSS line, every mobile chart against the fit rules, idempotence,
+  that only labels moved (values, first and final years unchanged), that no desktop chart changed, both index files are fresh, complete and agree with each
+  district file, that `/nj/index.html` differs from `a41b5838` by the `contentUrl` only and from `3b50ce10` by that and the history link only, that every
+  `3b50ce10` path still exists, and that nothing else changed since `a41b5838` (explicit lists, no pattern wider than the mobile chart names;
+  the PR #5 fix list adds its 8 guide pages by exact path and its four new files).
+  `tests/test_jsonld_content_urls.py` runs the JSON-LD check on the committed tree and on small bad sites: missing target, directory URL with an HTML index
+  (the first fix), HTML under a `.json` name, JSON under an `.html` name, truncated JSON, another host, a path above the site root, an unpublished path. It fails if anything opens a network socket.
+
+## PR #5 fix list, fix 1: guide tables on mobile (2026-11-11)
+
+Ann's PR #5 dataviz review (fix 1): at 336/390 px the guide table's `<caption>` sat inside the sideways scroller and was cut off
+("Teacher salary guide, 2026-2…"), nothing said more columns exist, scrolling right hid the Step column, and at 336 px the source line broke
+as "Source:" / link / ", pages 58–62". Visible on the site: yes. Fix 2 (mobile chart text size) is not in this change: it is a separate ticket
+(`k12comp/specs/k12-chart-mobile-text-001.md`, owner implement), and no chart, SVG or chart tool is changed here.
+
+- `tools/nj_guide_tables.py --write` rewrites the 40 guide tables on the 8 district pages with `section.grid`; `--check` exits 1 if any page is stale.
+  It is the static publication source transform (not a change to the historical base generator), and is idempotent. It accepts both the original
+  build markup and the previous visible-caption publication markup, then emits the current committed markup.
+  - Lucille 2's follow-up ruling keeps the full unchanged caption inside the table as `<caption class="sr-only" id="guide-cap-N">` at **every width**;
+    the table keeps the same accessible name through `aria-labelledby="guide-cap-N"`. The existing `h3` stays visible. No copy changes: the region's
+    `aria-label`, heading, caption, source line, note and cells are unchanged.
+  - Tables with 3+ header cells (23 of 40) get `<p class="guide-cue" aria-hidden="true">Swipe to see more columns →</p>` above the
+    scroller. The wording is the approved copy (Lindsay, `SCROLL_CUE`, pinned in `tests/test_nj_guide_tables.py`); to change it, edit `SCROLL_CUE`,
+    update the pin and re-run `--write`. Step + one column tables (Bayonne, Edison) fit at 336 px and get no cue.
+- `style.css` gains two lines for this (after the newsletter rules; a third line, below, is for `/api/v1/nj/`). All widths: `.grid caption.sr-only` uses the standard clip pattern
+  (`position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0`),
+  and `.guide-cue{display:none}`. The scoped caption rule overrides the generic caption padding without changing other tables.
+  At <=640 px: the cue shows (14 px, muted); the Step column (`.grid tr>th:first-child`) is `position:sticky; left:0` with a background and a
+  1 px edge, so row context stays when scrolled right; the source line is `text-wrap:balance` and its link is `display:inline` with 12 px vertical
+  padding (a 44 px target), so the link starts on the "Source:" line and ", pages 58–62" stays with it. No copy is shortened; values keep 16 px and `nowrap`.
+  At 1280 px the caption is also visually hidden; the existing heading still shows and the cue stays hidden. The cue and sticky Step rules are unchanged by this follow-up.
+- AC 23/24: the history build still writes the old guide markup, so `tests/test_nj_history_committed.py` allows, on exactly these 8 pages
+  (`GUIDE_PAGES`), the committed page to equal `nj_guide_tables.rewrite(build page)`, and checks by hand that removing fix 1's markup gives the
+  build page back byte for byte. Every other committed file must still equal the build. Like leftovers 7 and 10, release artifacts built from
+  `3b50ce10` alone do not carry this fix (the generator-port leftover).
+- Tests: `tests/test_nj_guide_tables.py` (static: copy pin, the old placeholder cue wording appears nowhere, the 8 pages / 40 tables, idempotence,
+  diff from web main is fix 1's markup only, captions unchanged, cue placement, cells unchanged, CSS rules). `tests/test_nj_guide_tables_browser.py`
+  (real local Chrome through the Python `playwright` package, skipped without it; 127.0.0.1 server, throwaway profile, other requests aborted) checks
+  all 40 tables at 336, 390 and 1280 px, initial and scrolled right: native sr-only caption has a clipped 1 × 1 px box at every width, the unchanged heading remains visible, and the caption is still the table's accessible name
+  in Chrome's accessibility tree; cue shown above the scroller at 336/390 exactly where columns are hidden and hidden at 1280; Step column stuck at
+  the left edge with the last column fully visible beside it; salary cells on one line at 16 px; source line wrapping as described; no page-level sideways scroll.
+
+### Same round: `/api/v1/nj/` file names on mobile (quality-gate round 1 nit)
+
+The web PR #5 gate (round 1) noted that the `/api/v1/nj/` file column wraps mid-name at 390 px; at 336 px "District page" also broke inside
+"District". `tools/nj_api_index.py` now writes `<table class="api-files">` (the only change to `api/v1/nj/index.html`), and one mobile-only
+`style.css` line keeps each file name on one line (`white-space:nowrap`), lets the other cells wrap only between words (`overflow-wrap:break-word`
+instead of the site-wide `anywhere`), and uses 6 px cell padding with none on the outer edges (the region has no border on mobile), so the three
+columns fit the 304 px column at 336 px. `index.json`, `/nj/index.html`, the rows and their text are unchanged; desktop is unchanged.
+`tests/test_nj_api_index_browser.py` (same local-Chrome setup as the guide test, skipped without it) checks at 336, 390 and 1280 px: all 586
+file names whole on one line with a 44 px link, no cell broken inside a word, no page-level sideways scroll, and the table inside the content column.

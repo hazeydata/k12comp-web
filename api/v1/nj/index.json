@@ -1,0 +1,3524 @@
+{
+ "count": 586,
+ "description": "Index of the New Jersey district JSON files under /api/v1/nj/. One entry per district; each url is that district's file.",
+ "files": [
+  {
+   "district": "Sch Dist of the Chathams",
+   "nces_leaid": "3400004",
+   "page": "/nj/sch-dist-of-the-chathams-3400004/",
+   "url": "/api/v1/nj/3400004.json"
+  },
+  {
+   "district": "Morris-Union Jointure Com",
+   "nces_leaid": "3400005",
+   "page": "/nj/morris-union-jointure-com-3400005/",
+   "url": "/api/v1/nj/3400005.json"
+  },
+  {
+   "district": "Atlantic Co Special Serv",
+   "nces_leaid": "3400006",
+   "page": "/nj/atlantic-co-special-serv-3400006/",
+   "url": "/api/v1/nj/3400006.json"
+  },
+  {
+   "district": "South Bergen Jointure Com",
+   "nces_leaid": "3400007",
+   "page": "/nj/south-bergen-jointure-com-3400007/",
+   "url": "/api/v1/nj/3400007.json"
+  },
+  {
+   "district": "Great Meadows Regional",
+   "nces_leaid": "3400008",
+   "page": "/nj/great-meadows-regional-3400008/",
+   "url": "/api/v1/nj/3400008.json"
+  },
+  {
+   "district": "Somerset Hills Regional",
+   "nces_leaid": "3400009",
+   "page": "/nj/somerset-hills-regional-3400009/",
+   "url": "/api/v1/nj/3400009.json"
+  },
+  {
+   "district": "Hunterdon Co Vocational",
+   "nces_leaid": "3400050",
+   "page": "/nj/hunterdon-co-vocational-3400050/",
+   "url": "/api/v1/nj/3400050.json"
+  },
+  {
+   "district": "Bayshore Jointure Comm",
+   "nces_leaid": "3400069",
+   "page": "/nj/bayshore-jointure-comm-3400069/",
+   "url": "/api/v1/nj/3400069.json"
+  },
+  {
+   "district": "Absecon City",
+   "nces_leaid": "3400660",
+   "page": "/nj/absecon-city-3400660/",
+   "url": "/api/v1/nj/3400660.json"
+  },
+  {
+   "district": "Alexandria Twp",
+   "nces_leaid": "3400690",
+   "page": "/nj/alexandria-twp-3400690/",
+   "url": "/api/v1/nj/3400690.json"
+  },
+  {
+   "district": "Allamuchy Twp",
+   "nces_leaid": "3400720",
+   "page": "/nj/allamuchy-twp-3400720/",
+   "url": "/api/v1/nj/3400720.json"
+  },
+  {
+   "district": "Allendale Boro",
+   "nces_leaid": "3400750",
+   "page": "/nj/allendale-boro-3400750/",
+   "url": "/api/v1/nj/3400750.json"
+  },
+  {
+   "district": "South Hunterdon Regional School District",
+   "nces_leaid": "3400769",
+   "page": "/nj/south-hunterdon-regional-school-district-3400769/",
+   "url": "/api/v1/nj/3400769.json"
+  },
+  {
+   "district": "Alloway Twp",
+   "nces_leaid": "3400810",
+   "page": "/nj/alloway-twp-3400810/",
+   "url": "/api/v1/nj/3400810.json"
+  },
+  {
+   "district": "Alpha Boro",
+   "nces_leaid": "3400840",
+   "page": "/nj/alpha-boro-3400840/",
+   "url": "/api/v1/nj/3400840.json"
+  },
+  {
+   "district": "Alpine Boro",
+   "nces_leaid": "3400870",
+   "page": "/nj/alpine-boro-3400870/",
+   "url": "/api/v1/nj/3400870.json"
+  },
+  {
+   "district": "Andover Reg",
+   "nces_leaid": "3400900",
+   "page": "/nj/andover-reg-3400900/",
+   "url": "/api/v1/nj/3400900.json"
+  },
+  {
+   "district": "Asbury Park City",
+   "nces_leaid": "3400930",
+   "page": "/nj/asbury-park-city-3400930/",
+   "url": "/api/v1/nj/3400930.json"
+  },
+  {
+   "district": "Atlantic City",
+   "nces_leaid": "3400960",
+   "page": "/nj/atlantic-city-3400960/",
+   "url": "/api/v1/nj/3400960.json"
+  },
+  {
+   "district": "Atlantic Co Vocational",
+   "nces_leaid": "3400990",
+   "page": "/nj/atlantic-co-vocational-3400990/",
+   "url": "/api/v1/nj/3400990.json"
+  },
+  {
+   "district": "Atlantic Highlands Boro",
+   "nces_leaid": "3401020",
+   "page": "/nj/atlantic-highlands-boro-3401020/",
+   "url": "/api/v1/nj/3401020.json"
+  },
+  {
+   "district": "Audubon Boro",
+   "nces_leaid": "3401050",
+   "page": "/nj/audubon-boro-3401050/",
+   "url": "/api/v1/nj/3401050.json"
+  },
+  {
+   "district": "Avalon Boro",
+   "nces_leaid": "3401110",
+   "page": "/nj/avalon-boro-3401110/",
+   "url": "/api/v1/nj/3401110.json"
+  },
+  {
+   "district": "Avon Boro",
+   "nces_leaid": "3401140",
+   "page": "/nj/avon-boro-3401140/",
+   "url": "/api/v1/nj/3401140.json"
+  },
+  {
+   "district": "Barrington Boro",
+   "nces_leaid": "3401170",
+   "page": "/nj/barrington-boro-3401170/",
+   "url": "/api/v1/nj/3401170.json"
+  },
+  {
+   "district": "Bass River Twp",
+   "nces_leaid": "3401200",
+   "page": "/nj/bass-river-twp-3401200/",
+   "url": "/api/v1/nj/3401200.json"
+  },
+  {
+   "district": "Bay Head Boro",
+   "nces_leaid": "3401230",
+   "page": "/nj/bay-head-boro-3401230/",
+   "url": "/api/v1/nj/3401230.json"
+  },
+  {
+   "district": "Bayonne City",
+   "nces_leaid": "3401260",
+   "page": "/nj/bayonne-city-3401260/",
+   "url": "/api/v1/nj/3401260.json"
+  },
+  {
+   "district": "Beach Haven Boro",
+   "nces_leaid": "3401290",
+   "page": "/nj/beach-haven-boro-3401290/",
+   "url": "/api/v1/nj/3401290.json"
+  },
+  {
+   "district": "Bedminster Twp",
+   "nces_leaid": "3401320",
+   "page": "/nj/bedminster-twp-3401320/",
+   "url": "/api/v1/nj/3401320.json"
+  },
+  {
+   "district": "Belleville Town",
+   "nces_leaid": "3401350",
+   "page": "/nj/belleville-town-3401350/",
+   "url": "/api/v1/nj/3401350.json"
+  },
+  {
+   "district": "Bellmawr Boro",
+   "nces_leaid": "3401380",
+   "page": "/nj/bellmawr-boro-3401380/",
+   "url": "/api/v1/nj/3401380.json"
+  },
+  {
+   "district": "Belmar Boro",
+   "nces_leaid": "3401410",
+   "page": "/nj/belmar-boro-3401410/",
+   "url": "/api/v1/nj/3401410.json"
+  },
+  {
+   "district": "Belvidere Town",
+   "nces_leaid": "3401440",
+   "page": "/nj/belvidere-town-3401440/",
+   "url": "/api/v1/nj/3401440.json"
+  },
+  {
+   "district": "Bergen Co Special Service",
+   "nces_leaid": "3401450",
+   "page": "/nj/bergen-co-special-service-3401450/",
+   "url": "/api/v1/nj/3401450.json"
+  },
+  {
+   "district": "Bergen County Vocational",
+   "nces_leaid": "3401470",
+   "page": "/nj/bergen-county-vocational-3401470/",
+   "url": "/api/v1/nj/3401470.json"
+  },
+  {
+   "district": "Bergenfield Boro",
+   "nces_leaid": "3401500",
+   "page": "/nj/bergenfield-boro-3401500/",
+   "url": "/api/v1/nj/3401500.json"
+  },
+  {
+   "district": "Berkeley Heights Twp",
+   "nces_leaid": "3401530",
+   "page": "/nj/berkeley-heights-twp-3401530/",
+   "url": "/api/v1/nj/3401530.json"
+  },
+  {
+   "district": "Berkeley Twp",
+   "nces_leaid": "3401560",
+   "page": "/nj/berkeley-twp-3401560/",
+   "url": "/api/v1/nj/3401560.json"
+  },
+  {
+   "district": "Berlin Boro",
+   "nces_leaid": "3401590",
+   "page": "/nj/berlin-boro-3401590/",
+   "url": "/api/v1/nj/3401590.json"
+  },
+  {
+   "district": "Berlin Twp",
+   "nces_leaid": "3401620",
+   "page": "/nj/berlin-twp-3401620/",
+   "url": "/api/v1/nj/3401620.json"
+  },
+  {
+   "district": "Bernards Twp",
+   "nces_leaid": "3401650",
+   "page": "/nj/bernards-twp-3401650/",
+   "url": "/api/v1/nj/3401650.json"
+  },
+  {
+   "district": "Bethlehem Twp",
+   "nces_leaid": "3401710",
+   "page": "/nj/bethlehem-twp-3401710/",
+   "url": "/api/v1/nj/3401710.json"
+  },
+  {
+   "district": "Beverly City",
+   "nces_leaid": "3401740",
+   "page": "/nj/beverly-city-3401740/",
+   "url": "/api/v1/nj/3401740.json"
+  },
+  {
+   "district": "Black Horse Pike Regional",
+   "nces_leaid": "3401770",
+   "page": "/nj/black-horse-pike-regional-3401770/",
+   "url": "/api/v1/nj/3401770.json"
+  },
+  {
+   "district": "Blairstown Twp",
+   "nces_leaid": "3401800",
+   "page": "/nj/blairstown-twp-3401800/",
+   "url": "/api/v1/nj/3401800.json"
+  },
+  {
+   "district": "Bloomfield Twp",
+   "nces_leaid": "3401830",
+   "page": "/nj/bloomfield-twp-3401830/",
+   "url": "/api/v1/nj/3401830.json"
+  },
+  {
+   "district": "Bloomingdale Boro",
+   "nces_leaid": "3401860",
+   "page": "/nj/bloomingdale-boro-3401860/",
+   "url": "/api/v1/nj/3401860.json"
+  },
+  {
+   "district": "Bloomsbury Boro",
+   "nces_leaid": "3401890",
+   "page": "/nj/bloomsbury-boro-3401890/",
+   "url": "/api/v1/nj/3401890.json"
+  },
+  {
+   "district": "Bogota Boro",
+   "nces_leaid": "3401920",
+   "page": "/nj/bogota-boro-3401920/",
+   "url": "/api/v1/nj/3401920.json"
+  },
+  {
+   "district": "Boonton Town",
+   "nces_leaid": "3401950",
+   "page": "/nj/boonton-town-3401950/",
+   "url": "/api/v1/nj/3401950.json"
+  },
+  {
+   "district": "Boonton Twp",
+   "nces_leaid": "3401980",
+   "page": "/nj/boonton-twp-3401980/",
+   "url": "/api/v1/nj/3401980.json"
+  },
+  {
+   "district": "Bordentown Regional",
+   "nces_leaid": "3402030",
+   "page": "/nj/bordentown-regional-3402030/",
+   "url": "/api/v1/nj/3402030.json"
+  },
+  {
+   "district": "Bound Brook Boro",
+   "nces_leaid": "3402100",
+   "page": "/nj/bound-brook-boro-3402100/",
+   "url": "/api/v1/nj/3402100.json"
+  },
+  {
+   "district": "Bradley Beach Boro",
+   "nces_leaid": "3402130",
+   "page": "/nj/bradley-beach-boro-3402130/",
+   "url": "/api/v1/nj/3402130.json"
+  },
+  {
+   "district": "Branchburg Twp",
+   "nces_leaid": "3402160",
+   "page": "/nj/branchburg-twp-3402160/",
+   "url": "/api/v1/nj/3402160.json"
+  },
+  {
+   "district": "Brick Twp",
+   "nces_leaid": "3402220",
+   "page": "/nj/brick-twp-3402220/",
+   "url": "/api/v1/nj/3402220.json"
+  },
+  {
+   "district": "Bridgeton City",
+   "nces_leaid": "3402250",
+   "page": "/nj/bridgeton-city-3402250/",
+   "url": "/api/v1/nj/3402250.json"
+  },
+  {
+   "district": "Bridgewater-Raritan Reg",
+   "nces_leaid": "3402280",
+   "page": "/nj/bridgewater-raritan-reg-3402280/",
+   "url": "/api/v1/nj/3402280.json"
+  },
+  {
+   "district": "Brielle Boro",
+   "nces_leaid": "3402310",
+   "page": "/nj/brielle-boro-3402310/",
+   "url": "/api/v1/nj/3402310.json"
+  },
+  {
+   "district": "Brigantine City",
+   "nces_leaid": "3402340",
+   "page": "/nj/brigantine-city-3402340/",
+   "url": "/api/v1/nj/3402340.json"
+  },
+  {
+   "district": "Brooklawn Boro",
+   "nces_leaid": "3402370",
+   "page": "/nj/brooklawn-boro-3402370/",
+   "url": "/api/v1/nj/3402370.json"
+  },
+  {
+   "district": "Buena Regional",
+   "nces_leaid": "3402400",
+   "page": "/nj/buena-regional-3402400/",
+   "url": "/api/v1/nj/3402400.json"
+  },
+  {
+   "district": "Burlington City",
+   "nces_leaid": "3402430",
+   "page": "/nj/burlington-city-3402430/",
+   "url": "/api/v1/nj/3402430.json"
+  },
+  {
+   "district": "Burlington Co Spec Serv",
+   "nces_leaid": "3402440",
+   "page": "/nj/burlington-co-spec-serv-3402440/",
+   "url": "/api/v1/nj/3402440.json"
+  },
+  {
+   "district": "Burlington Twp",
+   "nces_leaid": "3402460",
+   "page": "/nj/burlington-twp-3402460/",
+   "url": "/api/v1/nj/3402460.json"
+  },
+  {
+   "district": "Burlington Co Vocational",
+   "nces_leaid": "3402490",
+   "page": "/nj/burlington-co-vocational-3402490/",
+   "url": "/api/v1/nj/3402490.json"
+  },
+  {
+   "district": "Butler Boro",
+   "nces_leaid": "3402520",
+   "page": "/nj/butler-boro-3402520/",
+   "url": "/api/v1/nj/3402520.json"
+  },
+  {
+   "district": "Byram Twp",
+   "nces_leaid": "3402550",
+   "page": "/nj/byram-twp-3402550/",
+   "url": "/api/v1/nj/3402550.json"
+  },
+  {
+   "district": "Caldwell-West Caldwell",
+   "nces_leaid": "3402580",
+   "page": "/nj/caldwell-west-caldwell-3402580/",
+   "url": "/api/v1/nj/3402580.json"
+  },
+  {
+   "district": "Califon Boro",
+   "nces_leaid": "3402610",
+   "page": "/nj/califon-boro-3402610/",
+   "url": "/api/v1/nj/3402610.json"
+  },
+  {
+   "district": "Camden City",
+   "nces_leaid": "3402640",
+   "page": "/nj/camden-city-3402640/",
+   "url": "/api/v1/nj/3402640.json"
+  },
+  {
+   "district": "Camden County Vocational",
+   "nces_leaid": "3402670",
+   "page": "/nj/camden-county-vocational-3402670/",
+   "url": "/api/v1/nj/3402670.json"
+  },
+  {
+   "district": "Cape May City",
+   "nces_leaid": "3402700",
+   "page": "/nj/cape-may-city-3402700/",
+   "url": "/api/v1/nj/3402700.json"
+  },
+  {
+   "district": "Cape May Co Vocational",
+   "nces_leaid": "3402730",
+   "page": "/nj/cape-may-co-vocational-3402730/",
+   "url": "/api/v1/nj/3402730.json"
+  },
+  {
+   "district": "Cape May Co Special Serv",
+   "nces_leaid": "3402740",
+   "page": "/nj/cape-may-co-special-serv-3402740/",
+   "url": "/api/v1/nj/3402740.json"
+  },
+  {
+   "district": "Carlstadt Boro",
+   "nces_leaid": "3402790",
+   "page": "/nj/carlstadt-boro-3402790/",
+   "url": "/api/v1/nj/3402790.json"
+  },
+  {
+   "district": "Carlstadt-East Rutherford",
+   "nces_leaid": "3402800",
+   "page": "/nj/carlstadt-east-rutherford-3402800/",
+   "url": "/api/v1/nj/3402800.json"
+  },
+  {
+   "district": "Carteret Boro",
+   "nces_leaid": "3402820",
+   "page": "/nj/carteret-boro-3402820/",
+   "url": "/api/v1/nj/3402820.json"
+  },
+  {
+   "district": "Cedar Grove Twp",
+   "nces_leaid": "3402850",
+   "page": "/nj/cedar-grove-twp-3402850/",
+   "url": "/api/v1/nj/3402850.json"
+  },
+  {
+   "district": "Sterling High School Dist",
+   "nces_leaid": "3402880",
+   "page": "/nj/sterling-high-school-dist-3402880/",
+   "url": "/api/v1/nj/3402880.json"
+  },
+  {
+   "district": "Central Regional",
+   "nces_leaid": "3402910",
+   "page": "/nj/central-regional-3402910/",
+   "url": "/api/v1/nj/3402910.json"
+  },
+  {
+   "district": "Cherry Hill Twp",
+   "nces_leaid": "3403000",
+   "page": "/nj/cherry-hill-twp-3403000/",
+   "url": "/api/v1/nj/3403000.json"
+  },
+  {
+   "district": "Chester Twp",
+   "nces_leaid": "3403060",
+   "page": "/nj/chester-twp-3403060/",
+   "url": "/api/v1/nj/3403060.json"
+  },
+  {
+   "district": "Chesterfield Twp",
+   "nces_leaid": "3403090",
+   "page": "/nj/chesterfield-twp-3403090/",
+   "url": "/api/v1/nj/3403090.json"
+  },
+  {
+   "district": "Cinnaminson Twp",
+   "nces_leaid": "3403120",
+   "page": "/nj/cinnaminson-twp-3403120/",
+   "url": "/api/v1/nj/3403120.json"
+  },
+  {
+   "district": "Clark Twp",
+   "nces_leaid": "3403150",
+   "page": "/nj/clark-twp-3403150/",
+   "url": "/api/v1/nj/3403150.json"
+  },
+  {
+   "district": "Clayton Boro",
+   "nces_leaid": "3403180",
+   "page": "/nj/clayton-boro-3403180/",
+   "url": "/api/v1/nj/3403180.json"
+  },
+  {
+   "district": "Clearview Regional",
+   "nces_leaid": "3403210",
+   "page": "/nj/clearview-regional-3403210/",
+   "url": "/api/v1/nj/3403210.json"
+  },
+  {
+   "district": "Clementon Boro",
+   "nces_leaid": "3403240",
+   "page": "/nj/clementon-boro-3403240/",
+   "url": "/api/v1/nj/3403240.json"
+  },
+  {
+   "district": "Cliffside Park Boro",
+   "nces_leaid": "3403270",
+   "page": "/nj/cliffside-park-boro-3403270/",
+   "url": "/api/v1/nj/3403270.json"
+  },
+  {
+   "district": "Clifton City",
+   "nces_leaid": "3403300",
+   "page": "/nj/clifton-city-3403300/",
+   "url": "/api/v1/nj/3403300.json"
+  },
+  {
+   "district": "Clinton-Glen Gardner",
+   "nces_leaid": "3403330",
+   "page": "/nj/clinton-glen-gardner-3403330/",
+   "url": "/api/v1/nj/3403330.json"
+  },
+  {
+   "district": "Clinton Twp",
+   "nces_leaid": "3403360",
+   "page": "/nj/clinton-twp-3403360/",
+   "url": "/api/v1/nj/3403360.json"
+  },
+  {
+   "district": "Closter Boro",
+   "nces_leaid": "3403390",
+   "page": "/nj/closter-boro-3403390/",
+   "url": "/api/v1/nj/3403390.json"
+  },
+  {
+   "district": "Collingswood Boro",
+   "nces_leaid": "3403420",
+   "page": "/nj/collingswood-boro-3403420/",
+   "url": "/api/v1/nj/3403420.json"
+  },
+  {
+   "district": "Colts Neck Twp",
+   "nces_leaid": "3403450",
+   "page": "/nj/colts-neck-twp-3403450/",
+   "url": "/api/v1/nj/3403450.json"
+  },
+  {
+   "district": "Commercial Twp",
+   "nces_leaid": "3403480",
+   "page": "/nj/commercial-twp-3403480/",
+   "url": "/api/v1/nj/3403480.json"
+  },
+  {
+   "district": "Cranbury Twp",
+   "nces_leaid": "3403540",
+   "page": "/nj/cranbury-twp-3403540/",
+   "url": "/api/v1/nj/3403540.json"
+  },
+  {
+   "district": "Cranford Twp",
+   "nces_leaid": "3403570",
+   "page": "/nj/cranford-twp-3403570/",
+   "url": "/api/v1/nj/3403570.json"
+  },
+  {
+   "district": "Cresskill Boro",
+   "nces_leaid": "3403600",
+   "page": "/nj/cresskill-boro-3403600/",
+   "url": "/api/v1/nj/3403600.json"
+  },
+  {
+   "district": "Cumberland Co Vocational",
+   "nces_leaid": "3403610",
+   "page": "/nj/cumberland-co-vocational-3403610/",
+   "url": "/api/v1/nj/3403610.json"
+  },
+  {
+   "district": "Cumberland Regional",
+   "nces_leaid": "3403620",
+   "page": "/nj/cumberland-regional-3403620/",
+   "url": "/api/v1/nj/3403620.json"
+  },
+  {
+   "district": "Deal Boro",
+   "nces_leaid": "3403630",
+   "page": "/nj/deal-boro-3403630/",
+   "url": "/api/v1/nj/3403630.json"
+  },
+  {
+   "district": "Deerfield Twp",
+   "nces_leaid": "3403660",
+   "page": "/nj/deerfield-twp-3403660/",
+   "url": "/api/v1/nj/3403660.json"
+  },
+  {
+   "district": "Delanco Twp",
+   "nces_leaid": "3403690",
+   "page": "/nj/delanco-twp-3403690/",
+   "url": "/api/v1/nj/3403690.json"
+  },
+  {
+   "district": "Delaware Twp",
+   "nces_leaid": "3403720",
+   "page": "/nj/delaware-twp-3403720/",
+   "url": "/api/v1/nj/3403720.json"
+  },
+  {
+   "district": "Delaware Valley Regional",
+   "nces_leaid": "3403750",
+   "page": "/nj/delaware-valley-regional-3403750/",
+   "url": "/api/v1/nj/3403750.json"
+  },
+  {
+   "district": "Delran Twp",
+   "nces_leaid": "3403780",
+   "page": "/nj/delran-twp-3403780/",
+   "url": "/api/v1/nj/3403780.json"
+  },
+  {
+   "district": "Demarest Boro",
+   "nces_leaid": "3403810",
+   "page": "/nj/demarest-boro-3403810/",
+   "url": "/api/v1/nj/3403810.json"
+  },
+  {
+   "district": "Dennis Twp",
+   "nces_leaid": "3403840",
+   "page": "/nj/dennis-twp-3403840/",
+   "url": "/api/v1/nj/3403840.json"
+  },
+  {
+   "district": "Denville Twp",
+   "nces_leaid": "3403870",
+   "page": "/nj/denville-twp-3403870/",
+   "url": "/api/v1/nj/3403870.json"
+  },
+  {
+   "district": "Deptford Twp",
+   "nces_leaid": "3403900",
+   "page": "/nj/deptford-twp-3403900/",
+   "url": "/api/v1/nj/3403900.json"
+  },
+  {
+   "district": "Dover Town",
+   "nces_leaid": "3403930",
+   "page": "/nj/dover-town-3403930/",
+   "url": "/api/v1/nj/3403930.json"
+  },
+  {
+   "district": "Downe Twp",
+   "nces_leaid": "3403960",
+   "page": "/nj/downe-twp-3403960/",
+   "url": "/api/v1/nj/3403960.json"
+  },
+  {
+   "district": "Dumont Boro",
+   "nces_leaid": "3403990",
+   "page": "/nj/dumont-boro-3403990/",
+   "url": "/api/v1/nj/3403990.json"
+  },
+  {
+   "district": "Dunellen Boro",
+   "nces_leaid": "3404020",
+   "page": "/nj/dunellen-boro-3404020/",
+   "url": "/api/v1/nj/3404020.json"
+  },
+  {
+   "district": "Eagleswood Twp",
+   "nces_leaid": "3404050",
+   "page": "/nj/eagleswood-twp-3404050/",
+   "url": "/api/v1/nj/3404050.json"
+  },
+  {
+   "district": "East Amwell Twp",
+   "nces_leaid": "3404080",
+   "page": "/nj/east-amwell-twp-3404080/",
+   "url": "/api/v1/nj/3404080.json"
+  },
+  {
+   "district": "East Brunswick Twp",
+   "nces_leaid": "3404110",
+   "page": "/nj/east-brunswick-twp-3404110/",
+   "url": "/api/v1/nj/3404110.json"
+  },
+  {
+   "district": "East Greenwich Twp",
+   "nces_leaid": "3404140",
+   "page": "/nj/east-greenwich-twp-3404140/",
+   "url": "/api/v1/nj/3404140.json"
+  },
+  {
+   "district": "East Hanover Twp",
+   "nces_leaid": "3404170",
+   "page": "/nj/east-hanover-twp-3404170/",
+   "url": "/api/v1/nj/3404170.json"
+  },
+  {
+   "district": "East Newark Boro",
+   "nces_leaid": "3404200",
+   "page": "/nj/east-newark-boro-3404200/",
+   "url": "/api/v1/nj/3404200.json"
+  },
+  {
+   "district": "East Orange",
+   "nces_leaid": "3404230",
+   "page": "/nj/east-orange-3404230/",
+   "url": "/api/v1/nj/3404230.json"
+  },
+  {
+   "district": "East Rutherford Boro",
+   "nces_leaid": "3404290",
+   "page": "/nj/east-rutherford-boro-3404290/",
+   "url": "/api/v1/nj/3404290.json"
+  },
+  {
+   "district": "East Windsor Regional",
+   "nces_leaid": "3404320",
+   "page": "/nj/east-windsor-regional-3404320/",
+   "url": "/api/v1/nj/3404320.json"
+  },
+  {
+   "district": "Eastampton Twp",
+   "nces_leaid": "3404350",
+   "page": "/nj/eastampton-twp-3404350/",
+   "url": "/api/v1/nj/3404350.json"
+  },
+  {
+   "district": "Eastern Camden County Reg",
+   "nces_leaid": "3404380",
+   "page": "/nj/eastern-camden-county-reg-3404380/",
+   "url": "/api/v1/nj/3404380.json"
+  },
+  {
+   "district": "Eatontown Boro",
+   "nces_leaid": "3404410",
+   "page": "/nj/eatontown-boro-3404410/",
+   "url": "/api/v1/nj/3404410.json"
+  },
+  {
+   "district": "Edgewater Boro",
+   "nces_leaid": "3404440",
+   "page": "/nj/edgewater-boro-3404440/",
+   "url": "/api/v1/nj/3404440.json"
+  },
+  {
+   "district": "Edgewater Park Twp",
+   "nces_leaid": "3404470",
+   "page": "/nj/edgewater-park-twp-3404470/",
+   "url": "/api/v1/nj/3404470.json"
+  },
+  {
+   "district": "Edison Twp",
+   "nces_leaid": "3404500",
+   "page": "/nj/edison-twp-3404500/",
+   "url": "/api/v1/nj/3404500.json"
+  },
+  {
+   "district": "Egg Harbor City",
+   "nces_leaid": "3404530",
+   "page": "/nj/egg-harbor-city-3404530/",
+   "url": "/api/v1/nj/3404530.json"
+  },
+  {
+   "district": "Egg Harbor Twp",
+   "nces_leaid": "3404560",
+   "page": "/nj/egg-harbor-twp-3404560/",
+   "url": "/api/v1/nj/3404560.json"
+  },
+  {
+   "district": "Elizabeth City",
+   "nces_leaid": "3404590",
+   "page": "/nj/elizabeth-city-3404590/",
+   "url": "/api/v1/nj/3404590.json"
+  },
+  {
+   "district": "Elk Twp",
+   "nces_leaid": "3404620",
+   "page": "/nj/elk-twp-3404620/",
+   "url": "/api/v1/nj/3404620.json"
+  },
+  {
+   "district": "Elmwood Park",
+   "nces_leaid": "3404660",
+   "page": "/nj/elmwood-park-3404660/",
+   "url": "/api/v1/nj/3404660.json"
+  },
+  {
+   "district": "Elsinboro Twp",
+   "nces_leaid": "3404680",
+   "page": "/nj/elsinboro-twp-3404680/",
+   "url": "/api/v1/nj/3404680.json"
+  },
+  {
+   "district": "Emerson Boro",
+   "nces_leaid": "3404710",
+   "page": "/nj/emerson-boro-3404710/",
+   "url": "/api/v1/nj/3404710.json"
+  },
+  {
+   "district": "Englewood City",
+   "nces_leaid": "3404740",
+   "page": "/nj/englewood-city-3404740/",
+   "url": "/api/v1/nj/3404740.json"
+  },
+  {
+   "district": "Englewood Cliffs Boro",
+   "nces_leaid": "3404770",
+   "page": "/nj/englewood-cliffs-boro-3404770/",
+   "url": "/api/v1/nj/3404770.json"
+  },
+  {
+   "district": "Essex Co Voc-Tech",
+   "nces_leaid": "3404800",
+   "page": "/nj/essex-co-voc-tech-3404800/",
+   "url": "/api/v1/nj/3404800.json"
+  },
+  {
+   "district": "Essex Fells Boro",
+   "nces_leaid": "3404830",
+   "page": "/nj/essex-fells-boro-3404830/",
+   "url": "/api/v1/nj/3404830.json"
+  },
+  {
+   "district": "Estell Manor City",
+   "nces_leaid": "3404860",
+   "page": "/nj/estell-manor-city-3404860/",
+   "url": "/api/v1/nj/3404860.json"
+  },
+  {
+   "district": "Evesham Twp",
+   "nces_leaid": "3404890",
+   "page": "/nj/evesham-twp-3404890/",
+   "url": "/api/v1/nj/3404890.json"
+  },
+  {
+   "district": "Ewing Twp",
+   "nces_leaid": "3404920",
+   "page": "/nj/ewing-twp-3404920/",
+   "url": "/api/v1/nj/3404920.json"
+  },
+  {
+   "district": "Fair Haven Boro",
+   "nces_leaid": "3404950",
+   "page": "/nj/fair-haven-boro-3404950/",
+   "url": "/api/v1/nj/3404950.json"
+  },
+  {
+   "district": "Fair Lawn Boro",
+   "nces_leaid": "3404980",
+   "page": "/nj/fair-lawn-boro-3404980/",
+   "url": "/api/v1/nj/3404980.json"
+  },
+  {
+   "district": "Fairfield Twp",
+   "nces_leaid": "3405010",
+   "page": "/nj/fairfield-twp-3405010/",
+   "url": "/api/v1/nj/3405010.json"
+  },
+  {
+   "district": "Fairfield Twp",
+   "nces_leaid": "3405040",
+   "page": "/nj/fairfield-twp-3405040/",
+   "url": "/api/v1/nj/3405040.json"
+  },
+  {
+   "district": "Fairview Boro",
+   "nces_leaid": "3405070",
+   "page": "/nj/fairview-boro-3405070/",
+   "url": "/api/v1/nj/3405070.json"
+  },
+  {
+   "district": "Farmingdale Boro",
+   "nces_leaid": "3405130",
+   "page": "/nj/farmingdale-boro-3405130/",
+   "url": "/api/v1/nj/3405130.json"
+  },
+  {
+   "district": "Flemington-Raritan Reg",
+   "nces_leaid": "3405190",
+   "page": "/nj/flemington-raritan-reg-3405190/",
+   "url": "/api/v1/nj/3405190.json"
+  },
+  {
+   "district": "Florence Twp",
+   "nces_leaid": "3405220",
+   "page": "/nj/florence-twp-3405220/",
+   "url": "/api/v1/nj/3405220.json"
+  },
+  {
+   "district": "Florham Park Boro",
+   "nces_leaid": "3405250",
+   "page": "/nj/florham-park-boro-3405250/",
+   "url": "/api/v1/nj/3405250.json"
+  },
+  {
+   "district": "Folsom Boro",
+   "nces_leaid": "3405280",
+   "page": "/nj/folsom-boro-3405280/",
+   "url": "/api/v1/nj/3405280.json"
+  },
+  {
+   "district": "Fort Lee Boro",
+   "nces_leaid": "3405310",
+   "page": "/nj/fort-lee-boro-3405310/",
+   "url": "/api/v1/nj/3405310.json"
+  },
+  {
+   "district": "Frankford Twp",
+   "nces_leaid": "3405340",
+   "page": "/nj/frankford-twp-3405340/",
+   "url": "/api/v1/nj/3405340.json"
+  },
+  {
+   "district": "Franklin Lakes Boro",
+   "nces_leaid": "3405370",
+   "page": "/nj/franklin-lakes-boro-3405370/",
+   "url": "/api/v1/nj/3405370.json"
+  },
+  {
+   "district": "Franklin Boro",
+   "nces_leaid": "3405400",
+   "page": "/nj/franklin-boro-3405400/",
+   "url": "/api/v1/nj/3405400.json"
+  },
+  {
+   "district": "Franklin Twp",
+   "nces_leaid": "3405430",
+   "page": "/nj/franklin-twp-3405430/",
+   "url": "/api/v1/nj/3405430.json"
+  },
+  {
+   "district": "Franklin Twp",
+   "nces_leaid": "3405460",
+   "page": "/nj/franklin-twp-3405460/",
+   "url": "/api/v1/nj/3405460.json"
+  },
+  {
+   "district": "Franklin Twp",
+   "nces_leaid": "3405490",
+   "page": "/nj/franklin-twp-3405490/",
+   "url": "/api/v1/nj/3405490.json"
+  },
+  {
+   "district": "Franklin Twp",
+   "nces_leaid": "3405520",
+   "page": "/nj/franklin-twp-3405520/",
+   "url": "/api/v1/nj/3405520.json"
+  },
+  {
+   "district": "Fredon Twp",
+   "nces_leaid": "3405550",
+   "page": "/nj/fredon-twp-3405550/",
+   "url": "/api/v1/nj/3405550.json"
+  },
+  {
+   "district": "Freehold Boro",
+   "nces_leaid": "3405580",
+   "page": "/nj/freehold-boro-3405580/",
+   "url": "/api/v1/nj/3405580.json"
+  },
+  {
+   "district": "Freehold Regional",
+   "nces_leaid": "3405610",
+   "page": "/nj/freehold-regional-3405610/",
+   "url": "/api/v1/nj/3405610.json"
+  },
+  {
+   "district": "Freehold Twp",
+   "nces_leaid": "3405640",
+   "page": "/nj/freehold-twp-3405640/",
+   "url": "/api/v1/nj/3405640.json"
+  },
+  {
+   "district": "Frelinghuysen Twp",
+   "nces_leaid": "3405670",
+   "page": "/nj/frelinghuysen-twp-3405670/",
+   "url": "/api/v1/nj/3405670.json"
+  },
+  {
+   "district": "Frenchtown Boro",
+   "nces_leaid": "3405700",
+   "page": "/nj/frenchtown-boro-3405700/",
+   "url": "/api/v1/nj/3405700.json"
+  },
+  {
+   "district": "Galloway Twp",
+   "nces_leaid": "3405730",
+   "page": "/nj/galloway-twp-3405730/",
+   "url": "/api/v1/nj/3405730.json"
+  },
+  {
+   "district": "Garfield City",
+   "nces_leaid": "3405760",
+   "page": "/nj/garfield-city-3405760/",
+   "url": "/api/v1/nj/3405760.json"
+  },
+  {
+   "district": "Garwood Boro",
+   "nces_leaid": "3405790",
+   "page": "/nj/garwood-boro-3405790/",
+   "url": "/api/v1/nj/3405790.json"
+  },
+  {
+   "district": "Gateway Regional",
+   "nces_leaid": "3405820",
+   "page": "/nj/gateway-regional-3405820/",
+   "url": "/api/v1/nj/3405820.json"
+  },
+  {
+   "district": "Gibbsboro Boro",
+   "nces_leaid": "3405850",
+   "page": "/nj/gibbsboro-boro-3405850/",
+   "url": "/api/v1/nj/3405850.json"
+  },
+  {
+   "district": "Glassboro",
+   "nces_leaid": "3405880",
+   "page": "/nj/glassboro-3405880/",
+   "url": "/api/v1/nj/3405880.json"
+  },
+  {
+   "district": "Glen Ridge Boro",
+   "nces_leaid": "3405940",
+   "page": "/nj/glen-ridge-boro-3405940/",
+   "url": "/api/v1/nj/3405940.json"
+  },
+  {
+   "district": "Glen Rock Boro",
+   "nces_leaid": "3405970",
+   "page": "/nj/glen-rock-boro-3405970/",
+   "url": "/api/v1/nj/3405970.json"
+  },
+  {
+   "district": "Gloucester City",
+   "nces_leaid": "3406000",
+   "page": "/nj/gloucester-city-3406000/",
+   "url": "/api/v1/nj/3406000.json"
+  },
+  {
+   "district": "Gloucester Twp",
+   "nces_leaid": "3406030",
+   "page": "/nj/gloucester-twp-3406030/",
+   "url": "/api/v1/nj/3406030.json"
+  },
+  {
+   "district": "Gloucester Co Vocational",
+   "nces_leaid": "3406040",
+   "page": "/nj/gloucester-co-vocational-3406040/",
+   "url": "/api/v1/nj/3406040.json"
+  },
+  {
+   "district": "Greater Egg Harbor Reg",
+   "nces_leaid": "3406060",
+   "page": "/nj/greater-egg-harbor-reg-3406060/",
+   "url": "/api/v1/nj/3406060.json"
+  },
+  {
+   "district": "Green Twp",
+   "nces_leaid": "3406090",
+   "page": "/nj/green-twp-3406090/",
+   "url": "/api/v1/nj/3406090.json"
+  },
+  {
+   "district": "Green Brook Twp",
+   "nces_leaid": "3406120",
+   "page": "/nj/green-brook-twp-3406120/",
+   "url": "/api/v1/nj/3406120.json"
+  },
+  {
+   "district": "Greenwich Twp",
+   "nces_leaid": "3406150",
+   "page": "/nj/greenwich-twp-3406150/",
+   "url": "/api/v1/nj/3406150.json"
+  },
+  {
+   "district": "Greenwich Twp",
+   "nces_leaid": "3406180",
+   "page": "/nj/greenwich-twp-3406180/",
+   "url": "/api/v1/nj/3406180.json"
+  },
+  {
+   "district": "Greenwich Twp",
+   "nces_leaid": "3406210",
+   "page": "/nj/greenwich-twp-3406210/",
+   "url": "/api/v1/nj/3406210.json"
+  },
+  {
+   "district": "Guttenberg Town",
+   "nces_leaid": "3406240",
+   "page": "/nj/guttenberg-town-3406240/",
+   "url": "/api/v1/nj/3406240.json"
+  },
+  {
+   "district": "Hackensack City",
+   "nces_leaid": "3406270",
+   "page": "/nj/hackensack-city-3406270/",
+   "url": "/api/v1/nj/3406270.json"
+  },
+  {
+   "district": "Hackettstown",
+   "nces_leaid": "3406300",
+   "page": "/nj/hackettstown-3406300/",
+   "url": "/api/v1/nj/3406300.json"
+  },
+  {
+   "district": "Haddon Heights Boro",
+   "nces_leaid": "3406330",
+   "page": "/nj/haddon-heights-boro-3406330/",
+   "url": "/api/v1/nj/3406330.json"
+  },
+  {
+   "district": "Haddon Twp",
+   "nces_leaid": "3406360",
+   "page": "/nj/haddon-twp-3406360/",
+   "url": "/api/v1/nj/3406360.json"
+  },
+  {
+   "district": "Haddonfield Boro",
+   "nces_leaid": "3406390",
+   "page": "/nj/haddonfield-boro-3406390/",
+   "url": "/api/v1/nj/3406390.json"
+  },
+  {
+   "district": "Hainesport Twp",
+   "nces_leaid": "3406420",
+   "page": "/nj/hainesport-twp-3406420/",
+   "url": "/api/v1/nj/3406420.json"
+  },
+  {
+   "district": "Haledon Boro",
+   "nces_leaid": "3406450",
+   "page": "/nj/haledon-boro-3406450/",
+   "url": "/api/v1/nj/3406450.json"
+  },
+  {
+   "district": "Hamburg Boro",
+   "nces_leaid": "3406480",
+   "page": "/nj/hamburg-boro-3406480/",
+   "url": "/api/v1/nj/3406480.json"
+  },
+  {
+   "district": "Hamilton Twp",
+   "nces_leaid": "3406510",
+   "page": "/nj/hamilton-twp-3406510/",
+   "url": "/api/v1/nj/3406510.json"
+  },
+  {
+   "district": "Hamilton Twp",
+   "nces_leaid": "3406540",
+   "page": "/nj/hamilton-twp-3406540/",
+   "url": "/api/v1/nj/3406540.json"
+  },
+  {
+   "district": "Hammonton Town",
+   "nces_leaid": "3406570",
+   "page": "/nj/hammonton-town-3406570/",
+   "url": "/api/v1/nj/3406570.json"
+  },
+  {
+   "district": "Hampton Boro",
+   "nces_leaid": "3406600",
+   "page": "/nj/hampton-boro-3406600/",
+   "url": "/api/v1/nj/3406600.json"
+  },
+  {
+   "district": "Hampton Twp",
+   "nces_leaid": "3406630",
+   "page": "/nj/hampton-twp-3406630/",
+   "url": "/api/v1/nj/3406630.json"
+  },
+  {
+   "district": "Hanover Park Regional",
+   "nces_leaid": "3406660",
+   "page": "/nj/hanover-park-regional-3406660/",
+   "url": "/api/v1/nj/3406660.json"
+  },
+  {
+   "district": "Hanover Twp",
+   "nces_leaid": "3406690",
+   "page": "/nj/hanover-twp-3406690/",
+   "url": "/api/v1/nj/3406690.json"
+  },
+  {
+   "district": "Harding Township",
+   "nces_leaid": "3406720",
+   "page": "/nj/harding-township-3406720/",
+   "url": "/api/v1/nj/3406720.json"
+  },
+  {
+   "district": "Hardyston Twp",
+   "nces_leaid": "3406780",
+   "page": "/nj/hardyston-twp-3406780/",
+   "url": "/api/v1/nj/3406780.json"
+  },
+  {
+   "district": "Harmony Twp",
+   "nces_leaid": "3406810",
+   "page": "/nj/harmony-twp-3406810/",
+   "url": "/api/v1/nj/3406810.json"
+  },
+  {
+   "district": "Harrington Park Boro",
+   "nces_leaid": "3406840",
+   "page": "/nj/harrington-park-boro-3406840/",
+   "url": "/api/v1/nj/3406840.json"
+  },
+  {
+   "district": "Harrison Town",
+   "nces_leaid": "3406870",
+   "page": "/nj/harrison-town-3406870/",
+   "url": "/api/v1/nj/3406870.json"
+  },
+  {
+   "district": "Harrison Twp",
+   "nces_leaid": "3406900",
+   "page": "/nj/harrison-twp-3406900/",
+   "url": "/api/v1/nj/3406900.json"
+  },
+  {
+   "district": "Hasbrouck Heights Boro",
+   "nces_leaid": "3406930",
+   "page": "/nj/hasbrouck-heights-boro-3406930/",
+   "url": "/api/v1/nj/3406930.json"
+  },
+  {
+   "district": "Haworth Boro",
+   "nces_leaid": "3406960",
+   "page": "/nj/haworth-boro-3406960/",
+   "url": "/api/v1/nj/3406960.json"
+  },
+  {
+   "district": "Hawthorne Boro",
+   "nces_leaid": "3406990",
+   "page": "/nj/hawthorne-boro-3406990/",
+   "url": "/api/v1/nj/3406990.json"
+  },
+  {
+   "district": "Henry Hudson Regional",
+   "nces_leaid": "3407050",
+   "page": "/nj/henry-hudson-regional-3407050/",
+   "url": "/api/v1/nj/3407050.json"
+  },
+  {
+   "district": "High Bridge Boro",
+   "nces_leaid": "3407110",
+   "page": "/nj/high-bridge-boro-3407110/",
+   "url": "/api/v1/nj/3407110.json"
+  },
+  {
+   "district": "High Point Regional",
+   "nces_leaid": "3407140",
+   "page": "/nj/high-point-regional-3407140/",
+   "url": "/api/v1/nj/3407140.json"
+  },
+  {
+   "district": "Highland Park Boro",
+   "nces_leaid": "3407170",
+   "page": "/nj/highland-park-boro-3407170/",
+   "url": "/api/v1/nj/3407170.json"
+  },
+  {
+   "district": "Highlands Boro",
+   "nces_leaid": "3407200",
+   "page": "/nj/highlands-boro-3407200/",
+   "url": "/api/v1/nj/3407200.json"
+  },
+  {
+   "district": "Hillsborough Twp",
+   "nces_leaid": "3407230",
+   "page": "/nj/hillsborough-twp-3407230/",
+   "url": "/api/v1/nj/3407230.json"
+  },
+  {
+   "district": "Hillsdale Boro",
+   "nces_leaid": "3407260",
+   "page": "/nj/hillsdale-boro-3407260/",
+   "url": "/api/v1/nj/3407260.json"
+  },
+  {
+   "district": "Hillside Twp",
+   "nces_leaid": "3407290",
+   "page": "/nj/hillside-twp-3407290/",
+   "url": "/api/v1/nj/3407290.json"
+  },
+  {
+   "district": "Ho Ho Kus Boro",
+   "nces_leaid": "3407320",
+   "page": "/nj/ho-ho-kus-boro-3407320/",
+   "url": "/api/v1/nj/3407320.json"
+  },
+  {
+   "district": "Hoboken City",
+   "nces_leaid": "3407350",
+   "page": "/nj/hoboken-city-3407350/",
+   "url": "/api/v1/nj/3407350.json"
+  },
+  {
+   "district": "Holland Twp",
+   "nces_leaid": "3407380",
+   "page": "/nj/holland-twp-3407380/",
+   "url": "/api/v1/nj/3407380.json"
+  },
+  {
+   "district": "Holmdel Twp",
+   "nces_leaid": "3407410",
+   "page": "/nj/holmdel-twp-3407410/",
+   "url": "/api/v1/nj/3407410.json"
+  },
+  {
+   "district": "Hopatcong",
+   "nces_leaid": "3407440",
+   "page": "/nj/hopatcong-3407440/",
+   "url": "/api/v1/nj/3407440.json"
+  },
+  {
+   "district": "Hope Twp",
+   "nces_leaid": "3407470",
+   "page": "/nj/hope-twp-3407470/",
+   "url": "/api/v1/nj/3407470.json"
+  },
+  {
+   "district": "Hopewell Twp",
+   "nces_leaid": "3407500",
+   "page": "/nj/hopewell-twp-3407500/",
+   "url": "/api/v1/nj/3407500.json"
+  },
+  {
+   "district": "Hopewell Valley Regional",
+   "nces_leaid": "3407530",
+   "page": "/nj/hopewell-valley-regional-3407530/",
+   "url": "/api/v1/nj/3407530.json"
+  },
+  {
+   "district": "Howell Twp",
+   "nces_leaid": "3407560",
+   "page": "/nj/howell-twp-3407560/",
+   "url": "/api/v1/nj/3407560.json"
+  },
+  {
+   "district": "Hudson County Vocational",
+   "nces_leaid": "3407570",
+   "page": "/nj/hudson-county-vocational-3407570/",
+   "url": "/api/v1/nj/3407570.json"
+  },
+  {
+   "district": "Hunterdon Central Reg",
+   "nces_leaid": "3407590",
+   "page": "/nj/hunterdon-central-reg-3407590/",
+   "url": "/api/v1/nj/3407590.json"
+  },
+  {
+   "district": "Irvington Township",
+   "nces_leaid": "3407680",
+   "page": "/nj/irvington-township-3407680/",
+   "url": "/api/v1/nj/3407680.json"
+  },
+  {
+   "district": "Island Heights Boro",
+   "nces_leaid": "3407710",
+   "page": "/nj/island-heights-boro-3407710/",
+   "url": "/api/v1/nj/3407710.json"
+  },
+  {
+   "district": "Jackson Twp",
+   "nces_leaid": "3407740",
+   "page": "/nj/jackson-twp-3407740/",
+   "url": "/api/v1/nj/3407740.json"
+  },
+  {
+   "district": "Jamesburg Boro",
+   "nces_leaid": "3407770",
+   "page": "/nj/jamesburg-boro-3407770/",
+   "url": "/api/v1/nj/3407770.json"
+  },
+  {
+   "district": "Jefferson Twp",
+   "nces_leaid": "3407800",
+   "page": "/nj/jefferson-twp-3407800/",
+   "url": "/api/v1/nj/3407800.json"
+  },
+  {
+   "district": "Jersey City",
+   "nces_leaid": "3407830",
+   "page": "/nj/jersey-city-3407830/",
+   "url": "/api/v1/nj/3407830.json"
+  },
+  {
+   "district": "Keansburg Boro",
+   "nces_leaid": "3407860",
+   "page": "/nj/keansburg-boro-3407860/",
+   "url": "/api/v1/nj/3407860.json"
+  },
+  {
+   "district": "Kearny Town",
+   "nces_leaid": "3407890",
+   "page": "/nj/kearny-town-3407890/",
+   "url": "/api/v1/nj/3407890.json"
+  },
+  {
+   "district": "Kenilworth Boro",
+   "nces_leaid": "3407920",
+   "page": "/nj/kenilworth-boro-3407920/",
+   "url": "/api/v1/nj/3407920.json"
+  },
+  {
+   "district": "Keyport Boro",
+   "nces_leaid": "3407950",
+   "page": "/nj/keyport-boro-3407950/",
+   "url": "/api/v1/nj/3407950.json"
+  },
+  {
+   "district": "Kingsway Regional",
+   "nces_leaid": "3407980",
+   "page": "/nj/kingsway-regional-3407980/",
+   "url": "/api/v1/nj/3407980.json"
+  },
+  {
+   "district": "Kingwood Twp",
+   "nces_leaid": "3408010",
+   "page": "/nj/kingwood-twp-3408010/",
+   "url": "/api/v1/nj/3408010.json"
+  },
+  {
+   "district": "Kinnelon Boro",
+   "nces_leaid": "3408040",
+   "page": "/nj/kinnelon-boro-3408040/",
+   "url": "/api/v1/nj/3408040.json"
+  },
+  {
+   "district": "Kittatinny Regional",
+   "nces_leaid": "3408060",
+   "page": "/nj/kittatinny-regional-3408060/",
+   "url": "/api/v1/nj/3408060.json"
+  },
+  {
+   "district": "Knowlton Twp",
+   "nces_leaid": "3408070",
+   "page": "/nj/knowlton-twp-3408070/",
+   "url": "/api/v1/nj/3408070.json"
+  },
+  {
+   "district": "Lacey Twp",
+   "nces_leaid": "3408100",
+   "page": "/nj/lacey-twp-3408100/",
+   "url": "/api/v1/nj/3408100.json"
+  },
+  {
+   "district": "Lafayette Twp",
+   "nces_leaid": "3408130",
+   "page": "/nj/lafayette-twp-3408130/",
+   "url": "/api/v1/nj/3408130.json"
+  },
+  {
+   "district": "Lakehurst Boro",
+   "nces_leaid": "3408160",
+   "page": "/nj/lakehurst-boro-3408160/",
+   "url": "/api/v1/nj/3408160.json"
+  },
+  {
+   "district": "Lakeland Regional",
+   "nces_leaid": "3408190",
+   "page": "/nj/lakeland-regional-3408190/",
+   "url": "/api/v1/nj/3408190.json"
+  },
+  {
+   "district": "Lakewood Twp",
+   "nces_leaid": "3408220",
+   "page": "/nj/lakewood-twp-3408220/",
+   "url": "/api/v1/nj/3408220.json"
+  },
+  {
+   "district": "Laurel Springs Boro",
+   "nces_leaid": "3408280",
+   "page": "/nj/laurel-springs-boro-3408280/",
+   "url": "/api/v1/nj/3408280.json"
+  },
+  {
+   "district": "Lavallette Boro",
+   "nces_leaid": "3408310",
+   "page": "/nj/lavallette-boro-3408310/",
+   "url": "/api/v1/nj/3408310.json"
+  },
+  {
+   "district": "Lawnside Boro",
+   "nces_leaid": "3408340",
+   "page": "/nj/lawnside-boro-3408340/",
+   "url": "/api/v1/nj/3408340.json"
+  },
+  {
+   "district": "Lawrence Twp",
+   "nces_leaid": "3408370",
+   "page": "/nj/lawrence-twp-3408370/",
+   "url": "/api/v1/nj/3408370.json"
+  },
+  {
+   "district": "Lawrence Twp",
+   "nces_leaid": "3408400",
+   "page": "/nj/lawrence-twp-3408400/",
+   "url": "/api/v1/nj/3408400.json"
+  },
+  {
+   "district": "Lebanon Boro",
+   "nces_leaid": "3408430",
+   "page": "/nj/lebanon-boro-3408430/",
+   "url": "/api/v1/nj/3408430.json"
+  },
+  {
+   "district": "Lebanon Twp",
+   "nces_leaid": "3408460",
+   "page": "/nj/lebanon-twp-3408460/",
+   "url": "/api/v1/nj/3408460.json"
+  },
+  {
+   "district": "Lenape Regional",
+   "nces_leaid": "3408490",
+   "page": "/nj/lenape-regional-3408490/",
+   "url": "/api/v1/nj/3408490.json"
+  },
+  {
+   "district": "Lenape Valley Regional",
+   "nces_leaid": "3408500",
+   "page": "/nj/lenape-valley-regional-3408500/",
+   "url": "/api/v1/nj/3408500.json"
+  },
+  {
+   "district": "Leonia Boro",
+   "nces_leaid": "3408520",
+   "page": "/nj/leonia-boro-3408520/",
+   "url": "/api/v1/nj/3408520.json"
+  },
+  {
+   "district": "Lincoln Park Boro",
+   "nces_leaid": "3408580",
+   "page": "/nj/lincoln-park-boro-3408580/",
+   "url": "/api/v1/nj/3408580.json"
+  },
+  {
+   "district": "Linden City",
+   "nces_leaid": "3408610",
+   "page": "/nj/linden-city-3408610/",
+   "url": "/api/v1/nj/3408610.json"
+  },
+  {
+   "district": "Lindenwold Boro",
+   "nces_leaid": "3408640",
+   "page": "/nj/lindenwold-boro-3408640/",
+   "url": "/api/v1/nj/3408640.json"
+  },
+  {
+   "district": "Linwood City",
+   "nces_leaid": "3408670",
+   "page": "/nj/linwood-city-3408670/",
+   "url": "/api/v1/nj/3408670.json"
+  },
+  {
+   "district": "Little Egg Harbor Twp",
+   "nces_leaid": "3408700",
+   "page": "/nj/little-egg-harbor-twp-3408700/",
+   "url": "/api/v1/nj/3408700.json"
+  },
+  {
+   "district": "Little Falls Twp",
+   "nces_leaid": "3408730",
+   "page": "/nj/little-falls-twp-3408730/",
+   "url": "/api/v1/nj/3408730.json"
+  },
+  {
+   "district": "Little Ferry Boro",
+   "nces_leaid": "3408760",
+   "page": "/nj/little-ferry-boro-3408760/",
+   "url": "/api/v1/nj/3408760.json"
+  },
+  {
+   "district": "Little Silver Boro",
+   "nces_leaid": "3408790",
+   "page": "/nj/little-silver-boro-3408790/",
+   "url": "/api/v1/nj/3408790.json"
+  },
+  {
+   "district": "Livingston Twp",
+   "nces_leaid": "3408820",
+   "page": "/nj/livingston-twp-3408820/",
+   "url": "/api/v1/nj/3408820.json"
+  },
+  {
+   "district": "Lodi Borough",
+   "nces_leaid": "3408850",
+   "page": "/nj/lodi-borough-3408850/",
+   "url": "/api/v1/nj/3408850.json"
+  },
+  {
+   "district": "Logan Twp",
+   "nces_leaid": "3408880",
+   "page": "/nj/logan-twp-3408880/",
+   "url": "/api/v1/nj/3408880.json"
+  },
+  {
+   "district": "Long Beach Island",
+   "nces_leaid": "3408910",
+   "page": "/nj/long-beach-island-3408910/",
+   "url": "/api/v1/nj/3408910.json"
+  },
+  {
+   "district": "Long Branch City",
+   "nces_leaid": "3408940",
+   "page": "/nj/long-branch-city-3408940/",
+   "url": "/api/v1/nj/3408940.json"
+  },
+  {
+   "district": "Lopatcong Twp",
+   "nces_leaid": "3409000",
+   "page": "/nj/lopatcong-twp-3409000/",
+   "url": "/api/v1/nj/3409000.json"
+  },
+  {
+   "district": "Lower Alloways Creek",
+   "nces_leaid": "3409030",
+   "page": "/nj/lower-alloways-creek-3409030/",
+   "url": "/api/v1/nj/3409030.json"
+  },
+  {
+   "district": "Lower Cape May Regional",
+   "nces_leaid": "3409090",
+   "page": "/nj/lower-cape-may-regional-3409090/",
+   "url": "/api/v1/nj/3409090.json"
+  },
+  {
+   "district": "Pennsville",
+   "nces_leaid": "3409120",
+   "page": "/nj/pennsville-3409120/",
+   "url": "/api/v1/nj/3409120.json"
+  },
+  {
+   "district": "Lower Twp",
+   "nces_leaid": "3409150",
+   "page": "/nj/lower-twp-3409150/",
+   "url": "/api/v1/nj/3409150.json"
+  },
+  {
+   "district": "Lumberton Twp",
+   "nces_leaid": "3409180",
+   "page": "/nj/lumberton-twp-3409180/",
+   "url": "/api/v1/nj/3409180.json"
+  },
+  {
+   "district": "Lyndhurst Twp",
+   "nces_leaid": "3409210",
+   "page": "/nj/lyndhurst-twp-3409210/",
+   "url": "/api/v1/nj/3409210.json"
+  },
+  {
+   "district": "Madison Boro",
+   "nces_leaid": "3409240",
+   "page": "/nj/madison-boro-3409240/",
+   "url": "/api/v1/nj/3409240.json"
+  },
+  {
+   "district": "Old Bridge Twp",
+   "nces_leaid": "3409270",
+   "page": "/nj/old-bridge-twp-3409270/",
+   "url": "/api/v1/nj/3409270.json"
+  },
+  {
+   "district": "Magnolia Boro",
+   "nces_leaid": "3409300",
+   "page": "/nj/magnolia-boro-3409300/",
+   "url": "/api/v1/nj/3409300.json"
+  },
+  {
+   "district": "Mahwah Twp",
+   "nces_leaid": "3409330",
+   "page": "/nj/mahwah-twp-3409330/",
+   "url": "/api/v1/nj/3409330.json"
+  },
+  {
+   "district": "Mainland Regional",
+   "nces_leaid": "3409360",
+   "page": "/nj/mainland-regional-3409360/",
+   "url": "/api/v1/nj/3409360.json"
+  },
+  {
+   "district": "Manalapan-Englishtown Reg",
+   "nces_leaid": "3409390",
+   "page": "/nj/manalapan-englishtown-reg-3409390/",
+   "url": "/api/v1/nj/3409390.json"
+  },
+  {
+   "district": "Manasquan Boro",
+   "nces_leaid": "3409420",
+   "page": "/nj/manasquan-boro-3409420/",
+   "url": "/api/v1/nj/3409420.json"
+  },
+  {
+   "district": "Manchester Twp",
+   "nces_leaid": "3409450",
+   "page": "/nj/manchester-twp-3409450/",
+   "url": "/api/v1/nj/3409450.json"
+  },
+  {
+   "district": "Mannington Twp",
+   "nces_leaid": "3409480",
+   "page": "/nj/mannington-twp-3409480/",
+   "url": "/api/v1/nj/3409480.json"
+  },
+  {
+   "district": "Mansfield Twp",
+   "nces_leaid": "3409510",
+   "page": "/nj/mansfield-twp-3409510/",
+   "url": "/api/v1/nj/3409510.json"
+  },
+  {
+   "district": "Mansfield Twp",
+   "nces_leaid": "3409540",
+   "page": "/nj/mansfield-twp-3409540/",
+   "url": "/api/v1/nj/3409540.json"
+  },
+  {
+   "district": "North Warren Regional",
+   "nces_leaid": "3409550",
+   "page": "/nj/north-warren-regional-3409550/",
+   "url": "/api/v1/nj/3409550.json"
+  },
+  {
+   "district": "Mantua Twp",
+   "nces_leaid": "3409600",
+   "page": "/nj/mantua-twp-3409600/",
+   "url": "/api/v1/nj/3409600.json"
+  },
+  {
+   "district": "Manville Boro",
+   "nces_leaid": "3409630",
+   "page": "/nj/manville-boro-3409630/",
+   "url": "/api/v1/nj/3409630.json"
+  },
+  {
+   "district": "Maple Shade Twp",
+   "nces_leaid": "3409660",
+   "page": "/nj/maple-shade-twp-3409660/",
+   "url": "/api/v1/nj/3409660.json"
+  },
+  {
+   "district": "Margate City",
+   "nces_leaid": "3409690",
+   "page": "/nj/margate-city-3409690/",
+   "url": "/api/v1/nj/3409690.json"
+  },
+  {
+   "district": "Marlboro Twp",
+   "nces_leaid": "3409720",
+   "page": "/nj/marlboro-twp-3409720/",
+   "url": "/api/v1/nj/3409720.json"
+  },
+  {
+   "district": "Matawan-Aberdeen Regional",
+   "nces_leaid": "3409750",
+   "page": "/nj/matawan-aberdeen-regional-3409750/",
+   "url": "/api/v1/nj/3409750.json"
+  },
+  {
+   "district": "Maurice River Twp",
+   "nces_leaid": "3409780",
+   "page": "/nj/maurice-river-twp-3409780/",
+   "url": "/api/v1/nj/3409780.json"
+  },
+  {
+   "district": "Maywood Boro",
+   "nces_leaid": "3409810",
+   "page": "/nj/maywood-boro-3409810/",
+   "url": "/api/v1/nj/3409810.json"
+  },
+  {
+   "district": "Medford Lakes Boro",
+   "nces_leaid": "3409840",
+   "page": "/nj/medford-lakes-boro-3409840/",
+   "url": "/api/v1/nj/3409840.json"
+  },
+  {
+   "district": "Medford Twp",
+   "nces_leaid": "3409870",
+   "page": "/nj/medford-twp-3409870/",
+   "url": "/api/v1/nj/3409870.json"
+  },
+  {
+   "district": "Mendham Boro",
+   "nces_leaid": "3409900",
+   "page": "/nj/mendham-boro-3409900/",
+   "url": "/api/v1/nj/3409900.json"
+  },
+  {
+   "district": "Mendham Twp",
+   "nces_leaid": "3409930",
+   "page": "/nj/mendham-twp-3409930/",
+   "url": "/api/v1/nj/3409930.json"
+  },
+  {
+   "district": "Mercer County Vocational",
+   "nces_leaid": "3409950",
+   "page": "/nj/mercer-county-vocational-3409950/",
+   "url": "/api/v1/nj/3409950.json"
+  },
+  {
+   "district": "Merchantville Boro",
+   "nces_leaid": "3409960",
+   "page": "/nj/merchantville-boro-3409960/",
+   "url": "/api/v1/nj/3409960.json"
+  },
+  {
+   "district": "Metuchen Boro",
+   "nces_leaid": "3409990",
+   "page": "/nj/metuchen-boro-3409990/",
+   "url": "/api/v1/nj/3409990.json"
+  },
+  {
+   "district": "Middle Twp",
+   "nces_leaid": "3410020",
+   "page": "/nj/middle-twp-3410020/",
+   "url": "/api/v1/nj/3410020.json"
+  },
+  {
+   "district": "Middlesex Boro",
+   "nces_leaid": "3410050",
+   "page": "/nj/middlesex-boro-3410050/",
+   "url": "/api/v1/nj/3410050.json"
+  },
+  {
+   "district": "Middlesex Co Vocational",
+   "nces_leaid": "3410080",
+   "page": "/nj/middlesex-co-vocational-3410080/",
+   "url": "/api/v1/nj/3410080.json"
+  },
+  {
+   "district": "Middletown Twp",
+   "nces_leaid": "3410110",
+   "page": "/nj/middletown-twp-3410110/",
+   "url": "/api/v1/nj/3410110.json"
+  },
+  {
+   "district": "Midland Park Boro",
+   "nces_leaid": "3410140",
+   "page": "/nj/midland-park-boro-3410140/",
+   "url": "/api/v1/nj/3410140.json"
+  },
+  {
+   "district": "Milford Boro",
+   "nces_leaid": "3410170",
+   "page": "/nj/milford-boro-3410170/",
+   "url": "/api/v1/nj/3410170.json"
+  },
+  {
+   "district": "Millburn Twp",
+   "nces_leaid": "3410200",
+   "page": "/nj/millburn-twp-3410200/",
+   "url": "/api/v1/nj/3410200.json"
+  },
+  {
+   "district": "Millstone Twp",
+   "nces_leaid": "3410230",
+   "page": "/nj/millstone-twp-3410230/",
+   "url": "/api/v1/nj/3410230.json"
+  },
+  {
+   "district": "Milltown Boro",
+   "nces_leaid": "3410290",
+   "page": "/nj/milltown-boro-3410290/",
+   "url": "/api/v1/nj/3410290.json"
+  },
+  {
+   "district": "Millville City",
+   "nces_leaid": "3410320",
+   "page": "/nj/millville-city-3410320/",
+   "url": "/api/v1/nj/3410320.json"
+  },
+  {
+   "district": "Mine Hill Twp",
+   "nces_leaid": "3410350",
+   "page": "/nj/mine-hill-twp-3410350/",
+   "url": "/api/v1/nj/3410350.json"
+  },
+  {
+   "district": "Monmouth Beach Boro",
+   "nces_leaid": "3410380",
+   "page": "/nj/monmouth-beach-boro-3410380/",
+   "url": "/api/v1/nj/3410380.json"
+  },
+  {
+   "district": "Monmouth Regional",
+   "nces_leaid": "3410440",
+   "page": "/nj/monmouth-regional-3410440/",
+   "url": "/api/v1/nj/3410440.json"
+  },
+  {
+   "district": "Monroe Twp",
+   "nces_leaid": "3410470",
+   "page": "/nj/monroe-twp-3410470/",
+   "url": "/api/v1/nj/3410470.json"
+  },
+  {
+   "district": "Monroe Twp",
+   "nces_leaid": "3410500",
+   "page": "/nj/monroe-twp-3410500/",
+   "url": "/api/v1/nj/3410500.json"
+  },
+  {
+   "district": "Montague Twp",
+   "nces_leaid": "3410530",
+   "page": "/nj/montague-twp-3410530/",
+   "url": "/api/v1/nj/3410530.json"
+  },
+  {
+   "district": "Montclair Town",
+   "nces_leaid": "3410560",
+   "page": "/nj/montclair-town-3410560/",
+   "url": "/api/v1/nj/3410560.json"
+  },
+  {
+   "district": "Montgomery Twp",
+   "nces_leaid": "3410590",
+   "page": "/nj/montgomery-twp-3410590/",
+   "url": "/api/v1/nj/3410590.json"
+  },
+  {
+   "district": "Montvale Boro",
+   "nces_leaid": "3410620",
+   "page": "/nj/montvale-boro-3410620/",
+   "url": "/api/v1/nj/3410620.json"
+  },
+  {
+   "district": "Montville Twp",
+   "nces_leaid": "3410650",
+   "page": "/nj/montville-twp-3410650/",
+   "url": "/api/v1/nj/3410650.json"
+  },
+  {
+   "district": "Moonachie Boro",
+   "nces_leaid": "3410680",
+   "page": "/nj/moonachie-boro-3410680/",
+   "url": "/api/v1/nj/3410680.json"
+  },
+  {
+   "district": "Moorestown Twp",
+   "nces_leaid": "3410710",
+   "page": "/nj/moorestown-twp-3410710/",
+   "url": "/api/v1/nj/3410710.json"
+  },
+  {
+   "district": "Morris County Vocational",
+   "nces_leaid": "3410720",
+   "page": "/nj/morris-county-vocational-3410720/",
+   "url": "/api/v1/nj/3410720.json"
+  },
+  {
+   "district": "Morris Hills Regional",
+   "nces_leaid": "3410740",
+   "page": "/nj/morris-hills-regional-3410740/",
+   "url": "/api/v1/nj/3410740.json"
+  },
+  {
+   "district": "Morris Plains Boro",
+   "nces_leaid": "3410770",
+   "page": "/nj/morris-plains-boro-3410770/",
+   "url": "/api/v1/nj/3410770.json"
+  },
+  {
+   "district": "Morris School District",
+   "nces_leaid": "3410810",
+   "page": "/nj/morris-school-district-3410810/",
+   "url": "/api/v1/nj/3410810.json"
+  },
+  {
+   "district": "Mount Arlington Boro",
+   "nces_leaid": "3410860",
+   "page": "/nj/mount-arlington-boro-3410860/",
+   "url": "/api/v1/nj/3410860.json"
+  },
+  {
+   "district": "Mount Ephraim Boro",
+   "nces_leaid": "3410890",
+   "page": "/nj/mount-ephraim-boro-3410890/",
+   "url": "/api/v1/nj/3410890.json"
+  },
+  {
+   "district": "Mount Holly Twp",
+   "nces_leaid": "3410920",
+   "page": "/nj/mount-holly-twp-3410920/",
+   "url": "/api/v1/nj/3410920.json"
+  },
+  {
+   "district": "Mount Laurel Twp",
+   "nces_leaid": "3410950",
+   "page": "/nj/mount-laurel-twp-3410950/",
+   "url": "/api/v1/nj/3410950.json"
+  },
+  {
+   "district": "Mount Olive Twp",
+   "nces_leaid": "3410980",
+   "page": "/nj/mount-olive-twp-3410980/",
+   "url": "/api/v1/nj/3410980.json"
+  },
+  {
+   "district": "Mountain Lakes Boro",
+   "nces_leaid": "3411010",
+   "page": "/nj/mountain-lakes-boro-3411010/",
+   "url": "/api/v1/nj/3411010.json"
+  },
+  {
+   "district": "Mountainside Boro",
+   "nces_leaid": "3411040",
+   "page": "/nj/mountainside-boro-3411040/",
+   "url": "/api/v1/nj/3411040.json"
+  },
+  {
+   "district": "Mullica Twp",
+   "nces_leaid": "3411070",
+   "page": "/nj/mullica-twp-3411070/",
+   "url": "/api/v1/nj/3411070.json"
+  },
+  {
+   "district": "National Park Boro",
+   "nces_leaid": "3411100",
+   "page": "/nj/national-park-boro-3411100/",
+   "url": "/api/v1/nj/3411100.json"
+  },
+  {
+   "district": "Neptune City",
+   "nces_leaid": "3411130",
+   "page": "/nj/neptune-city-3411130/",
+   "url": "/api/v1/nj/3411130.json"
+  },
+  {
+   "district": "Neptune Twp",
+   "nces_leaid": "3411160",
+   "page": "/nj/neptune-twp-3411160/",
+   "url": "/api/v1/nj/3411160.json"
+  },
+  {
+   "district": "Netcong Boro",
+   "nces_leaid": "3411190",
+   "page": "/nj/netcong-boro-3411190/",
+   "url": "/api/v1/nj/3411190.json"
+  },
+  {
+   "district": "New Brunswick City",
+   "nces_leaid": "3411220",
+   "page": "/nj/new-brunswick-city-3411220/",
+   "url": "/api/v1/nj/3411220.json"
+  },
+  {
+   "district": "New Hanover Twp",
+   "nces_leaid": "3411250",
+   "page": "/nj/new-hanover-twp-3411250/",
+   "url": "/api/v1/nj/3411250.json"
+  },
+  {
+   "district": "New Milford Boro",
+   "nces_leaid": "3411280",
+   "page": "/nj/new-milford-boro-3411280/",
+   "url": "/api/v1/nj/3411280.json"
+  },
+  {
+   "district": "New Providence Boro",
+   "nces_leaid": "3411310",
+   "page": "/nj/new-providence-boro-3411310/",
+   "url": "/api/v1/nj/3411310.json"
+  },
+  {
+   "district": "Newark City",
+   "nces_leaid": "3411340",
+   "page": "/nj/newark-city-3411340/",
+   "url": "/api/v1/nj/3411340.json"
+  },
+  {
+   "district": "Newton Town",
+   "nces_leaid": "3411400",
+   "page": "/nj/newton-town-3411400/",
+   "url": "/api/v1/nj/3411400.json"
+  },
+  {
+   "district": "North Arlington Boro",
+   "nces_leaid": "3411430",
+   "page": "/nj/north-arlington-boro-3411430/",
+   "url": "/api/v1/nj/3411430.json"
+  },
+  {
+   "district": "North Bergen Twp",
+   "nces_leaid": "3411460",
+   "page": "/nj/north-bergen-twp-3411460/",
+   "url": "/api/v1/nj/3411460.json"
+  },
+  {
+   "district": "North Brunswick Twp",
+   "nces_leaid": "3411490",
+   "page": "/nj/north-brunswick-twp-3411490/",
+   "url": "/api/v1/nj/3411490.json"
+  },
+  {
+   "district": "North Caldwell Boro",
+   "nces_leaid": "3411520",
+   "page": "/nj/north-caldwell-boro-3411520/",
+   "url": "/api/v1/nj/3411520.json"
+  },
+  {
+   "district": "North Haledon Boro",
+   "nces_leaid": "3411550",
+   "page": "/nj/north-haledon-boro-3411550/",
+   "url": "/api/v1/nj/3411550.json"
+  },
+  {
+   "district": "North Hanover Twp",
+   "nces_leaid": "3411580",
+   "page": "/nj/north-hanover-twp-3411580/",
+   "url": "/api/v1/nj/3411580.json"
+  },
+  {
+   "district": "North Hunterdon-Voorhees Regional",
+   "nces_leaid": "3411610",
+   "page": "/nj/north-hunterdon-voorhees-regional-3411610/",
+   "url": "/api/v1/nj/3411610.json"
+  },
+  {
+   "district": "North Plainfield Boro",
+   "nces_leaid": "3411640",
+   "page": "/nj/north-plainfield-boro-3411640/",
+   "url": "/api/v1/nj/3411640.json"
+  },
+  {
+   "district": "North Wildwood City",
+   "nces_leaid": "3411670",
+   "page": "/nj/north-wildwood-city-3411670/",
+   "url": "/api/v1/nj/3411670.json"
+  },
+  {
+   "district": "Northern Burlington Reg",
+   "nces_leaid": "3411700",
+   "page": "/nj/northern-burlington-reg-3411700/",
+   "url": "/api/v1/nj/3411700.json"
+  },
+  {
+   "district": "Northern Highlands Reg",
+   "nces_leaid": "3411730",
+   "page": "/nj/northern-highlands-reg-3411730/",
+   "url": "/api/v1/nj/3411730.json"
+  },
+  {
+   "district": "Northern Valley Regional",
+   "nces_leaid": "3411760",
+   "page": "/nj/northern-valley-regional-3411760/",
+   "url": "/api/v1/nj/3411760.json"
+  },
+  {
+   "district": "Northfield City",
+   "nces_leaid": "3411790",
+   "page": "/nj/northfield-city-3411790/",
+   "url": "/api/v1/nj/3411790.json"
+  },
+  {
+   "district": "Northvale Boro",
+   "nces_leaid": "3411820",
+   "page": "/nj/northvale-boro-3411820/",
+   "url": "/api/v1/nj/3411820.json"
+  },
+  {
+   "district": "Norwood Boro",
+   "nces_leaid": "3411850",
+   "page": "/nj/norwood-boro-3411850/",
+   "url": "/api/v1/nj/3411850.json"
+  },
+  {
+   "district": "Nutley Town",
+   "nces_leaid": "3411880",
+   "page": "/nj/nutley-town-3411880/",
+   "url": "/api/v1/nj/3411880.json"
+  },
+  {
+   "district": "Oakland Boro",
+   "nces_leaid": "3411910",
+   "page": "/nj/oakland-boro-3411910/",
+   "url": "/api/v1/nj/3411910.json"
+  },
+  {
+   "district": "Oaklyn Boro",
+   "nces_leaid": "3411940",
+   "page": "/nj/oaklyn-boro-3411940/",
+   "url": "/api/v1/nj/3411940.json"
+  },
+  {
+   "district": "Ocean City",
+   "nces_leaid": "3411970",
+   "page": "/nj/ocean-city-3411970/",
+   "url": "/api/v1/nj/3411970.json"
+  },
+  {
+   "district": "Ocean County Vocational",
+   "nces_leaid": "3411980",
+   "page": "/nj/ocean-county-vocational-3411980/",
+   "url": "/api/v1/nj/3411980.json"
+  },
+  {
+   "district": "Ocean Gate Boro",
+   "nces_leaid": "3412030",
+   "page": "/nj/ocean-gate-boro-3412030/",
+   "url": "/api/v1/nj/3412030.json"
+  },
+  {
+   "district": "Ocean Twp",
+   "nces_leaid": "3412060",
+   "page": "/nj/ocean-twp-3412060/",
+   "url": "/api/v1/nj/3412060.json"
+  },
+  {
+   "district": "Ocean Twp",
+   "nces_leaid": "3412090",
+   "page": "/nj/ocean-twp-3412090/",
+   "url": "/api/v1/nj/3412090.json"
+  },
+  {
+   "district": "Oceanport Boro",
+   "nces_leaid": "3412120",
+   "page": "/nj/oceanport-boro-3412120/",
+   "url": "/api/v1/nj/3412120.json"
+  },
+  {
+   "district": "Ogdensburg Boro",
+   "nces_leaid": "3412150",
+   "page": "/nj/ogdensburg-boro-3412150/",
+   "url": "/api/v1/nj/3412150.json"
+  },
+  {
+   "district": "Old Tappan Boro",
+   "nces_leaid": "3412180",
+   "page": "/nj/old-tappan-boro-3412180/",
+   "url": "/api/v1/nj/3412180.json"
+  },
+  {
+   "district": "Oldmans Twp",
+   "nces_leaid": "3412210",
+   "page": "/nj/oldmans-twp-3412210/",
+   "url": "/api/v1/nj/3412210.json"
+  },
+  {
+   "district": "Oradell Boro",
+   "nces_leaid": "3412240",
+   "page": "/nj/oradell-boro-3412240/",
+   "url": "/api/v1/nj/3412240.json"
+  },
+  {
+   "district": "River Dell Regional",
+   "nces_leaid": "3412260",
+   "page": "/nj/river-dell-regional-3412260/",
+   "url": "/api/v1/nj/3412260.json"
+  },
+  {
+   "district": "City of Orange Twp",
+   "nces_leaid": "3412270",
+   "page": "/nj/city-of-orange-twp-3412270/",
+   "url": "/api/v1/nj/3412270.json"
+  },
+  {
+   "district": "Oxford Twp",
+   "nces_leaid": "3412300",
+   "page": "/nj/oxford-twp-3412300/",
+   "url": "/api/v1/nj/3412300.json"
+  },
+  {
+   "district": "Palisades Park",
+   "nces_leaid": "3412360",
+   "page": "/nj/palisades-park-3412360/",
+   "url": "/api/v1/nj/3412360.json"
+  },
+  {
+   "district": "Palmyra Boro",
+   "nces_leaid": "3412390",
+   "page": "/nj/palmyra-boro-3412390/",
+   "url": "/api/v1/nj/3412390.json"
+  },
+  {
+   "district": "Paramus Boro",
+   "nces_leaid": "3412420",
+   "page": "/nj/paramus-boro-3412420/",
+   "url": "/api/v1/nj/3412420.json"
+  },
+  {
+   "district": "Park Ridge Boro",
+   "nces_leaid": "3412450",
+   "page": "/nj/park-ridge-boro-3412450/",
+   "url": "/api/v1/nj/3412450.json"
+  },
+  {
+   "district": "Parsippany-Troy Hills Twp",
+   "nces_leaid": "3412480",
+   "page": "/nj/parsippany-troy-hills-twp-3412480/",
+   "url": "/api/v1/nj/3412480.json"
+  },
+  {
+   "district": "Pascack Valley Regional",
+   "nces_leaid": "3412510",
+   "page": "/nj/pascack-valley-regional-3412510/",
+   "url": "/api/v1/nj/3412510.json"
+  },
+  {
+   "district": "Passaic City",
+   "nces_leaid": "3412540",
+   "page": "/nj/passaic-city-3412540/",
+   "url": "/api/v1/nj/3412540.json"
+  },
+  {
+   "district": "Passaic Valley Regional",
+   "nces_leaid": "3412570",
+   "page": "/nj/passaic-valley-regional-3412570/",
+   "url": "/api/v1/nj/3412570.json"
+  },
+  {
+   "district": "Passaic Co Manchester Reg",
+   "nces_leaid": "3412600",
+   "page": "/nj/passaic-co-manchester-reg-3412600/",
+   "url": "/api/v1/nj/3412600.json"
+  },
+  {
+   "district": "Passaic County Vocational",
+   "nces_leaid": "3412630",
+   "page": "/nj/passaic-county-vocational-3412630/",
+   "url": "/api/v1/nj/3412630.json"
+  },
+  {
+   "district": "Long Hill Twp",
+   "nces_leaid": "3412660",
+   "page": "/nj/long-hill-twp-3412660/",
+   "url": "/api/v1/nj/3412660.json"
+  },
+  {
+   "district": "Paterson City",
+   "nces_leaid": "3412690",
+   "page": "/nj/paterson-city-3412690/",
+   "url": "/api/v1/nj/3412690.json"
+  },
+  {
+   "district": "Paulsboro Boro",
+   "nces_leaid": "3412720",
+   "page": "/nj/paulsboro-boro-3412720/",
+   "url": "/api/v1/nj/3412720.json"
+  },
+  {
+   "district": "Pemberton Twp",
+   "nces_leaid": "3412810",
+   "page": "/nj/pemberton-twp-3412810/",
+   "url": "/api/v1/nj/3412810.json"
+  },
+  {
+   "district": "Penns Grv-Carneys Pt Reg",
+   "nces_leaid": "3412840",
+   "page": "/nj/penns-grv-carneys-pt-reg-3412840/",
+   "url": "/api/v1/nj/3412840.json"
+  },
+  {
+   "district": "Pennsauken Twp",
+   "nces_leaid": "3412870",
+   "page": "/nj/pennsauken-twp-3412870/",
+   "url": "/api/v1/nj/3412870.json"
+  },
+  {
+   "district": "Pequannock Twp",
+   "nces_leaid": "3412900",
+   "page": "/nj/pequannock-twp-3412900/",
+   "url": "/api/v1/nj/3412900.json"
+  },
+  {
+   "district": "Perth Amboy City",
+   "nces_leaid": "3412930",
+   "page": "/nj/perth-amboy-city-3412930/",
+   "url": "/api/v1/nj/3412930.json"
+  },
+  {
+   "district": "Phillipsburg Town",
+   "nces_leaid": "3412960",
+   "page": "/nj/phillipsburg-town-3412960/",
+   "url": "/api/v1/nj/3412960.json"
+  },
+  {
+   "district": "Pine Hill Boro",
+   "nces_leaid": "3412990",
+   "page": "/nj/pine-hill-boro-3412990/",
+   "url": "/api/v1/nj/3412990.json"
+  },
+  {
+   "district": "Pinelands Regional",
+   "nces_leaid": "3413000",
+   "page": "/nj/pinelands-regional-3413000/",
+   "url": "/api/v1/nj/3413000.json"
+  },
+  {
+   "district": "Piscataway Twp",
+   "nces_leaid": "3413050",
+   "page": "/nj/piscataway-twp-3413050/",
+   "url": "/api/v1/nj/3413050.json"
+  },
+  {
+   "district": "Pitman Boro",
+   "nces_leaid": "3413080",
+   "page": "/nj/pitman-boro-3413080/",
+   "url": "/api/v1/nj/3413080.json"
+  },
+  {
+   "district": "Pittsgrove Twp",
+   "nces_leaid": "3413110",
+   "page": "/nj/pittsgrove-twp-3413110/",
+   "url": "/api/v1/nj/3413110.json"
+  },
+  {
+   "district": "Plainfield City",
+   "nces_leaid": "3413140",
+   "page": "/nj/plainfield-city-3413140/",
+   "url": "/api/v1/nj/3413140.json"
+  },
+  {
+   "district": "Pleasantville City",
+   "nces_leaid": "3413200",
+   "page": "/nj/pleasantville-city-3413200/",
+   "url": "/api/v1/nj/3413200.json"
+  },
+  {
+   "district": "Plumsted Twp",
+   "nces_leaid": "3413230",
+   "page": "/nj/plumsted-twp-3413230/",
+   "url": "/api/v1/nj/3413230.json"
+  },
+  {
+   "district": "Pohatcong Twp",
+   "nces_leaid": "3413260",
+   "page": "/nj/pohatcong-twp-3413260/",
+   "url": "/api/v1/nj/3413260.json"
+  },
+  {
+   "district": "Point Pleasant Boro",
+   "nces_leaid": "3413290",
+   "page": "/nj/point-pleasant-boro-3413290/",
+   "url": "/api/v1/nj/3413290.json"
+  },
+  {
+   "district": "Point Pleasant Beach Boro",
+   "nces_leaid": "3413320",
+   "page": "/nj/point-pleasant-beach-boro-3413320/",
+   "url": "/api/v1/nj/3413320.json"
+  },
+  {
+   "district": "Pompton Lakes Boro",
+   "nces_leaid": "3413350",
+   "page": "/nj/pompton-lakes-boro-3413350/",
+   "url": "/api/v1/nj/3413350.json"
+  },
+  {
+   "district": "Port Republic City",
+   "nces_leaid": "3413380",
+   "page": "/nj/port-republic-city-3413380/",
+   "url": "/api/v1/nj/3413380.json"
+  },
+  {
+   "district": "Princeton",
+   "nces_leaid": "3413410",
+   "page": "/nj/princeton-3413410/",
+   "url": "/api/v1/nj/3413410.json"
+  },
+  {
+   "district": "Prospect Park Boro",
+   "nces_leaid": "3413470",
+   "page": "/nj/prospect-park-boro-3413470/",
+   "url": "/api/v1/nj/3413470.json"
+  },
+  {
+   "district": "Quinton Twp",
+   "nces_leaid": "3413500",
+   "page": "/nj/quinton-twp-3413500/",
+   "url": "/api/v1/nj/3413500.json"
+  },
+  {
+   "district": "Rahway City",
+   "nces_leaid": "3413530",
+   "page": "/nj/rahway-city-3413530/",
+   "url": "/api/v1/nj/3413530.json"
+  },
+  {
+   "district": "Ramapo-Indian Hill Reg",
+   "nces_leaid": "3413560",
+   "page": "/nj/ramapo-indian-hill-reg-3413560/",
+   "url": "/api/v1/nj/3413560.json"
+  },
+  {
+   "district": "Ramsey Boro",
+   "nces_leaid": "3413590",
+   "page": "/nj/ramsey-boro-3413590/",
+   "url": "/api/v1/nj/3413590.json"
+  },
+  {
+   "district": "Rancocas Valley Regional",
+   "nces_leaid": "3413620",
+   "page": "/nj/rancocas-valley-regional-3413620/",
+   "url": "/api/v1/nj/3413620.json"
+  },
+  {
+   "district": "Randolph Twp",
+   "nces_leaid": "3413650",
+   "page": "/nj/randolph-twp-3413650/",
+   "url": "/api/v1/nj/3413650.json"
+  },
+  {
+   "district": "Hazlet Twp",
+   "nces_leaid": "3413680",
+   "page": "/nj/hazlet-twp-3413680/",
+   "url": "/api/v1/nj/3413680.json"
+  },
+  {
+   "district": "Readington Twp",
+   "nces_leaid": "3413710",
+   "page": "/nj/readington-twp-3413710/",
+   "url": "/api/v1/nj/3413710.json"
+  },
+  {
+   "district": "Red Bank Boro",
+   "nces_leaid": "3413740",
+   "page": "/nj/red-bank-boro-3413740/",
+   "url": "/api/v1/nj/3413740.json"
+  },
+  {
+   "district": "Red Bank Regional",
+   "nces_leaid": "3413750",
+   "page": "/nj/red-bank-regional-3413750/",
+   "url": "/api/v1/nj/3413750.json"
+  },
+  {
+   "district": "Ridgefield Boro",
+   "nces_leaid": "3413770",
+   "page": "/nj/ridgefield-boro-3413770/",
+   "url": "/api/v1/nj/3413770.json"
+  },
+  {
+   "district": "Ridgefield Park Twp",
+   "nces_leaid": "3413800",
+   "page": "/nj/ridgefield-park-twp-3413800/",
+   "url": "/api/v1/nj/3413800.json"
+  },
+  {
+   "district": "Ridgewood Village",
+   "nces_leaid": "3413830",
+   "page": "/nj/ridgewood-village-3413830/",
+   "url": "/api/v1/nj/3413830.json"
+  },
+  {
+   "district": "Ringwood Boro",
+   "nces_leaid": "3413860",
+   "page": "/nj/ringwood-boro-3413860/",
+   "url": "/api/v1/nj/3413860.json"
+  },
+  {
+   "district": "River Edge Boro",
+   "nces_leaid": "3413890",
+   "page": "/nj/river-edge-boro-3413890/",
+   "url": "/api/v1/nj/3413890.json"
+  },
+  {
+   "district": "River Vale Twp",
+   "nces_leaid": "3413950",
+   "page": "/nj/river-vale-twp-3413950/",
+   "url": "/api/v1/nj/3413950.json"
+  },
+  {
+   "district": "Riverdale Boro",
+   "nces_leaid": "3413980",
+   "page": "/nj/riverdale-boro-3413980/",
+   "url": "/api/v1/nj/3413980.json"
+  },
+  {
+   "district": "Riverside Twp",
+   "nces_leaid": "3414010",
+   "page": "/nj/riverside-twp-3414010/",
+   "url": "/api/v1/nj/3414010.json"
+  },
+  {
+   "district": "Riverton",
+   "nces_leaid": "3414040",
+   "page": "/nj/riverton-3414040/",
+   "url": "/api/v1/nj/3414040.json"
+  },
+  {
+   "district": "Rochelle Park Twp",
+   "nces_leaid": "3414070",
+   "page": "/nj/rochelle-park-twp-3414070/",
+   "url": "/api/v1/nj/3414070.json"
+  },
+  {
+   "district": "Rockaway Boro",
+   "nces_leaid": "3414100",
+   "page": "/nj/rockaway-boro-3414100/",
+   "url": "/api/v1/nj/3414100.json"
+  },
+  {
+   "district": "Rockaway Twp",
+   "nces_leaid": "3414130",
+   "page": "/nj/rockaway-twp-3414130/",
+   "url": "/api/v1/nj/3414130.json"
+  },
+  {
+   "district": "Roosevelt Boro",
+   "nces_leaid": "3414220",
+   "page": "/nj/roosevelt-boro-3414220/",
+   "url": "/api/v1/nj/3414220.json"
+  },
+  {
+   "district": "Roseland Boro",
+   "nces_leaid": "3414250",
+   "page": "/nj/roseland-boro-3414250/",
+   "url": "/api/v1/nj/3414250.json"
+  },
+  {
+   "district": "Roselle Boro",
+   "nces_leaid": "3414280",
+   "page": "/nj/roselle-boro-3414280/",
+   "url": "/api/v1/nj/3414280.json"
+  },
+  {
+   "district": "Roselle Park Boro",
+   "nces_leaid": "3414310",
+   "page": "/nj/roselle-park-boro-3414310/",
+   "url": "/api/v1/nj/3414310.json"
+  },
+  {
+   "district": "Roxbury Twp",
+   "nces_leaid": "3414340",
+   "page": "/nj/roxbury-twp-3414340/",
+   "url": "/api/v1/nj/3414340.json"
+  },
+  {
+   "district": "Rumson Boro",
+   "nces_leaid": "3414370",
+   "page": "/nj/rumson-boro-3414370/",
+   "url": "/api/v1/nj/3414370.json"
+  },
+  {
+   "district": "Rumson-Fair Haven Reg",
+   "nces_leaid": "3414400",
+   "page": "/nj/rumson-fair-haven-reg-3414400/",
+   "url": "/api/v1/nj/3414400.json"
+  },
+  {
+   "district": "Runnemede Boro",
+   "nces_leaid": "3414430",
+   "page": "/nj/runnemede-boro-3414430/",
+   "url": "/api/v1/nj/3414430.json"
+  },
+  {
+   "district": "Rutherford Boro",
+   "nces_leaid": "3414460",
+   "page": "/nj/rutherford-boro-3414460/",
+   "url": "/api/v1/nj/3414460.json"
+  },
+  {
+   "district": "Saddle Brook Twp",
+   "nces_leaid": "3414490",
+   "page": "/nj/saddle-brook-twp-3414490/",
+   "url": "/api/v1/nj/3414490.json"
+  },
+  {
+   "district": "Saddle River Boro",
+   "nces_leaid": "3414520",
+   "page": "/nj/saddle-river-boro-3414520/",
+   "url": "/api/v1/nj/3414520.json"
+  },
+  {
+   "district": "Salem City",
+   "nces_leaid": "3414550",
+   "page": "/nj/salem-city-3414550/",
+   "url": "/api/v1/nj/3414550.json"
+  },
+  {
+   "district": "Salem County Vocational",
+   "nces_leaid": "3414580",
+   "page": "/nj/salem-county-vocational-3414580/",
+   "url": "/api/v1/nj/3414580.json"
+  },
+  {
+   "district": "Sandyston-Walpack Twp",
+   "nces_leaid": "3414610",
+   "page": "/nj/sandyston-walpack-twp-3414610/",
+   "url": "/api/v1/nj/3414610.json"
+  },
+  {
+   "district": "Sayreville Boro",
+   "nces_leaid": "3414640",
+   "page": "/nj/sayreville-boro-3414640/",
+   "url": "/api/v1/nj/3414640.json"
+  },
+  {
+   "district": "Scotch Plains-Fanwood Reg",
+   "nces_leaid": "3414670",
+   "page": "/nj/scotch-plains-fanwood-reg-3414670/",
+   "url": "/api/v1/nj/3414670.json"
+  },
+  {
+   "district": "Sea Girt Boro",
+   "nces_leaid": "3414730",
+   "page": "/nj/sea-girt-boro-3414730/",
+   "url": "/api/v1/nj/3414730.json"
+  },
+  {
+   "district": "Seaside Heights Boro",
+   "nces_leaid": "3414790",
+   "page": "/nj/seaside-heights-boro-3414790/",
+   "url": "/api/v1/nj/3414790.json"
+  },
+  {
+   "district": "Seaside Park Boro",
+   "nces_leaid": "3414820",
+   "page": "/nj/seaside-park-boro-3414820/",
+   "url": "/api/v1/nj/3414820.json"
+  },
+  {
+   "district": "Secaucus Town",
+   "nces_leaid": "3414850",
+   "page": "/nj/secaucus-town-3414850/",
+   "url": "/api/v1/nj/3414850.json"
+  },
+  {
+   "district": "Shamong Twp",
+   "nces_leaid": "3414880",
+   "page": "/nj/shamong-twp-3414880/",
+   "url": "/api/v1/nj/3414880.json"
+  },
+  {
+   "district": "Shore Regional",
+   "nces_leaid": "3414940",
+   "page": "/nj/shore-regional-3414940/",
+   "url": "/api/v1/nj/3414940.json"
+  },
+  {
+   "district": "Shrewsbury Boro",
+   "nces_leaid": "3414970",
+   "page": "/nj/shrewsbury-boro-3414970/",
+   "url": "/api/v1/nj/3414970.json"
+  },
+  {
+   "district": "Somerdale Boro",
+   "nces_leaid": "3415000",
+   "page": "/nj/somerdale-boro-3415000/",
+   "url": "/api/v1/nj/3415000.json"
+  },
+  {
+   "district": "Somers Point City",
+   "nces_leaid": "3415030",
+   "page": "/nj/somers-point-city-3415030/",
+   "url": "/api/v1/nj/3415030.json"
+  },
+  {
+   "district": "Somerset Co Vocational",
+   "nces_leaid": "3415060",
+   "page": "/nj/somerset-co-vocational-3415060/",
+   "url": "/api/v1/nj/3415060.json"
+  },
+  {
+   "district": "Somerville Boro",
+   "nces_leaid": "3415090",
+   "page": "/nj/somerville-boro-3415090/",
+   "url": "/api/v1/nj/3415090.json"
+  },
+  {
+   "district": "South Amboy City",
+   "nces_leaid": "3415120",
+   "page": "/nj/south-amboy-city-3415120/",
+   "url": "/api/v1/nj/3415120.json"
+  },
+  {
+   "district": "South Bound Brook",
+   "nces_leaid": "3415180",
+   "page": "/nj/south-bound-brook-3415180/",
+   "url": "/api/v1/nj/3415180.json"
+  },
+  {
+   "district": "South Brunswick Twp",
+   "nces_leaid": "3415210",
+   "page": "/nj/south-brunswick-twp-3415210/",
+   "url": "/api/v1/nj/3415210.json"
+  },
+  {
+   "district": "South Hackensack Twp",
+   "nces_leaid": "3415240",
+   "page": "/nj/south-hackensack-twp-3415240/",
+   "url": "/api/v1/nj/3415240.json"
+  },
+  {
+   "district": "South Harrison Twp",
+   "nces_leaid": "3415270",
+   "page": "/nj/south-harrison-twp-3415270/",
+   "url": "/api/v1/nj/3415270.json"
+  },
+  {
+   "district": "South Orange-Maplewood",
+   "nces_leaid": "3415330",
+   "page": "/nj/south-orange-maplewood-3415330/",
+   "url": "/api/v1/nj/3415330.json"
+  },
+  {
+   "district": "South Plainfield Boro",
+   "nces_leaid": "3415360",
+   "page": "/nj/south-plainfield-boro-3415360/",
+   "url": "/api/v1/nj/3415360.json"
+  },
+  {
+   "district": "South River Boro",
+   "nces_leaid": "3415390",
+   "page": "/nj/south-river-boro-3415390/",
+   "url": "/api/v1/nj/3415390.json"
+  },
+  {
+   "district": "Southampton Twp",
+   "nces_leaid": "3415420",
+   "page": "/nj/southampton-twp-3415420/",
+   "url": "/api/v1/nj/3415420.json"
+  },
+  {
+   "district": "Delsea Regional H.S Dist.",
+   "nces_leaid": "3415450",
+   "page": "/nj/delsea-regional-h-s-dist-3415450/",
+   "url": "/api/v1/nj/3415450.json"
+  },
+  {
+   "district": "Southern Regional",
+   "nces_leaid": "3415480",
+   "page": "/nj/southern-regional-3415480/",
+   "url": "/api/v1/nj/3415480.json"
+  },
+  {
+   "district": "Sparta Twp",
+   "nces_leaid": "3415510",
+   "page": "/nj/sparta-twp-3415510/",
+   "url": "/api/v1/nj/3415510.json"
+  },
+  {
+   "district": "Spotswood Boro",
+   "nces_leaid": "3415540",
+   "page": "/nj/spotswood-boro-3415540/",
+   "url": "/api/v1/nj/3415540.json"
+  },
+  {
+   "district": "Spring Lake Boro",
+   "nces_leaid": "3415570",
+   "page": "/nj/spring-lake-boro-3415570/",
+   "url": "/api/v1/nj/3415570.json"
+  },
+  {
+   "district": "Spring Lake Heights Boro",
+   "nces_leaid": "3415600",
+   "page": "/nj/spring-lake-heights-boro-3415600/",
+   "url": "/api/v1/nj/3415600.json"
+  },
+  {
+   "district": "Springfield Twp",
+   "nces_leaid": "3415630",
+   "page": "/nj/springfield-twp-3415630/",
+   "url": "/api/v1/nj/3415630.json"
+  },
+  {
+   "district": "Springfield Twp",
+   "nces_leaid": "3415660",
+   "page": "/nj/springfield-twp-3415660/",
+   "url": "/api/v1/nj/3415660.json"
+  },
+  {
+   "district": "Stafford Twp",
+   "nces_leaid": "3415690",
+   "page": "/nj/stafford-twp-3415690/",
+   "url": "/api/v1/nj/3415690.json"
+  },
+  {
+   "district": "Stanhope Boro",
+   "nces_leaid": "3415720",
+   "page": "/nj/stanhope-boro-3415720/",
+   "url": "/api/v1/nj/3415720.json"
+  },
+  {
+   "district": "Stillwater Twp",
+   "nces_leaid": "3415750",
+   "page": "/nj/stillwater-twp-3415750/",
+   "url": "/api/v1/nj/3415750.json"
+  },
+  {
+   "district": "Stone Harbor Boro",
+   "nces_leaid": "3415810",
+   "page": "/nj/stone-harbor-boro-3415810/",
+   "url": "/api/v1/nj/3415810.json"
+  },
+  {
+   "district": "Stow Creek Twp",
+   "nces_leaid": "3415840",
+   "page": "/nj/stow-creek-twp-3415840/",
+   "url": "/api/v1/nj/3415840.json"
+  },
+  {
+   "district": "Stratford Boro",
+   "nces_leaid": "3415870",
+   "page": "/nj/stratford-boro-3415870/",
+   "url": "/api/v1/nj/3415870.json"
+  },
+  {
+   "district": "Summit City",
+   "nces_leaid": "3415900",
+   "page": "/nj/summit-city-3415900/",
+   "url": "/api/v1/nj/3415900.json"
+  },
+  {
+   "district": "Sussex County Vocational",
+   "nces_leaid": "3415930",
+   "page": "/nj/sussex-county-vocational-3415930/",
+   "url": "/api/v1/nj/3415930.json"
+  },
+  {
+   "district": "Sussex-Wantage Regional",
+   "nces_leaid": "3415960",
+   "page": "/nj/sussex-wantage-regional-3415960/",
+   "url": "/api/v1/nj/3415960.json"
+  },
+  {
+   "district": "Swedesboro-Woolwich",
+   "nces_leaid": "3415990",
+   "page": "/nj/swedesboro-woolwich-3415990/",
+   "url": "/api/v1/nj/3415990.json"
+  },
+  {
+   "district": "Tabernacle Twp",
+   "nces_leaid": "3416020",
+   "page": "/nj/tabernacle-twp-3416020/",
+   "url": "/api/v1/nj/3416020.json"
+  },
+  {
+   "district": "Teaneck Twp",
+   "nces_leaid": "3416080",
+   "page": "/nj/teaneck-twp-3416080/",
+   "url": "/api/v1/nj/3416080.json"
+  },
+  {
+   "district": "Tenafly Boro",
+   "nces_leaid": "3416110",
+   "page": "/nj/tenafly-boro-3416110/",
+   "url": "/api/v1/nj/3416110.json"
+  },
+  {
+   "district": "Tewksbury Twp",
+   "nces_leaid": "3416170",
+   "page": "/nj/tewksbury-twp-3416170/",
+   "url": "/api/v1/nj/3416170.json"
+  },
+  {
+   "district": "Tinton Falls",
+   "nces_leaid": "3416200",
+   "page": "/nj/tinton-falls-3416200/",
+   "url": "/api/v1/nj/3416200.json"
+  },
+  {
+   "district": "Toms River Regional",
+   "nces_leaid": "3416230",
+   "page": "/nj/toms-river-regional-3416230/",
+   "url": "/api/v1/nj/3416230.json"
+  },
+  {
+   "district": "Totowa Boro",
+   "nces_leaid": "3416260",
+   "page": "/nj/totowa-boro-3416260/",
+   "url": "/api/v1/nj/3416260.json"
+  },
+  {
+   "district": "Trenton Public School District",
+   "nces_leaid": "3416290",
+   "page": "/nj/trenton-public-school-district-3416290/",
+   "url": "/api/v1/nj/3416290.json"
+  },
+  {
+   "district": "Tuckerton Boro",
+   "nces_leaid": "3416320",
+   "page": "/nj/tuckerton-boro-3416320/",
+   "url": "/api/v1/nj/3416320.json"
+  },
+  {
+   "district": "Union Beach",
+   "nces_leaid": "3416350",
+   "page": "/nj/union-beach-3416350/",
+   "url": "/api/v1/nj/3416350.json"
+  },
+  {
+   "district": "Union City",
+   "nces_leaid": "3416380",
+   "page": "/nj/union-city-3416380/",
+   "url": "/api/v1/nj/3416380.json"
+  },
+  {
+   "district": "Union Co Ed Serv Comm",
+   "nces_leaid": "3416400",
+   "page": "/nj/union-co-ed-serv-comm-3416400/",
+   "url": "/api/v1/nj/3416400.json"
+  },
+  {
+   "district": "Union Twp",
+   "nces_leaid": "3416440",
+   "page": "/nj/union-twp-3416440/",
+   "url": "/api/v1/nj/3416440.json"
+  },
+  {
+   "district": "Barnegat Twp",
+   "nces_leaid": "3416470",
+   "page": "/nj/barnegat-twp-3416470/",
+   "url": "/api/v1/nj/3416470.json"
+  },
+  {
+   "district": "Union Twp",
+   "nces_leaid": "3416500",
+   "page": "/nj/union-twp-3416500/",
+   "url": "/api/v1/nj/3416500.json"
+  },
+  {
+   "district": "Upper Deerfield Twp",
+   "nces_leaid": "3416530",
+   "page": "/nj/upper-deerfield-twp-3416530/",
+   "url": "/api/v1/nj/3416530.json"
+  },
+  {
+   "district": "Upper Freehold Regional",
+   "nces_leaid": "3416560",
+   "page": "/nj/upper-freehold-regional-3416560/",
+   "url": "/api/v1/nj/3416560.json"
+  },
+  {
+   "district": "Upper Pittsgrove Twp",
+   "nces_leaid": "3416590",
+   "page": "/nj/upper-pittsgrove-twp-3416590/",
+   "url": "/api/v1/nj/3416590.json"
+  },
+  {
+   "district": "Upper Saddle River Boro",
+   "nces_leaid": "3416620",
+   "page": "/nj/upper-saddle-river-boro-3416620/",
+   "url": "/api/v1/nj/3416620.json"
+  },
+  {
+   "district": "Upper Twp",
+   "nces_leaid": "3416650",
+   "page": "/nj/upper-twp-3416650/",
+   "url": "/api/v1/nj/3416650.json"
+  },
+  {
+   "district": "Ventnor City",
+   "nces_leaid": "3416680",
+   "page": "/nj/ventnor-city-3416680/",
+   "url": "/api/v1/nj/3416680.json"
+  },
+  {
+   "district": "Vernon Twp",
+   "nces_leaid": "3416710",
+   "page": "/nj/vernon-twp-3416710/",
+   "url": "/api/v1/nj/3416710.json"
+  },
+  {
+   "district": "Verona Boro",
+   "nces_leaid": "3416740",
+   "page": "/nj/verona-boro-3416740/",
+   "url": "/api/v1/nj/3416740.json"
+  },
+  {
+   "district": "Vineland City",
+   "nces_leaid": "3416800",
+   "page": "/nj/vineland-city-3416800/",
+   "url": "/api/v1/nj/3416800.json"
+  },
+  {
+   "district": "Voorhees Twp",
+   "nces_leaid": "3416830",
+   "page": "/nj/voorhees-twp-3416830/",
+   "url": "/api/v1/nj/3416830.json"
+  },
+  {
+   "district": "Waldwick Boro",
+   "nces_leaid": "3416860",
+   "page": "/nj/waldwick-boro-3416860/",
+   "url": "/api/v1/nj/3416860.json"
+  },
+  {
+   "district": "Wallkill Valley Regional",
+   "nces_leaid": "3416870",
+   "page": "/nj/wallkill-valley-regional-3416870/",
+   "url": "/api/v1/nj/3416870.json"
+  },
+  {
+   "district": "Wall Twp",
+   "nces_leaid": "3416890",
+   "page": "/nj/wall-twp-3416890/",
+   "url": "/api/v1/nj/3416890.json"
+  },
+  {
+   "district": "Wallington Boro",
+   "nces_leaid": "3416920",
+   "page": "/nj/wallington-boro-3416920/",
+   "url": "/api/v1/nj/3416920.json"
+  },
+  {
+   "district": "Wanaque Boro",
+   "nces_leaid": "3416950",
+   "page": "/nj/wanaque-boro-3416950/",
+   "url": "/api/v1/nj/3416950.json"
+  },
+  {
+   "district": "Warren Hills Regional",
+   "nces_leaid": "3416970",
+   "page": "/nj/warren-hills-regional-3416970/",
+   "url": "/api/v1/nj/3416970.json"
+  },
+  {
+   "district": "Warren Twp",
+   "nces_leaid": "3416980",
+   "page": "/nj/warren-twp-3416980/",
+   "url": "/api/v1/nj/3416980.json"
+  },
+  {
+   "district": "Washington Boro",
+   "nces_leaid": "3417010",
+   "page": "/nj/washington-boro-3417010/",
+   "url": "/api/v1/nj/3417010.json"
+  },
+  {
+   "district": "Washington Twp",
+   "nces_leaid": "3417070",
+   "page": "/nj/washington-twp-3417070/",
+   "url": "/api/v1/nj/3417070.json"
+  },
+  {
+   "district": "Robbinsville Twp",
+   "nces_leaid": "3417100",
+   "page": "/nj/robbinsville-twp-3417100/",
+   "url": "/api/v1/nj/3417100.json"
+  },
+  {
+   "district": "Washington Twp",
+   "nces_leaid": "3417130",
+   "page": "/nj/washington-twp-3417130/",
+   "url": "/api/v1/nj/3417130.json"
+  },
+  {
+   "district": "Washington Twp",
+   "nces_leaid": "3417160",
+   "page": "/nj/washington-twp-3417160/",
+   "url": "/api/v1/nj/3417160.json"
+  },
+  {
+   "district": "Watchung Boro",
+   "nces_leaid": "3417190",
+   "page": "/nj/watchung-boro-3417190/",
+   "url": "/api/v1/nj/3417190.json"
+  },
+  {
+   "district": "Watchung Hills Regional",
+   "nces_leaid": "3417220",
+   "page": "/nj/watchung-hills-regional-3417220/",
+   "url": "/api/v1/nj/3417220.json"
+  },
+  {
+   "district": "Waterford Twp",
+   "nces_leaid": "3417250",
+   "page": "/nj/waterford-twp-3417250/",
+   "url": "/api/v1/nj/3417250.json"
+  },
+  {
+   "district": "Wayne Twp",
+   "nces_leaid": "3417280",
+   "page": "/nj/wayne-twp-3417280/",
+   "url": "/api/v1/nj/3417280.json"
+  },
+  {
+   "district": "Weehawken Twp",
+   "nces_leaid": "3417310",
+   "page": "/nj/weehawken-twp-3417310/",
+   "url": "/api/v1/nj/3417310.json"
+  },
+  {
+   "district": "Wenonah Boro",
+   "nces_leaid": "3417340",
+   "page": "/nj/wenonah-boro-3417340/",
+   "url": "/api/v1/nj/3417340.json"
+  },
+  {
+   "district": "West Cape May Boro",
+   "nces_leaid": "3417400",
+   "page": "/nj/west-cape-may-boro-3417400/",
+   "url": "/api/v1/nj/3417400.json"
+  },
+  {
+   "district": "West Deptford Twp",
+   "nces_leaid": "3417430",
+   "page": "/nj/west-deptford-twp-3417430/",
+   "url": "/api/v1/nj/3417430.json"
+  },
+  {
+   "district": "West Essex Regional",
+   "nces_leaid": "3417460",
+   "page": "/nj/west-essex-regional-3417460/",
+   "url": "/api/v1/nj/3417460.json"
+  },
+  {
+   "district": "West Long Branch Boro",
+   "nces_leaid": "3417490",
+   "page": "/nj/west-long-branch-boro-3417490/",
+   "url": "/api/v1/nj/3417490.json"
+  },
+  {
+   "district": "Monmouth Co Vocational",
+   "nces_leaid": "3417500",
+   "page": "/nj/monmouth-co-vocational-3417500/",
+   "url": "/api/v1/nj/3417500.json"
+  },
+  {
+   "district": "West Milford Twp",
+   "nces_leaid": "3417520",
+   "page": "/nj/west-milford-twp-3417520/",
+   "url": "/api/v1/nj/3417520.json"
+  },
+  {
+   "district": "West Morris Regional",
+   "nces_leaid": "3417550",
+   "page": "/nj/west-morris-regional-3417550/",
+   "url": "/api/v1/nj/3417550.json"
+  },
+  {
+   "district": "West New York Town",
+   "nces_leaid": "3417580",
+   "page": "/nj/west-new-york-town-3417580/",
+   "url": "/api/v1/nj/3417580.json"
+  },
+  {
+   "district": "West Orange Town",
+   "nces_leaid": "3417610",
+   "page": "/nj/west-orange-town-3417610/",
+   "url": "/api/v1/nj/3417610.json"
+  },
+  {
+   "district": "Woodland Park",
+   "nces_leaid": "3417640",
+   "page": "/nj/woodland-park-3417640/",
+   "url": "/api/v1/nj/3417640.json"
+  },
+  {
+   "district": "W Windsor-Plainsboro Reg",
+   "nces_leaid": "3417700",
+   "page": "/nj/w-windsor-plainsboro-reg-3417700/",
+   "url": "/api/v1/nj/3417700.json"
+  },
+  {
+   "district": "Westampton",
+   "nces_leaid": "3417730",
+   "page": "/nj/westampton-3417730/",
+   "url": "/api/v1/nj/3417730.json"
+  },
+  {
+   "district": "Westfield Town",
+   "nces_leaid": "3417760",
+   "page": "/nj/westfield-town-3417760/",
+   "url": "/api/v1/nj/3417760.json"
+  },
+  {
+   "district": "Westville Boro",
+   "nces_leaid": "3417790",
+   "page": "/nj/westville-boro-3417790/",
+   "url": "/api/v1/nj/3417790.json"
+  },
+  {
+   "district": "Westwood Regional",
+   "nces_leaid": "3417820",
+   "page": "/nj/westwood-regional-3417820/",
+   "url": "/api/v1/nj/3417820.json"
+  },
+  {
+   "district": "Weymouth Twp",
+   "nces_leaid": "3417850",
+   "page": "/nj/weymouth-twp-3417850/",
+   "url": "/api/v1/nj/3417850.json"
+  },
+  {
+   "district": "Wharton Boro",
+   "nces_leaid": "3417880",
+   "page": "/nj/wharton-boro-3417880/",
+   "url": "/api/v1/nj/3417880.json"
+  },
+  {
+   "district": "White Twp",
+   "nces_leaid": "3417910",
+   "page": "/nj/white-twp-3417910/",
+   "url": "/api/v1/nj/3417910.json"
+  },
+  {
+   "district": "Warren County Vocational",
+   "nces_leaid": "3417920",
+   "page": "/nj/warren-county-vocational-3417920/",
+   "url": "/api/v1/nj/3417920.json"
+  },
+  {
+   "district": "Wildwood City",
+   "nces_leaid": "3417940",
+   "page": "/nj/wildwood-city-3417940/",
+   "url": "/api/v1/nj/3417940.json"
+  },
+  {
+   "district": "Wildwood Crest Boro",
+   "nces_leaid": "3417970",
+   "page": "/nj/wildwood-crest-boro-3417970/",
+   "url": "/api/v1/nj/3417970.json"
+  },
+  {
+   "district": "Willingboro Twp",
+   "nces_leaid": "3418000",
+   "page": "/nj/willingboro-twp-3418000/",
+   "url": "/api/v1/nj/3418000.json"
+  },
+  {
+   "district": "Winfield Twp",
+   "nces_leaid": "3418030",
+   "page": "/nj/winfield-twp-3418030/",
+   "url": "/api/v1/nj/3418030.json"
+  },
+  {
+   "district": "Union County Vocational",
+   "nces_leaid": "3418040",
+   "page": "/nj/union-county-vocational-3418040/",
+   "url": "/api/v1/nj/3418040.json"
+  },
+  {
+   "district": "Winslow Twp",
+   "nces_leaid": "3418060",
+   "page": "/nj/winslow-twp-3418060/",
+   "url": "/api/v1/nj/3418060.json"
+  },
+  {
+   "district": "Woodbine Boro",
+   "nces_leaid": "3418090",
+   "page": "/nj/woodbine-boro-3418090/",
+   "url": "/api/v1/nj/3418090.json"
+  },
+  {
+   "district": "Woodbridge Twp",
+   "nces_leaid": "3418120",
+   "page": "/nj/woodbridge-twp-3418120/",
+   "url": "/api/v1/nj/3418120.json"
+  },
+  {
+   "district": "Woodbury City",
+   "nces_leaid": "3418150",
+   "page": "/nj/woodbury-city-3418150/",
+   "url": "/api/v1/nj/3418150.json"
+  },
+  {
+   "district": "Woodbury Heights Boro",
+   "nces_leaid": "3418180",
+   "page": "/nj/woodbury-heights-boro-3418180/",
+   "url": "/api/v1/nj/3418180.json"
+  },
+  {
+   "district": "Woodcliff Lake Boro",
+   "nces_leaid": "3418210",
+   "page": "/nj/woodcliff-lake-boro-3418210/",
+   "url": "/api/v1/nj/3418210.json"
+  },
+  {
+   "district": "Woodland Twp",
+   "nces_leaid": "3418240",
+   "page": "/nj/woodland-twp-3418240/",
+   "url": "/api/v1/nj/3418240.json"
+  },
+  {
+   "district": "Woodlynne Boro",
+   "nces_leaid": "3418270",
+   "page": "/nj/woodlynne-boro-3418270/",
+   "url": "/api/v1/nj/3418270.json"
+  },
+  {
+   "district": "Wood-Ridge Boro",
+   "nces_leaid": "3418300",
+   "page": "/nj/wood-ridge-boro-3418300/",
+   "url": "/api/v1/nj/3418300.json"
+  },
+  {
+   "district": "Woodstown-Pilesgrove Reg",
+   "nces_leaid": "3418330",
+   "page": "/nj/woodstown-pilesgrove-reg-3418330/",
+   "url": "/api/v1/nj/3418330.json"
+  },
+  {
+   "district": "Wyckoff Twp",
+   "nces_leaid": "3418360",
+   "page": "/nj/wyckoff-twp-3418360/",
+   "url": "/api/v1/nj/3418360.json"
+  },
+  {
+   "district": "Educational Services Commission of New Jersey",
+   "nces_leaid": "3480180",
+   "page": "/nj/educational-services-commission-of-new-jersey-3480180/",
+   "url": "/api/v1/nj/3480180.json"
+  },
+  {
+   "district": "Mercer Co Special Services School District",
+   "nces_leaid": "3480200",
+   "page": "/nj/mercer-co-special-services-school-district-3480200/",
+   "url": "/api/v1/nj/3480200.json"
+  },
+  {
+   "district": "Monmouth-Ocean Ed Ser Com",
+   "nces_leaid": "3480240",
+   "page": "/nj/monmouth-ocean-ed-ser-com-3480240/",
+   "url": "/api/v1/nj/3480240.json"
+  },
+  {
+   "district": "Educ Serv Comm Morris Co",
+   "nces_leaid": "3480260",
+   "page": "/nj/educ-serv-comm-morris-co-3480260/",
+   "url": "/api/v1/nj/3480260.json"
+  },
+  {
+   "district": "Somerset Co Ed Serv Comm",
+   "nces_leaid": "3480280",
+   "page": "/nj/somerset-co-ed-serv-comm-3480280/",
+   "url": "/api/v1/nj/3480280.json"
+  },
+  {
+   "district": "Essex Co Ed Serv Comm",
+   "nces_leaid": "3480300",
+   "page": "/nj/essex-co-ed-serv-comm-3480300/",
+   "url": "/api/v1/nj/3480300.json"
+  },
+  {
+   "district": "Sussex Co Ed Serv Comm",
+   "nces_leaid": "3480320",
+   "page": "/nj/sussex-co-ed-serv-comm-3480320/",
+   "url": "/api/v1/nj/3480320.json"
+  },
+  {
+   "district": "Camden Co Ed Serv Comm",
+   "nces_leaid": "3480340",
+   "page": "/nj/camden-co-ed-serv-comm-3480340/",
+   "url": "/api/v1/nj/3480340.json"
+  },
+  {
+   "district": "Hunterdon Co Ed Ser Comm",
+   "nces_leaid": "3480360",
+   "page": "/nj/hunterdon-co-ed-ser-comm-3480360/",
+   "url": "/api/v1/nj/3480360.json"
+  },
+  {
+   "district": "Salem Co Special Service",
+   "nces_leaid": "3480361",
+   "page": "/nj/salem-co-special-service-3480361/",
+   "url": "/api/v1/nj/3480361.json"
+  },
+  {
+   "district": "Warren Co Special Service",
+   "nces_leaid": "3480362",
+   "page": "/nj/warren-co-special-service-3480362/",
+   "url": "/api/v1/nj/3480362.json"
+  },
+  {
+   "district": "Gloucester Co Spec Serv",
+   "nces_leaid": "3480363",
+   "page": "/nj/gloucester-co-spec-serv-3480363/",
+   "url": "/api/v1/nj/3480363.json"
+  },
+  {
+   "district": "Northern Region Educational Services Commission",
+   "nces_leaid": "3480364",
+   "page": "/nj/northern-region-educational-services-commission-3480364/",
+   "url": "/api/v1/nj/3480364.json"
+  },
+  {
+   "district": "Henry Hudson Regional",
+   "nces_leaid": "3480370",
+   "page": "/nj/henry-hudson-regional-3480370/",
+   "url": "/api/v1/nj/3480370.json"
+  },
+  {
+   "district": "Greenwich-Stow Creek Regional",
+   "nces_leaid": "3480371",
+   "page": "/nj/greenwich-stow-creek-regional-3480371/",
+   "url": "/api/v1/nj/3480371.json"
+  }
+ ],
+ "license": "https://creativecommons.org/licenses/by/4.0/",
+ "state": "NJ"
+}
