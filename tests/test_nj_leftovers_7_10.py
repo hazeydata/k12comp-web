@@ -34,7 +34,8 @@ OTHER_MODIFIED = {"docs/nj-history.md", "tests/test_nj_history_committed.py"}
 OTHER_ADDED = {"tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_10.py", "tools/jsonld_content_urls.py",
                "tools/nj_api_index.py", "tools/nj_mobile_chart_fit.py",
                "tests/test_nj_guide_tables.py", "tests/test_nj_guide_tables_browser.py", "tools/nj_guide_tables.py",  # PR #5 fix 1
-               "tests/test_nj_api_index_browser.py"}  # PR #5 fix list, QG nit (/api/v1/nj/ file names)
+               "tests/test_nj_api_index_browser.py",  # PR #5 fix list, QG nit (/api/v1/nj/ file names)
+               "tests/test_k12_chart_mobile_text.py"}  # K12-CHART-MOBILE-TEXT-001
 
 
 def rt(rel):
