@@ -88,7 +88,12 @@ class CommittedBuild(unittest.TestCase):
         committed = H.rb(os.path.join(H.ROOT, "nj", "index.html"))
         self.assertNotEqual(committed, built)  # the build still writes the old contentUrl; the committed page carries the edit
         self.assertEqual(len(committed) - len(built), len(b"index.json"))
-        self.assertEqual(committed, expected_committed("nj/index.html", built))
+        # worked out here from literals, not through expected_committed, so a helper that waves the file through cannot pass
+        old, new = b'"contentUrl": "/api/v1/nj/"', b'"contentUrl": "/api/v1/nj/index.json"'
+        self.assertEqual((built.count(old), built.count(new)), (1, 0))
+        want = built.replace(old, new, 1)
+        self.assertEqual(committed, want)
+        self.assertEqual(expected_committed("nj/index.html", built), want)
         # any other difference on that page, or the same edit on another file, is still a failure
         self.assertNotEqual(committed + b" ", expected_committed("nj/index.html", built))
         self.assertEqual(expected_committed("about/index.html", built), built)
