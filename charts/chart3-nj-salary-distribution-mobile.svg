@@ -276,8 +276,9 @@ L 259.332387 299.52
     <text style="font-size: 12px; font-family: 'JetBrains Mono'; text-anchor: start; fill: #1a1d21" x="160.252488" y="138.5592" transform="rotate(-0 160.252488 138.5592)"> median $206,606</text>
    </g>
    <g id="text_11">
-    <text style="font-size: 12px; font-family: 'JetBrains Mono'; fill: #5b6470" transform="translate(38.5 254)">Hampton Twp</text>
-    <text style="font-size: 12px; font-family: 'JetBrains Mono'; fill: #5b6470" transform="translate(38.5 268)">$56,225</text>
+    <text style="font-size: 12px; font-family: 'JetBrains Mono'; fill: #5b6470" transform="translate(45 258.1)">Hampton</text>
+    <text style="font-size: 12px; font-family: 'JetBrains Mono'; fill: #5b6470" transform="translate(45 271.1)">Twp</text>
+    <text style="font-size: 12px; font-family: 'JetBrains Mono'; fill: #5b6470" transform="translate(45 284.1)">$56,225</text>
    </g>
    <g id="text_12">
     <text style="font-size: 12px; font-family: 'JetBrains Mono'; text-anchor: end; fill: #5b6470" transform="translate(292 245)">Newark City</text>

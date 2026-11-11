@@ -25,7 +25,8 @@ each from itself and its desktop twin (<leaid>-desktop.svg, read only):
     right-aligned past a dot that is not at the last year slot.
 NJ distribution (charts/chart3-nj-salary-distribution-mobile.svg, matplotlib output, no generator in this repo): `--write` reflows the
 original once (a file already in the 304-unit viewBox is left alone). Title, subtitle and source note keep their words verbatim and are
-rewrapped at 13 (title, bold) and 12 units; tick, axis and note labels become 12 units; the two outlier notes move clear of the stems.
+rewrapped at 13 (title, bold) and 12 units; tick, axis and note labels become 12 units; the two outlier notes move clear of the stems
+(OUTLIERS). "Hampton Twp / $56,225" goes one word per line over the low tail it names, below the "20" tick row and clear of it.
 The plot (stems, dots, median line, spines, ticks) is only translated, by DIST_DX/dy, never scaled or moved relative to itself.
 Desktop SVGs are never touched. Re-running `--write` changes nothing (idempotent).
 
@@ -300,8 +301,10 @@ ORIGINAL_VIEWBOX = 'width="280.8pt" height="374.4pt" viewBox="0 0 280.8 374.4"'
 PLOT_TOP, AXIS_Y = 128.0512, 299.52  # matplotlib's axes box, in the plot's own coordinates (kept)
 GROUP_TEXT = re.compile(r'(<g id="(text_1[1-5])">\n)(.*?)(\n {2,3}</g>)', re.S)
 LINE_TEXT = re.compile(r'<text style="([^"]*)" transform="translate\([\d.]+ [\d.]+\)">([^<]*)</text>')
-# Outlier notes in plot coordinates: (x, anchor, first baseline). Chosen clear of every stem and dot (tests check the boxes).
-OUTLIERS = {"text_11": (38.5, "start", 254.0), "text_12": (292.0, "end", 245.0)}
+# Outlier notes in plot coordinates: (x, anchor, first baseline, baseline step, wrap width or None to keep matplotlib's lines). Chosen clear
+# of every stem and dot (tests check the boxes). Hampton Twp sits over the low tail it names, left-aligned near its first stem and below
+# the "20" tick row: two lines would run into the stems at $120-130k there, so its words go one per line.
+OUTLIERS = {"text_11": (45.0, "start", 258.1, 13, 52), "text_12": (292.0, "end", 245.0, 14, None)}
 
 
 def wrap(text, px, width):
@@ -352,8 +355,9 @@ def distribution(svg):
     foot = block("text_15", NOTE_PX, NOTE_STEP, foot_y)
     height = round(foot_y + (len(foot) - 1) * NOTE_STEP + 10, 1)
     notes = {}
-    for gid, (x, anchor, y0) in OUTLIERS.items():
-        notes[gid] = block(gid, NOTE_PX, 14, y0, x, anchor, [t for _, t in texts[gid]])
+    for gid, (x, anchor, y0, step, width) in OUTLIERS.items():
+        lines = [t for _, t in texts[gid]]
+        notes[gid] = block(gid, NOTE_PX, step, y0, x, anchor, wrap(" ".join(lines), NOTE_PX, width) if width else lines)
 
     new = {"text_11": notes["text_11"], "text_12": notes["text_12"], "text_13": title, "text_14": sub, "text_15": foot}
     indent = {k: re.match(r"\s*", m.group(3)).group(0) for k, m in groups.items()}
