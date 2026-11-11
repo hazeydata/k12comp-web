@@ -172,6 +172,66 @@ class Districts(unittest.TestCase):
         self.assertEqual([x for x, _ in F.DOT.findall(rt("charts/d/3402440-mobile.svg"))], ["48.0", "240.0", "272.0"])
         self.assertEqual([x for x, _ in F.DESKTOP_DOT.findall(rt("charts/d/3402440-desktop.svg"))], ["64.0", "544.0", "1024.0"])
 
+    def labels(self, svg, desktop):
+        """[(text, anchor_end, x, baseline, ink box, own dot)] for every value label, its dot found through the desktop twin."""
+        dots = [(float(x), float(y)) for x, y in F.DOT.findall(svg)]
+        out = []
+        for (_, i), m in zip(F.value_owners(desktop), F.VALUE.finditer(svg)):
+            x, y, end, text = float(m.group(1)), float(m.group(2)), bool(m.group(3)), m.group(4)
+            w = len(text) * F.VALUE_PX * F.EM
+            left = x - w if end else x
+            out.append((text, end, x, y, (left, y - 0.75 * F.VALUE_PX, left + w, y + 0.25 * F.VALUE_PX), dots[i]))
+        return out
+
+    def test_far_value_labels_have_one_leader_to_their_dot_and_near_ones_none(self):
+        """Review fix 2: a label more than 20 units from its dot is joined to it by one thin grey line (#999, 0.75, no arrowhead) running
+        from the label's nearest box edge to the dot; nearer labels have no leader."""
+        line = re.compile(r"<line ([^>]*)/>")
+        far = []
+        for path, svg, desktop in self.charts():
+            leaders = []
+            for ln in line.findall(svg):
+                a = dict(re.findall(r'([\w-]+)="([^"]*)"', ln))
+                if a.get("stroke") == "#999":
+                    self.assertEqual(a.get("stroke-width"), "0.75", path)
+                    self.assertNotIn("marker-end", a, path)
+                    leaders.append(tuple(float(a[k]) for k in ("x1", "y1", "x2", "y2")))
+            for text, _, _, _, (l, t, r, b), (cx, cy) in self.labels(svg, desktop):
+                near = (min(max(cx, l), r), min(max(cy, t), b))
+                dist = ((near[0] - cx) ** 2 + (near[1] - cy) ** 2) ** 0.5
+
+                def joins(ln):
+                    ends = [(ln[0], ln[1]), (ln[2], ln[3])]
+                    on_edge = [e for e in ends if l - 0.06 <= e[0] <= r + 0.06 and t - 0.06 <= e[1] <= b + 0.06
+                               and min(e[0] - l, r - e[0], e[1] - t, b - e[1]) <= 0.06]
+                    at_dot = [e for e in ends if ((e[0] - cx) ** 2 + (e[1] - cy) ** 2) ** 0.5 <= 4]
+                    return bool(on_edge) and bool(at_dot) and on_edge[0] != at_dot[0]
+                mine = [ln for ln in leaders if joins(ln)]
+                if dist > 20:
+                    far.append(path[9:16])
+                    self.assertEqual(len(mine), 1, (path, text, dist))
+                    self.assertAlmostEqual(min(((e[0] - near[0]) ** 2 + (e[1] - near[1]) ** 2) ** 0.5
+                                               for e in ((mine[0][0], mine[0][1]), (mine[0][2], mine[0][3]))), 0, delta=0.08)
+                    leaders.remove(mine[0])
+                else:
+                    self.assertEqual(mine, [], (path, text, dist))
+            self.assertEqual(leaders, [], path)  # no stray leaders
+        self.assertEqual(far, ["3403930", "3405550", "3406870", "3410320", "3411280", "3411310", "3412390", "3414880"])
+
+    def test_a_dot_before_the_last_year_has_its_label_start_aligned_beside_it(self):
+        """Review fix 3: when the labelled dot is not at the rightmost year slot, the label starts about 6 units right of the dot, never
+        right-aligned at the plot edge over the empty years."""
+        seen = {}
+        for path, svg, desktop in self.charts():
+            for text, end, x, y, _, (cx, cy) in self.labels(svg, desktop):
+                if cx < F.PLOT_R - 0.5:
+                    seen[path[9:16]] = round(x - cx, 1)
+                    self.assertFalse(end, (path, text))
+                    self.assertTrue(6 <= x - cx <= 8, (path, text, x, cx))
+                    self.assertLessEqual(abs(y - cy), F.LIFT + F.VALUE_PX, (path, text))
+        self.assertEqual(seen, {"3403660": 8, "3406150": 8, "3412030": 8, "3414220": 6, "3414790": 8, "3417790": 8})
+        self.assertEqual(F.VALUE.findall(rt("charts/d/3414220-mobile.svg")), [("214.0", "250.0", "", "$20,000")])  # dot at x=208
+
     def test_label_placement_avoids_marks_and_other_dots(self):
         dots = [(100.0, 100.0), (200.0, 50.0), (272.0, 120.0)]
         segments = list(zip(dots, dots[1:]))
@@ -202,8 +262,9 @@ class Distribution(unittest.TestCase):
             self.assertEqual(" ".join(new[gid]), F.unwrap(old[gid]), gid)
             self.assertGreater(len(new[gid]), 1)
         self.assertIn("NJDOE User-Friendly Budget files", " ".join(new["text_15"]))
-        for gid in ("text_11", "text_12"):
-            self.assertEqual(new[gid], old[gid], gid)
+        self.assertEqual(new["text_11"], ["Hampton", "Twp", "$56,225"])  # one word per line (review fix 1), same words
+        self.assertEqual(" ".join(new["text_11"]), " ".join(old["text_11"]))
+        self.assertEqual(new["text_12"], old["text_12"])
         strip = re.compile(r"<[^>]+>")
         self.assertEqual(sorted(strip.sub("", t) for t in self.TEXT.findall(rt(DIST)) if "translate(" not in t),
                          sorted(strip.sub("", t) for t in self.TEXT.findall(at(BASE, DIST)) if "translate(" not in t))
@@ -218,10 +279,8 @@ class Distribution(unittest.TestCase):
         self.assertEqual(marks(rt(DIST)), marks(at(BASE, DIST)))
         self.assertRegex(rt(DIST), r'<g id="axes_1" transform="translate\(8 [\d.]+\)">')
 
-    def test_text_stays_inside_the_viewbox_and_clear_of_stems_dots_and_other_text(self):
-        svg = rt(DIST)
-        width, height = (float(v) for v in re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', svg).groups())
-        self.assertEqual(width, 304)
+    def text_boxes(self, svg):
+        """(estimated ink boxes (word, left, top, right, bottom) of every text node in viewBox units, plot dx, dy, the axes markup)."""
         dx, dy = (float(v) for v in re.search(r'<g id="axes_1" transform="translate\(([\d.]+) ([\d.]+)\)">', svg).groups())
         axes = svg[svg.index('<g id="axes_1"'):svg.index('<g id="text_13">')]
         boxes = []
@@ -240,6 +299,13 @@ class Distribution(unittest.TestCase):
             left = x - w if "text-anchor: end" in t else x - w / 2 if "text-anchor: middle" in t else x
             left += (len(word) - len(word.lstrip())) * px * F.EM  # " median $206,606" starts at the median line; a space has no ink
             boxes.append((word, left, y - 0.75 * px, left + len(word.strip()) * px * F.EM, y + 0.25 * px))
+        return boxes, dx, dy, axes
+
+    def test_text_stays_inside_the_viewbox_and_clear_of_stems_dots_and_other_text(self):
+        svg = rt(DIST)
+        width, height = (float(v) for v in re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', svg).groups())
+        self.assertEqual(width, 304)
+        boxes, dx, dy, axes = self.text_boxes(svg)
         for b in boxes:
             self.assertTrue(b[1] >= 0 and b[2] >= 0 and b[3] <= width and b[4] <= height, b)
         for i, a in enumerate(boxes):
@@ -254,6 +320,27 @@ class Distribution(unittest.TestCase):
                 self.assertFalse(l - 1 < x < r + 1 and t - 1 < bottom and top - 1.3 < b + 1, (word, x))
             for x, y in dots:
                 self.assertFalse(l - 2.3 < x < r + 2.3 and t - 2.3 < y < b + 2.3, (word, x, y))
+
+    def test_hampton_note_sits_over_the_low_tail_at_least_6_units_clear_of_the_20_tick_label(self):
+        """Review fix 1: at 304 px content 1 viewBox unit is 1 CSS px. The note is left-aligned near the first low-tail stem, below the
+        20 tick level, at least 6 units from the "20" label's box (and from every other tick label)."""
+        svg = rt(DIST)
+        boxes, dx, dy, axes = self.text_boxes(svg)
+        note = [b for b in boxes if b[0] in ("Hampton", "Twp", "$56,225")]
+        self.assertEqual([b[0] for b in note], ["Hampton", "Twp", "$56,225"])
+        ticks = [b for b in boxes if b[0] in ("0", "20", "40", "60")]
+        self.assertEqual(len(ticks), 4)
+
+        def gap(a, b):
+            return (max(a[1] - b[3], 0, b[1] - a[3]) ** 2 + max(a[2] - b[4], 0, b[2] - a[4]) ** 2) ** 0.5
+        twenty = next(b for b in ticks if b[0] == "20")
+        self.assertGreaterEqual(min(gap(n, twenty) for n in note), 6)
+        for t in ticks:
+            self.assertGreaterEqual(min(gap(n, t) for n in note), 6, t[0])
+        tick20_y = float(re.search(r'<use xlink:href="#mef0032ba88" x="[\d.]+" y="([\d.]+)"', axes.split('id="ytick_2"')[1]).group(1)) + dy
+        first_stem = min(float(x) for x in re.findall(r'<path d="M ([\d.]+) [\d.]+ \nL [\d.]+ [\d.]+ \n" clip-path', axes)) + dx
+        self.assertGreater(min(n[2] for n in note), tick20_y)  # below the 20 level
+        self.assertTrue(all(abs(n[1] - first_stem) <= 3 for n in note), first_stem)  # left-aligned at the low tail
 
 
 class Scope(unittest.TestCase):
