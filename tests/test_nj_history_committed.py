@@ -94,6 +94,8 @@ class CommittedBuild(unittest.TestCase):
         want = built.replace(old, new, 1)
         self.assertEqual(committed, want)
         self.assertEqual(expected_committed("nj/index.html", built), want)
+        # the helper's answer depends on the build bytes it is given, never on what happens to be committed
+        self.assertEqual(expected_committed("nj/index.html", b"<head>" + old + b"</head>"), b"<head>" + new + b"</head>")
         # any other difference on that page, or the same edit on another file, is still a failure
         self.assertNotEqual(committed + b" ", expected_committed("nj/index.html", built))
         self.assertEqual(expected_committed("about/index.html", built), built)
