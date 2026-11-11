@@ -23,10 +23,16 @@ FIX_BASE = "a41b583835f15b30bb5a398c94beaa1e22e8297d"  # web main before these f
 HISTORY_BASE = "3b50ce10b88e80188e6c8265634b68b482c1a81f"  # the base the history build starts from (AC 23/24)
 # Everything these fixes may change since FIX_BASE, by exact path or one exact pattern. Site files first, then unpublished files.
 SITE_MODIFIED = re.compile(r"style\.css|charts/d/\d{7}-mobile\.svg|nj/index\.html")  # nj/index.html: only the contentUrl, checked below
+# PR #5 fix 1 (tools/nj_guide_tables.py): the 8 guide pages, each by exact path; tests/test_nj_guide_tables.py checks their diff
+GUIDE_PAGES = {"nj/bayonne-city-3401260/index.html", "nj/cherry-hill-twp-3403000/index.html", "nj/clifton-city-3403300/index.html",
+               "nj/edison-twp-3404500/index.html", "nj/toms-river-regional-3416230/index.html",
+               "nj/trenton-public-school-district-3416290/index.html", "nj/vineland-city-3416800/index.html",
+               "nj/w-windsor-plainsboro-reg-3417700/index.html"}
 SITE_ADDED = {"api/v1/nj/index.html", "api/v1/nj/index.json"}
 OTHER_MODIFIED = {"docs/nj-history.md", "tests/test_nj_history_committed.py"}
 OTHER_ADDED = {"tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_10.py", "tools/jsonld_content_urls.py",
-               "tools/nj_api_index.py", "tools/nj_mobile_chart_fit.py"}
+               "tools/nj_api_index.py", "tools/nj_mobile_chart_fit.py",
+               "tests/test_nj_guide_tables.py", "tests/test_nj_guide_tables_browser.py", "tools/nj_guide_tables.py"}  # last 3: PR #5 fix 1
 
 
 def rt(rel):
@@ -71,8 +77,9 @@ class Leftover7aGuideTables(unittest.TestCase):
         old, new = at_base("style.css").splitlines(), rt("style.css").splitlines()
         added = [ln for ln in new if ln not in old]
         self.assertEqual([ln for ln in old if ln not in new], [])
-        self.assertEqual(len(added), 1, added)
+        self.assertEqual(len(added), 3, added)  # this line, then PR #5 fix 1's two lines (tests/test_nj_guide_tables.py)
         self.assertIn(".grid td.num", added[0])
+        self.assertTrue(all("PR #5 fix 1" in ln for ln in added[1:]), added[1:])
 
     def test_guide_tables_scroll_inside_their_region(self):
         css = rt("style.css")
@@ -221,7 +228,8 @@ class Leftover10ApiIndex(unittest.TestCase):
         modified = {ln.split("\t", 1)[1] for ln in out if ln.startswith("M")}
         added = {ln.split("\t", 1)[1] for ln in out if ln.startswith("A")}
         unpublished = ("docs/", "tests/", "tools/")
-        self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p)), [])
+        self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p) and p not in GUIDE_PAGES), [])
+        self.assertEqual({p for p in modified if p.startswith("nj/") and p != "nj/index.html"}, GUIDE_PAGES)
         self.assertEqual({p for p in added if not p.startswith(unpublished)}, SITE_ADDED)
         self.assertEqual({p for p in modified if p.startswith(unpublished)}, OTHER_MODIFIED)
         self.assertEqual({p for p in added if p.startswith(unpublished)}, OTHER_ADDED)

@@ -1,23 +1,37 @@
 """The committed (in-place) NJ history build: _config.yml excludes, byte-identity with a fresh build, and the tracked statewide CSV.
 
 One committed file may differ from the fresh build, by one exact substitution: /nj/index.html's Dataset contentUrl (leftover 10,
-tools/nj_api_index.py). SCOPED_EDITS names it; every other committed file must equal the build byte for byte.
+tools/nj_api_index.py). SCOPED_EDITS names it. The 8 district pages with salary-guide tables (GUIDE_PAGES) may differ by PR #5 fix 1's
+guide-table markup only (tools/nj_guide_tables.py: caption outside the scroller, swipe cue). Every other committed file must equal the
+build byte for byte.
 """
 import glob
 import os
+import re
 import subprocess
 import unittest
 
 import nj_history_helpers as H
 import nj_api_index as A  # tools/ is on sys.path through the helpers
+import nj_guide_tables as G
 
 STATEWIDE = "data/nj/nj-district-staff-history.csv"
 # {committed file: (bytes in the fresh build, bytes in the committed file)}; each must occur exactly once in the build output.
 SCOPED_EDITS = {"nj/index.html": (A.JSONLD_OLD.encode(), A.JSONLD_NEW.encode())}
+# PR #5 fix 1: on exactly these pages the committed file is G.rewrite(build output), which must change it
+GUIDE_PAGES = ("nj/bayonne-city-3401260/index.html", "nj/cherry-hill-twp-3403000/index.html", "nj/clifton-city-3403300/index.html",
+               "nj/edison-twp-3404500/index.html", "nj/toms-river-regional-3416230/index.html",
+               "nj/trenton-public-school-district-3416290/index.html", "nj/vineland-city-3416800/index.html",
+               "nj/w-windsor-plainsboro-reg-3417700/index.html")
 
 
 def expected_committed(rel, built):
-    """What the committed file must be, given the fresh build's bytes: identical, or the one scoped substitution applied."""
+    """What the committed file must be, given the fresh build's bytes: identical, the one scoped substitution, or fix 1's guide markup."""
+    if rel in GUIDE_PAGES:
+        want = G.rewrite(built.decode("utf-8")).encode("utf-8")
+        if want == built:
+            raise AssertionError(f"{rel}: the fresh build has no guide table to rewrite; the allowance no longer applies")
+        return want
     if rel not in SCOPED_EDITS:
         return built
     old, new = SCOPED_EDITS[rel]
@@ -79,6 +93,28 @@ class CommittedBuild(unittest.TestCase):
                 bad.append(r)
         self.assertEqual(bad, [])
         self.assertTrue(set(SCOPED_EDITS) <= set(rels))
+        self.assertTrue(set(GUIDE_PAGES) <= set(rels))
+
+    def test_the_guide_allowance_is_fix_1_markup_on_eight_pages_and_nothing_wider(self):
+        self.assertEqual(len(GUIDE_PAGES), 8)
+        self.assertEqual(sorted(os.path.relpath(p, H.ROOT).replace(os.sep, "/") for p in G.guide_pages()), sorted(GUIDE_PAGES))
+        out, _ = H.built()
+        # the build pages with guide tables are exactly these 8
+        self.assertEqual(sorted(os.path.relpath(p, out).replace(os.sep, "/") for p in G.guide_pages(out)), sorted(GUIDE_PAGES))
+        cue = re.compile(r'<p class="guide-cue" aria-hidden="true">[^<>]*</p>')
+        cap = re.compile(r'<p class="guide-caption" id="guide-cap-\d+">([^<>]*)</p>(<div class="table-wrap" [^>]*>)<table aria-labelledby="guide-cap-\d+">')
+        for rel in GUIDE_PAGES:
+            built = H.rb(os.path.join(out, *rel.split("/"))).decode("utf-8")
+            committed = H.rb(os.path.join(H.ROOT, *rel.split("/"))).decode("utf-8")
+            self.assertNotEqual(committed, built)
+            # undone here by hand, not through the tool: taking fix 1's markup out gives the build page back exactly
+            self.assertEqual(cap.sub(r"\2<table><caption>\1</caption>", cue.sub("", committed)), built, rel)
+            self.assertEqual(expected_committed(rel, built.encode()), committed.encode())
+            # any other difference on the page is still a failure
+            self.assertNotEqual(expected_committed(rel, built.replace("$", "USD ", 1).encode()), committed.encode())
+        self.assertEqual(expected_committed("nj/absecon-city-3400660/index.html", b"x"), b"x")  # every other page: byte-identical
+        with self.assertRaises(AssertionError):
+            expected_committed(GUIDE_PAGES[0], b"<html>no guide</html>")
 
     def test_the_scoped_edit_is_one_exact_substitution_and_nothing_wider(self):
         self.assertEqual(list(SCOPED_EDITS), ["nj/index.html"])

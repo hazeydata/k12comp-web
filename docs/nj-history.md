@@ -149,6 +149,7 @@ The CI and release artifacts are still built from base `3b50ce10` alone, so they
 - **Leftover 7a, guide tables at 336/390 px.** The site-wide `overflow-wrap:anywhere` on `body` let guide-table cells shrink to one digit per line.
   One added `style.css` line, mobile only: `.grid th` (column and step headers) and `.grid td.num` get `white-space:nowrap`, so the
   table scrolls sideways inside its existing focusable `.table-wrap` region. Only the 8 district pages with guide tables (`section.grid`) are affected.
+  PR #5 fix 1 (section below) adds the caption outside the scroller, the swipe cue and the sticky Step column.
 - **Leftover 7b, "Base salary by year" mobile charts.** `tools/nj_mobile_chart_fit.py --write` rewrote the 572 of 573 `charts/d/<leaid>-mobile.svg`
   that misfit their 390 px box: an end-value label whose estimated right edge passes x=384 is right-aligned at x=384 and set 10 px above its dot
   (below it when the line comes down into the dot); a year label that overlaps the final year's label is dropped (first and final years always stay;
@@ -171,6 +172,37 @@ The CI and release artifacts are still built from base `3b50ce10` alone, so they
 - Tests (no data repo needed): `tests/test_nj_leftovers_7_10.py` checks the CSS line, every mobile chart against the fit rules, idempotence,
   that only labels moved (values, first and final years unchanged), that no desktop chart changed, both index files are fresh, complete and agree with each
   district file, that `/nj/index.html` differs from `a41b5838` by the `contentUrl` only and from `3b50ce10` by that and the history link only, that every
-  `3b50ce10` path still exists, and that nothing else changed since `a41b5838` (explicit lists, no pattern wider than the mobile chart names).
+  `3b50ce10` path still exists, and that nothing else changed since `a41b5838` (explicit lists, no pattern wider than the mobile chart names;
+  PR #5 fix 1 adds its 8 guide pages by exact path and its three files).
   `tests/test_jsonld_content_urls.py` runs the JSON-LD check on the committed tree and on small bad sites: missing target, directory URL with an HTML index
   (the first fix), HTML under a `.json` name, JSON under an `.html` name, truncated JSON, another host, a path above the site root, an unpublished path. It fails if anything opens a network socket.
+
+## PR #5 fix list, fix 1: guide tables on mobile (2026-11-11)
+
+Ann's PR #5 dataviz review (fix 1): at 336/390 px the guide table's `<caption>` sat inside the sideways scroller and was cut off
+("Teacher salary guide, 2026-2…"), nothing said more columns exist, scrolling right hid the Step column, and at 336 px the source line broke
+as "Source:" / link / ", pages 58–62". Visible on the site: yes. Fix 2 (mobile chart text size) is not in this change: it is a separate ticket
+(`k12comp/specs/k12-chart-mobile-text-001.md`, owner implement), and no chart, SVG or chart tool is changed here.
+
+- `tools/nj_guide_tables.py --write` rewrites the 40 guide tables on the 8 district pages with `section.grid`; `--check` exits 1 if any page is stale.
+  It is a static transform of the committed pages, not a generator change, and it is idempotent (it undoes its own markup, then applies it).
+  - The caption text moves, unchanged, out of the table into `<p class="guide-caption" id="guide-cap-N">` just above the scroller; the table
+    keeps the same accessible name through `aria-labelledby="guide-cap-N"`. The region's `aria-label`, heading, source line, note and cells are unchanged.
+  - Tables with 3+ header cells (23 of 40) get `<p class="guide-cue" aria-hidden="true">Swipe to see more columns →</p>` between the caption and the
+    scroller. The wording is the approved copy (Lindsay, `SCROLL_CUE`, pinned in `tests/test_nj_guide_tables.py`); to change it, edit `SCROLL_CUE`,
+    update the pin and re-run `--write`. Step + one column tables (Bayonne, Edison) fit at 336 px and get no cue.
+- `style.css` gains two lines (after the newsletter rules). All widths: `.guide-caption` (bold 18 px, like the old caption) and `.guide-cue{display:none}`.
+  At <=640 px: the cue shows (14 px, muted); the Step column (`.grid tr>th:first-child`) is `position:sticky; left:0` with a background and a
+  1 px edge, so row context stays when scrolled right; the source line is `text-wrap:balance` and its link is `display:inline` with 12 px vertical
+  padding (a 44 px target), so the link starts on the "Source:" line and ", pages 58–62" stays with it. No copy is shortened; values keep 16 px and `nowrap`.
+  At 1280 px the only visible change is that the caption now sits above the table's border instead of inside it.
+- AC 23/24: the history build still writes the old guide markup, so `tests/test_nj_history_committed.py` allows, on exactly these 8 pages
+  (`GUIDE_PAGES`), the committed page to equal `nj_guide_tables.rewrite(build page)`, and checks by hand that removing fix 1's markup gives the
+  build page back byte for byte. Every other committed file must still equal the build. Like leftovers 7 and 10, release artifacts built from
+  `3b50ce10` alone do not carry this fix (the generator-port leftover).
+- Tests: `tests/test_nj_guide_tables.py` (static: copy pin, the old placeholder cue wording appears nowhere, the 8 pages / 40 tables, idempotence,
+  diff from web main is fix 1's markup only, captions unchanged, cue placement, cells unchanged, CSS rules). `tests/test_nj_guide_tables_browser.py`
+  (real local Chrome through the Python `playwright` package, skipped without it; 127.0.0.1 server, throwaway profile, other requests aborted) checks
+  all 40 tables at 336, 390 and 1280 px, initial and scrolled right: caption outside the scroller and unclipped, still the table's accessible name
+  in Chrome's accessibility tree; cue shown above the scroller at 336/390 exactly where columns are hidden and hidden at 1280; Step column stuck at
+  the left edge with the last column fully visible beside it; salary cells on one line at 16 px; source line wrapping as described; no page-level sideways scroll.
