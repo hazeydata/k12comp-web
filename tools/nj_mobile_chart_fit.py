@@ -12,9 +12,11 @@ Lines, dots, gridlines, y-axis labels, alt text and the desktop SVGs are never t
 """
 import argparse
 import glob
+import math
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHARS = os.path.join(ROOT, "charts", "d")
@@ -22,6 +24,9 @@ EM = 0.62  # monospace advance as a share of the font size, slightly above JetBr
 VALUE_PX, TICK_PX = 14, 12  # font sizes from the SVG <style>: .v 14px bold, other text 12px
 MARGIN, TICK_GAP, LIFT = 6, 6, 10
 PLOT_BOTTOM = 256  # x-axis line at y=260; a label below its dot must stay above it
+DISTRIBUTION = os.path.join(ROOT, "charts", "chart3-nj-salary-distribution-mobile.svg")  # the /nj/ histogram, also gated for text size
+CONTENT_PX = (304, 358)  # rendered chart width at a 336 and a 390 px viewport (16 px page padding each side); spec D2
+MIN_TEXT_PX = 12
 
 SVG_W = re.compile(r'<svg[^>]*\bwidth="(\d+)"')
 VALUE = re.compile(r'<text class="v" x="([\d.]+)" y="([\d.]+)"( text-anchor="end")?>([^<]*)</text>')
@@ -91,6 +96,78 @@ def files():
     return sorted(glob.glob(os.path.join(CHARS, "*-mobile.svg")))
 
 
+def gated_files():
+    """Every mobile SVG the effective-text gate measures: the district charts and the /nj/ distribution."""
+    return files() + [DISTRIBUTION]
+
+
+FONT_SIZE = re.compile(r"font-size\s*:\s*([\d.]+)px")
+CSS_RULE = re.compile(r"([^{}]+)\{([^{}]*)\}")
+TRANSFORM = re.compile(r"(\w+)\(([^)]*)\)")
+
+
+def transform_scale(t):
+    """Linear scale factor of an SVG transform list (translate and rotate keep it at 1)."""
+    k = 1.0
+    for op, args in TRANSFORM.findall(t or ""):
+        a = [float(v) for v in re.split(r"[\s,]+", args.strip()) if v]
+        if op == "scale":
+            k *= math.sqrt(abs(a[0] * (a[1] if len(a) > 1 else a[0])))
+        elif op == "matrix":
+            k *= math.sqrt(abs(a[0] * a[3] - a[1] * a[2]))
+        elif op not in ("translate", "rotate"):
+            raise ValueError(f"unsupported transform {op}")
+    return k
+
+
+def text_sizes(svg):
+    """(viewBox width, [(text, font size in viewBox units after ancestor transforms)]) for every non-empty text node.
+    Font size cascade: inline style, then <style> rules (.class over element), then the font-size attribute, then the parent."""
+    root = ET.fromstring(svg.encode())
+    vb = root.get("viewBox")
+    vb_w = float(vb.split()[2]) if vb else float(re.match(r"[\d.]+", root.get("width")).group(0))
+    by_class, by_tag = {}, {}
+    for st in root.iter("{http://www.w3.org/2000/svg}style"):
+        for sels, decls in CSS_RULE.findall(st.text or ""):
+            m = FONT_SIZE.search(decls)
+            for sel in (x.strip() for x in sels.split(",")):
+                if m and sel.startswith("."):
+                    by_class[sel[1:]] = float(m.group(1))
+                elif m and re.fullmatch(r"\w+", sel):
+                    by_tag[sel] = float(m.group(1))
+    out = []
+
+    def walk(el, size, scale):
+        tag = el.tag.split("}")[-1]
+        m = FONT_SIZE.search(el.get("style", ""))
+        cls = [by_class[c] for c in el.get("class", "").split() if c in by_class]
+        attr = el.get("font-size")
+        if m:
+            size = float(m.group(1))
+        elif cls:
+            size = cls[-1]
+        elif tag in by_tag:
+            size = by_tag[tag]
+        elif attr:
+            size = float(attr.rstrip("px"))
+        scale *= transform_scale(el.get("transform"))
+        if tag in ("text", "tspan") and (el.text or "").strip():
+            if size is None:
+                raise ValueError(f"no font size for {el.text!r}")
+            out.append((el.text, size * scale))
+        for c in el:
+            walk(c, size, scale)
+
+    walk(root, None, 1.0)
+    return vb_w, out
+
+
+def small_text(svg):
+    """[(content px, text, effective px)] for every text node under MIN_TEXT_PX at each CONTENT_PX width."""
+    vb_w, sizes = text_sizes(svg)
+    return [(w, t, u * w / vb_w) for w in CONTENT_PX for t, u in sizes if u * w / vb_w < MIN_TEXT_PX]
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     g = ap.add_mutually_exclusive_group(required=True)
@@ -114,7 +191,21 @@ def main(argv=None):
     for f, p in bad:
         print(f"{f}: {'; '.join(p)}")
     print(f"{len(files())} mobile charts, {changed} rewritten, {len(bad)} still misfit")
-    return 1 if bad else 0
+    small, nodes = [], {w: 0 for w in CONTENT_PX}
+    for f in gated_files():
+        with open(f, encoding="utf-8", newline="") as fh:
+            s = small_text(fh.read())
+        for w in CONTENT_PX:
+            nodes[w] += sum(1 for x in s if x[0] == w)
+        if s:
+            small.append(f)
+            lo = min(s, key=lambda x: x[2])
+            counts = ", ".join(f"{sum(1 for x in s if x[0] == w)} at {w} px" for w in CONTENT_PX)
+            print(f"{os.path.relpath(f, ROOT)}: text under {MIN_TEXT_PX} px: {counts} (smallest {lo[2]:.2f} px, {lo[1].strip()!r} at {lo[0]} px)")
+    at = ", ".join(f"{nodes[w]} at {w} px" for w in CONTENT_PX)
+    print(f"effective text: {len(gated_files())} mobile charts measured at {'/'.join(map(str, CONTENT_PX))} px content, "
+          f"{len(small)} with text under {MIN_TEXT_PX} px; text nodes under {MIN_TEXT_PX} px: {at}")
+    return 1 if bad or small else 0
 
 
 if __name__ == "__main__":
