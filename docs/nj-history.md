@@ -159,7 +159,7 @@ The CI and release artifacts are still built from base `3b50ce10` alone, so they
   `tools/nj_api_index.py --write` now writes three things, and `--check` exits 1 if any is missing or stale:
   - `api/v1/nj/index.json`: `{count, description, files: [{district, nces_leaid, page, url}], license, state}`, one entry per district JSON file (586),
     each `district` and `nces_leaid` read from that file, written like the district files (indent 1, sorted keys, final newline). No person field.
-  - `api/v1/nj/index.html`: the same list as a page for people, in the site header and footer, with a link to `index.json`. No metadata calls this page JSON.
+  - `api/v1/nj/index.html`: the same list as a page for people, in the site header and footer, with a link to `index.json`. No metadata calls this page JSON. Its table has class `api-files` (PR #5 fix list, below).
   - `/nj/index.html`: one scoped edit. `"contentUrl": "/api/v1/nj/"` becomes `"contentUrl": "/api/v1/nj/index.json"`; `encodingFormat` stays `application/json`.
     Nothing else on the page changes. The tool refuses to edit unless it finds that text exactly once. The generator and the history build are not changed:
     the build still writes the old value, so `tests/test_nj_history_committed.py` expects the committed page to equal the build output with exactly this
@@ -173,7 +173,7 @@ The CI and release artifacts are still built from base `3b50ce10` alone, so they
   that only labels moved (values, first and final years unchanged), that no desktop chart changed, both index files are fresh, complete and agree with each
   district file, that `/nj/index.html` differs from `a41b5838` by the `contentUrl` only and from `3b50ce10` by that and the history link only, that every
   `3b50ce10` path still exists, and that nothing else changed since `a41b5838` (explicit lists, no pattern wider than the mobile chart names;
-  PR #5 fix 1 adds its 8 guide pages by exact path and its three files).
+  the PR #5 fix list adds its 8 guide pages by exact path and its four new files).
   `tests/test_jsonld_content_urls.py` runs the JSON-LD check on the committed tree and on small bad sites: missing target, directory URL with an HTML index
   (the first fix), HTML under a `.json` name, JSON under an `.html` name, truncated JSON, another host, a path above the site root, an unpublished path. It fails if anything opens a network socket.
 
@@ -191,7 +191,7 @@ as "Source:" / link / ", pages 58–62". Visible on the site: yes. Fix 2 (mobile
   - Tables with 3+ header cells (23 of 40) get `<p class="guide-cue" aria-hidden="true">Swipe to see more columns →</p>` between the caption and the
     scroller. The wording is the approved copy (Lindsay, `SCROLL_CUE`, pinned in `tests/test_nj_guide_tables.py`); to change it, edit `SCROLL_CUE`,
     update the pin and re-run `--write`. Step + one column tables (Bayonne, Edison) fit at 336 px and get no cue.
-- `style.css` gains two lines (after the newsletter rules). All widths: `.guide-caption` (bold 18 px, like the old caption) and `.guide-cue{display:none}`.
+- `style.css` gains two lines for this (after the newsletter rules; a third line, below, is for `/api/v1/nj/`). All widths: `.guide-caption` (bold 18 px, like the old caption) and `.guide-cue{display:none}`.
   At <=640 px: the cue shows (14 px, muted); the Step column (`.grid tr>th:first-child`) is `position:sticky; left:0` with a background and a
   1 px edge, so row context stays when scrolled right; the source line is `text-wrap:balance` and its link is `display:inline` with 12 px vertical
   padding (a 44 px target), so the link starts on the "Source:" line and ", pages 58–62" stays with it. No copy is shortened; values keep 16 px and `nowrap`.
@@ -206,3 +206,13 @@ as "Source:" / link / ", pages 58–62". Visible on the site: yes. Fix 2 (mobile
   all 40 tables at 336, 390 and 1280 px, initial and scrolled right: caption outside the scroller and unclipped, still the table's accessible name
   in Chrome's accessibility tree; cue shown above the scroller at 336/390 exactly where columns are hidden and hidden at 1280; Step column stuck at
   the left edge with the last column fully visible beside it; salary cells on one line at 16 px; source line wrapping as described; no page-level sideways scroll.
+
+### Same round: `/api/v1/nj/` file names on mobile (quality-gate round 1 nit)
+
+The web PR #5 gate (round 1) noted that the `/api/v1/nj/` file column wraps mid-name at 390 px; at 336 px "District page" also broke inside
+"District". `tools/nj_api_index.py` now writes `<table class="api-files">` (the only change to `api/v1/nj/index.html`), and one mobile-only
+`style.css` line keeps each file name on one line (`white-space:nowrap`), lets the other cells wrap only between words (`overflow-wrap:break-word`
+instead of the site-wide `anywhere`), and uses 6 px cell padding with none on the outer edges (the region has no border on mobile), so the three
+columns fit the 304 px column at 336 px. `index.json`, `/nj/index.html`, the rows and their text are unchanged; desktop is unchanged.
+`tests/test_nj_api_index_browser.py` (same local-Chrome setup as the guide test, skipped without it) checks at 336, 390 and 1280 px: all 586
+file names whole on one line with a 44 px link, no cell broken inside a word, no page-level sideways scroll, and the table inside the content column.

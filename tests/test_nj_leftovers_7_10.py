@@ -32,7 +32,8 @@ SITE_ADDED = {"api/v1/nj/index.html", "api/v1/nj/index.json"}
 OTHER_MODIFIED = {"docs/nj-history.md", "tests/test_nj_history_committed.py"}
 OTHER_ADDED = {"tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_10.py", "tools/jsonld_content_urls.py",
                "tools/nj_api_index.py", "tools/nj_mobile_chart_fit.py",
-               "tests/test_nj_guide_tables.py", "tests/test_nj_guide_tables_browser.py", "tools/nj_guide_tables.py"}  # last 3: PR #5 fix 1
+               "tests/test_nj_guide_tables.py", "tests/test_nj_guide_tables_browser.py", "tools/nj_guide_tables.py",  # PR #5 fix 1
+               "tests/test_nj_api_index_browser.py"}  # PR #5 fix list, QG nit (/api/v1/nj/ file names)
 
 
 def rt(rel):
@@ -77,9 +78,9 @@ class Leftover7aGuideTables(unittest.TestCase):
         old, new = at_base("style.css").splitlines(), rt("style.css").splitlines()
         added = [ln for ln in new if ln not in old]
         self.assertEqual([ln for ln in old if ln not in new], [])
-        self.assertEqual(len(added), 3, added)  # this line, then PR #5 fix 1's two lines (tests/test_nj_guide_tables.py)
+        self.assertEqual(len(added), 4, added)  # this line, then the PR #5 fix list's three (tests/test_nj_guide_tables.py, test_nj_api_index_browser.py)
         self.assertIn(".grid td.num", added[0])
-        self.assertTrue(all("PR #5 fix 1" in ln for ln in added[1:]), added[1:])
+        self.assertTrue(all("PR #5 fix" in ln for ln in added[1:]), added[1:])
 
     def test_guide_tables_scroll_inside_their_region(self):
         css = rt("style.css")

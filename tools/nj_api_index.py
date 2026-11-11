@@ -5,6 +5,7 @@ It named /api/v1/nj/ as contentUrl, but only /api/v1/nj/<leaid>.json existed, so
 - api/v1/nj/index.json: the JSON the Dataset now points at. One entry per district JSON file (file URL, the file's own "district" and
   "nces_leaid" values, the district page), same serialisation as the district files (indent 1, sorted keys, final newline).
 - api/v1/nj/index.html: the same list as a page for people (site header and footer). No metadata calls this page JSON.
+  Its table has class "api-files": style.css keeps each file name on one line and wraps the other cells only between words at <=640 px.
 - /nj/index.html: one scoped edit, the contentUrl "/api/v1/nj/" becomes "/api/v1/nj/index.json" (JSONLD_OLD -> JSONLD_NEW, exactly
   one occurrence, nothing else on the page). The history build still writes the old value from base 3b50ce10, so re-run --write
   after copying a fresh build in place; tests/test_nj_history_committed.py allows exactly this substitution and nothing more.
@@ -74,7 +75,7 @@ def render():
             f'<main id="main"><h1>NJ district JSON files</h1><p>{n} files, one per district, at <code>/api/v1/nj/&lt;NCES LEAID&gt;.json</code>. '
             'Each holds the same superintendent contract facts and salary-guide cells as its district page, with their sources. '
             'See <a href="/llms.txt">llms.txt</a> for the fields. The same list as JSON: <a href="/api/v1/nj/index.json">index.json</a>.</p>'
-            f'<div class="table-wrap" tabindex="0" role="region" aria-label="NJ district JSON files"><table><caption>NJ district JSON files ({n})</caption>'
+            f'<div class="table-wrap" tabindex="0" role="region" aria-label="NJ district JSON files"><table class="api-files"><caption>NJ district JSON files ({n})</caption>'
             '<thead><tr><th scope="col">File</th><th scope="col">District</th><th scope="col">Page</th></tr></thead>'
             f'<tbody>{rows}</tbody></table></div></main>'
             '<footer class="site-footer"><div class="inner"><ul><li><a href="/about/">Methodology</a></li><li><a href="/privacy/">Privacy</a></li>'
