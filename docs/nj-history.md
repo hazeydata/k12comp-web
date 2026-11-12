@@ -277,7 +277,7 @@ the number appears. The rule, on the committed `api/v1/nj/<leaid>.json` rows: a 
   full-time dots or two part-time dots at the same numeric FTE, point strings kept and only split; a key `Part-time`, or `Under 1.0 FTE` on the 4 charts
   with an FTE 0/0.0 dot: 3400069, 3400930, 3414790, 3415420), the 44 district pages (alt and figcaption suffix `(part-time, 0.2 FTE)` / `(reported as 0.0 FTE)`
   and the closing sentence, `#fte-chart-note`, a `#latest` note on 14 pages, a badge paragraph on each of the 98 history rows merged into the "Term ended"
-  paragraph where there is one, `#fte-note`), `/nj/` (a badge in the 10 marked 2026-27 table cells, `#fte-nj-note`, the Hampton Twp suffix in the histogram
+  paragraph where there is one, `#fte-note`), `/nj/` (a badge in the 16 table cells whose latest reported value is part-time (any school year), `#fte-nj-note`, the Hampton Twp suffix in the histogram
   alt and figcaption), `/about/` (`h3#part-time` after `#term-quirk`) and `llms.txt` (one appended line). `--check` exits 1 on any missing, extra or wrong
   marker, badge, note, caption suffix or key on any of the 573 charts and 586 pages. The histogram SVGs are not touched.
 - **`tools/nj_mobile_chart_fit.py`** carries the marker to the mobile twins (`--write`: desktop dot i is mobile dot i, same class and data-fte; same line rule;
@@ -287,7 +287,7 @@ the number appears. The rule, on the committed `api/v1/nj/<leaid>.json` rows: a 
   is missing, extra, mislabelled, within its pads, outside the plot, or on a chart with no part-time dot. The key text is 12 px like the rest, so the 304/358 px
   text gate still passes on all 573 charts and the distribution. The other 529 districts' charts are byte-identical.
 - **`style.css`** gains two lines: `td.num>.badge` (flex, `width:fit-content`, `margin-left:auto`: the badge wraps onto its own line under the right-aligned number
-  in the `/nj/` table; no `td.num .badge` existed and only those 10 cells hold one) and its mobile reset inside the existing 640 px block (the cards are left-aligned).
+  in the `/nj/` table; no `td.num .badge` existed and only those 16 cells hold one) and its mobile reset inside the existing 640 px block (the cards are left-aligned).
 - **Release.** Like the guide tables, the history build still writes the old pages, so `tests/test_nj_history_committed.py` allows (`expected_final`) the 44 pages,
   `/nj/`, `/about/` and `llms.txt` to equal `nj_fte_marks`' rewrite of the build output and nothing wider. After copying a fresh build over the tree run
   `tools/nj_api_index.py --write`, `tools/nj_guide_tables.py --write`, `tools/nj_fte_marks.py --write` and `tools/nj_mobile_chart_fit.py --write`.

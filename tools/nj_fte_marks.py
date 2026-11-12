@@ -65,7 +65,6 @@ ABOUT_BLOCK = ('<h3 id="part-time">Part-time superintendents</h3><p>Some distric
 LLMS_LINE = ('Partial FTE: superintendent rows with ufb_fte below 1 (string as published, such as "0.2", "0" or "0.0") are the district\'s '
              'reported share of one full-time position, not a staff FTE total. Pages mark them "Part-time · {fte} FTE", or "Reported as '
              '{fte} FTE" for 0 and 0.0. Salaries are values as published, never scaled.')
-NJ_TABLE_YEAR = "2026-27"  # only this year's values get a table badge (the 10 in the histogram's year; ruling: spec AC 11); older latest values stay plain
 LOW_TAIL = ("3406630", "Hampton Twp")  # the /nj/ histogram's alt text names this district's value as the low tail
 
 FTE_PAT = r"0(?:\.\d+)?"
@@ -247,8 +246,8 @@ def rewrite_nj(page, rows_of):
     page = strip_nj(page)
 
     def row(m):
-        for r in rows_of(m.group(2)):
-            if r["school_year"] == m.group(5) == NJ_TABLE_YEAR and not r["salary_not_reported"] and money(r) == m.group(3) and marked_fte(r) is not None:
+        for r in rows_of(m.group(2)):  # the row the table shows: that year, that value
+            if r["school_year"] == m.group(5) and not r["salary_not_reported"] and money(r) == m.group(3) and marked_fte(r) is not None:
                 return m.group(1) + m.group(3) + NJ_CELL_BADGE.format(badge=badge(marked_fte(r))) + m.group(4) + m.group(5) + m.group(6)
         return m.group(0)
 

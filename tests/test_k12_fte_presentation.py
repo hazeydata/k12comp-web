@@ -107,7 +107,7 @@ class Recount(unittest.TestCase):
                          sorted(ZERO_FIVE))
         self.assertEqual(len(MARKED), 44)
         self.assertEqual(sum(len(v) for v in MARKED.values()), 98)
-        self.assertEqual(sum(1 for rs in ROWS.values() if rs and rs[0]["school_year"] == "2026-27" and is_part_time(rs[0])), 10)
+        self.assertEqual(sum(1 for rs in ROWS.values() if rs and rs[0]["school_year"] == "2026-27" and is_part_time(rs[0])), 10)  # the histogram's year; the table badges 16 (any year)
 
     def test_the_tool_counts_the_same(self):
         self.assertEqual({k: [r["school_year"] for r in v] for k, v in MARKED.items()},
@@ -545,20 +545,39 @@ class DistrictPages(unittest.TestCase):
 class NjPage(unittest.TestCase):
     """AC 11: /nj/."""
 
-    def test_ten_badges_in_the_table(self):
+    def test_sixteen_badges_in_the_table(self):
         page = rt("nj/index.html")
         cells = re.findall(r'<a href="/nj/[^"]*-(\d+)/">[^<]*</a></th><td>[^<]*</td><td class="num">(\$[\d,]+)( <span class="badge">[^<]*</span>)?</td><td><span class="muted">(\d{4}-\d\d)</span>', page)
         self.assertEqual(len(cells), 575)  # the districts with a latest reported salary (a golden for this pin)
-        want = {leaid: rows[0] for leaid, rows in ROWS.items() if rows and rows[0]["school_year"] == "2026-27" and is_part_time(rows[0])}
-        self.assertEqual(len(want), 10)
+        # recomputed fresh from the JSON: the reported row(s) of the year and value the table shows, part-time when float(ufb_fte) < 1
+        want = {}
+        for leaid, value, _, year in cells:
+            hit = [r for r in ROWS[leaid] if r["school_year"] == year and not r["salary_not_reported"] and dollars(r) == value]
+            self.assertTrue(hit, leaid)
+            if float(hit[0]["ufb_fte"]) < 1:
+                want[leaid] = hit[0]
+        self.assertEqual(len(want), 16)
         got = {leaid: b for leaid, _, b, year in cells if b}
         self.assertEqual(set(got), set(want))
         for leaid, b in got.items():
             self.assertEqual(b, f' <span class="badge">{badge_text(want[leaid])}</span>')
         self.assertIn('<td class="num">$56,225 <span class="badge">Part-time · 0.3 FTE</span></td>', page)
         self.assertIn('<td class="num">$169,320 <span class="badge">Reported as 0 FTE</span></td>', page)
-        self.assertEqual(page.count('class="badge">Part-time'), 9)
-        self.assertEqual(page.count('class="badge">Reported as'), 1)
+        self.assertEqual(page.count('class="badge">Part-time'), 14)
+        self.assertEqual(page.count('class="badge">Reported as'), 2)
+
+    def test_the_six_earlier_year_rows_carry_their_exact_badges(self):
+        page = rt("nj/index.html")
+        for leaid, value, year, fte, text in [("3400069", "$12,000", "2020-21", "0.1", "Part-time · 0.1 FTE"),
+                                              ("3401020", "$61,200", "2023-24", "0.3", "Part-time · 0.3 FTE"),
+                                              ("3407050", "$61,800", "2023-24", "0.3", "Part-time · 0.3 FTE"),
+                                              ("3407200", "$69,500", "2020-21", "0.1", "Part-time · 0.1 FTE"),
+                                              ("3414220", "$20,000", "2024-25", "0.2", "Part-time · 0.2 FTE"),
+                                              ("3414790", "$15,000", "2023-24", "0.0", "Reported as 0.0 FTE")]:
+            self.assertTrue(any(r["school_year"] == year and dollars(r) == value and r["ufb_fte"] == fte for r in ROWS[leaid]), leaid)
+            row = re.search(r'<a href="/nj/[^"]*-' + leaid + r'/">[^<]*</a></th><td>[^<]*</td>(<td class="num">[^<]*(?:<span[^<]*</span>)?</td>)<td><span class="muted">' + year + "</span>", page)
+            self.assertTrue(row, leaid)
+            self.assertEqual(row.group(1), f'<td class="num">{value} <span class="badge">{text}</span></td>', leaid)
 
     def test_the_note_follows_the_histogram_before_the_list(self):
         page = rt("nj/index.html")
