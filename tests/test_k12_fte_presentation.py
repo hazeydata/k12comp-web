@@ -200,9 +200,9 @@ class Strings(unittest.TestCase):
         self.assertEqual(rt("llms.txt"), at_base("llms.txt") + N.LLMS_LINE + "\n")
 
     def test_copy_packet_when_present(self):
-        packet = "/workspace/evidence/K12-FTE-PRESENTATION-001/writing/copy-packet.md"
-        if not os.path.isfile(packet):
-            self.skipTest("copy packet not on this box")
+        packet = os.environ.get("K12_FTE_COPY_PACKET", "")  # path to the approved writing copy-packet.md (sha256 abd37602...), if available
+        if not packet or not os.path.isfile(packet):
+            self.skipTest("K12_FTE_COPY_PACKET is not set to the copy packet")
         text = rdf(packet)
         for s in (N.FTE_NOTE, N.CHART_NOTE, N.NJ_NOTE, N.ABOUT_BLOCK, N.LLMS_LINE, N.CAPTION_CLOSE, N.SUMMARY_NOTE.format(badge="Part-time · {fte} FTE"),
                   N.HISTORY_NOTE.format(badge="Part-time · {fte} FTE"), N.TERM_ENDED_PART_TIME_NOTE.format(badge="Part-time · {fte} FTE")):
