@@ -153,7 +153,7 @@ class Css(unittest.TestCase):
     def test_style_css_only_gains_lines(self):
         old, new = at_base("style.css").splitlines(), rt("style.css").splitlines()
         self.assertEqual([ln for ln in old if ln not in new], [])
-        added = [ln for ln in new if ln not in old]
+        added = [ln for ln in new if ln not in old and "K12-FTE-PRESENTATION-001" not in ln]  # its two lines are pinned in test_k12_fte_presentation.py
         self.assertEqual(len(added), 4, added)  # leftover 7a, fix 1 (all widths, mobile), then the /api/v1/nj/ rule
         self.assertEqual(new[-3:], added[1:])
         self.assertTrue(all("PR #5 fix 1" in ln for ln in added[1:3]), added[1:3])

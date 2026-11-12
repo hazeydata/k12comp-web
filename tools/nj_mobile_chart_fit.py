@@ -28,13 +28,31 @@ original once (a file already in the 304-unit viewBox is left alone). Title, sub
 rewrapped at 13 (title, bold) and 12 units; tick, axis and note labels become 12 units; the two outlier notes move clear of the stems
 (OUTLIERS). "Hampton Twp / $56,225" goes one word per line over the low tail it names, below the "20" tick row and clear of it.
 The plot (stems, dots, median line, spines, ticks) is only translated, by DIST_DX/dy, never scaled or moved relative to itself.
-Desktop SVGs are never touched. Re-running `--write` changes nothing (idempotent).
+Desktop SVGs are never touched by this tool (tools/nj_fte_marks.py writes their marker). Re-running `--write` changes nothing (idempotent).
+
+Part-time marker, key and line rule (K12-FTE-PRESENTATION-001; the 44 districts with a dot whose `ufb_fte` is below 1 and whose salary is
+reported; the other 529 charts are byte-unchanged). tools/nj_fte_marks.py writes the marker into each desktop chart from the committed
+api/v1/nj/<leaid>.json; `--write` here carries it to the mobile twin, and the helpers below (`cut_lines`, `place_key`) are the one rule both
+tools use:
+  - a part-time dot is hollow: `<circle cx cy r="4" fill="#fff" stroke="#458699" stroke-width="1.5" class="pt" data-fte="0.2"/>`, data-fte
+    the published `ufb_fte` string; it keeps the dot's coordinates. Desktop dot i is mobile dot i, so `--write` copies its class and data-fte;
+  - a line segment survives only between two full-time dots or two part-time dots with the same numeric FTE ("0" equals "0.0"), so a slope
+    never reads as a pay cut. Point strings are kept byte for byte and only split; a run of one point draws no polyline. Value labels are then
+    re-placed by `place_value` against the re-cut lines (the same rule as above);
+  - one key, the last two elements: a hollow dot and the text `Part-time` (`Under 1.0 FTE` when any marked dot is FTE 0 or 0.0), 12 px from
+    the chart's text rule. `place_key` takes the first of KEY_SPOTS (above the plot left, right, centre, then inside the plot) whose box,
+    grown by the spot's pad, clears every dot, line, leader and value label and stays between PLOT_L and PLOT_R. It is placed in this chart's
+    own coordinates after the value labels. A chart with no part-time dot has no key.
+`--check` also fails on: a part-time dot whose data-fte is not that year's FTE<1 reported row in the committed JSON, a missing or extra mark,
+a segment joining dots the line rule separates, a key that is missing, extra, mislabelled, within its pads or outside the plot, and a key on a
+chart with no part-time dot.
 
     python3 tools/nj_mobile_chart_fit.py --check   # exit 1 on any misfit or any text node under 12 px at 304 or 358 px content
     python3 tools/nj_mobile_chart_fit.py --write   # regenerate the mobile charts in place, then check
 """
 import argparse
 import glob
+import json
 import math
 import os
 import re
@@ -60,8 +78,12 @@ MIN_TEXT_PX = 12
 SVG_W = re.compile(r'<svg[^>]*\bwidth="(\d+)"')
 VALUE = re.compile(r'<text class="v" x="([\d.]+)" y="([\d.]+)"( text-anchor="end")?>([^<]*)</text>')
 TICK = re.compile(r'<text x="([\d.]+)" y="284" text-anchor="middle">([^<]*)</text>')
-DOT = re.compile(r'<circle cx="([\d.]+)" cy="([\d.]+)" r="4"')
+DOT = re.compile(r'<circle cx="([\d.]+)" cy="([\d.]+)" r="4"')  # both dot forms: full-time and part-time (hollow)
 YLABEL = re.compile(r'<text x="([\d.]+)" y="[\d.]+" text-anchor="end">([^<]*)</text>')
+FT_ATTRS = r'fill="#458699"'
+PT_ATTRS = r'fill="#fff" stroke="#458699" stroke-width="1\.5" class="pt" data-fte="0(?:\.\d+)?"'
+KEY_RE = (r'<circle class="key" cx="[\d.]+" cy="[\d.]+" r="4" fill="#fff" stroke="#458699" stroke-width="1\.5"/>'
+          r'<text class="key" x="[\d.]+" y="[\d.]+">(?:Part-time|Under 1\.0 FTE)</text>')
 # One district mobile SVG, start to end; every part is captured so nothing can be lost on a rewrite.
 DISTRICT = re.compile(
     r'<svg xmlns="http://www.w3.org/2000/svg" width="\d+" height="300" viewBox="0 0 \d+ 300" role="img"><rect width="\d+" height="300" fill="#ffffff"/>'
@@ -71,12 +93,16 @@ DISTRICT = re.compile(
     r'(?P<ticks>(?:<text x="[\d.]+" y="284" text-anchor="middle">[^<]*</text>)*)'
     r'(?P<lines>(?:<polyline fill="none" stroke="#458699" stroke-width="3" points="[^"]*"/>)*)'
     r'(?P<leaders>(?:<line x1="[\d.]+" y1="[\d.]+" x2="[\d.]+" y2="[\d.]+" ' + LEADER + r'/>)*)'
-    r'(?P<dots>(?:<circle cx="[\d.]+" cy="[\d.]+" r="4" fill="#458699"/>)*)'
-    r'(?P<values>(?:<text class="v" x="[\d.]+" y="[\d.]+"(?: text-anchor="end")?>[^<]*</text>)*)</svg>\Z')
+    r'(?P<dots>(?:<circle cx="[\d.]+" cy="[\d.]+" r="4" (?:' + FT_ATTRS + '|' + PT_ATTRS + r')/>)*)'
+    r'(?P<values>(?:<text class="v" x="[\d.]+" y="[\d.]+"(?: text-anchor="end")?>[^<]*</text>)*)'
+    r'(?P<key>(?:' + KEY_RE + r')?)</svg>\Z')
 GRID = re.compile(r'<line x1="[\d.]+" x2="[\d.]+" y1="([\d.]+)" y2="([\d.]+)" stroke="#e3e6ea"/><text x="[\d.]+" y="([\d.]+)" text-anchor="end">([^<]*)</text>')
 POLYLINE = re.compile(r'points="([^"]*)"')
 DESKTOP_TICK = re.compile(r'<text x="([\d.]+)" y="304" text-anchor="middle">(\d{4})-\d\d</text>')
 DESKTOP_DOT = re.compile(r'<circle cx="([\d.]+)" cy="([\d.]+)" r="4"')
+DOT_FTE = re.compile(r'<circle cx="([\d.]+)" cy="([\d.]+)" r="4" (?:' + FT_ATTRS + r'|fill="#fff" stroke="#458699" stroke-width="1\.5" class="pt" data-fte="([^"]*)")/>')
+KEY_PARTS = re.compile(r'<circle class="key" cx="([\d.]+)" cy="([\d.]+)" r="4" fill="#fff" stroke="#458699" stroke-width="1\.5"/>'
+                       r'<text class="key" x="([\d.]+)" y="([\d.]+)">(Part-time|Under 1\.0 FTE)</text>')
 LEADER_LINE = re.compile(r'<line x1="([\d.]+)" y1="([\d.]+)" x2="([\d.]+)" y2="([\d.]+)" ' + LEADER + r'/>')
 DESKTOP_VALUE = re.compile(r'<text class="v" x="([\d.]+)" y="([\d.]+)"(?: text-anchor="end")?>([^<]*)</text>')
 
@@ -107,8 +133,10 @@ def year_labels(first, last):
     return list(range(last, first - 1, -k))[::-1]
 
 
-def problems(svg, desktop=None):
-    """List of misfits in one district mobile SVG (empty = fits). With its desktop twin, also checks each value label is nearest its own dot."""
+def problems(svg, desktop=None, ftes=None):
+    """List of misfits in one district mobile SVG (empty = fits). With its desktop twin, also checks each value label is nearest its own dot.
+    With `ftes` (the expected mark per dot from the committed JSON, see expected_ftes), also checks every dot's part-time mark. The marker,
+    line rule and key (marker_problems) are always checked."""
     w = int(SVG_W.search(svg).group(1))
     out = [] if w == MOBILE_W else [f"width {w}, not {MOBILE_W}"]
     values = []
@@ -143,7 +171,7 @@ def problems(svg, desktop=None):
     out += [f"year labels {a[1]} and {b[1]} overlap" for a, b in zip(ticks, ticks[1:]) if tick_overlaps(a, b)]
     out += [f"year label {t} runs past the edge" for x, t in ticks if x - width_of(t, TICK_PX) / 2 < 0 or x + width_of(t, TICK_PX) / 2 > w]
     out += [f"y label {t} runs past the left edge" for x, t in YLABEL.findall(svg) if float(x) - width_of(t, TICK_PX) < 0]
-    return out
+    return out + marker_problems(svg, "mobile", ftes)
 
 
 def value_box(x, anchor_end, y, text):
@@ -242,6 +270,185 @@ def years_of_dots(desktop):
     return [slots[x] for x, _ in DESKTOP_DOT.findall(desktop)], min(slots.values()), max(slots.values())
 
 
+# --- part-time marker, line rule and key (K12-FTE-PRESENTATION-001; shared with tools/nj_fte_marks.py) -----------------------------------
+PT_DOT = '<circle cx="{x}" cy="{y}" r="4" fill="#fff" stroke="#458699" stroke-width="1.5" class="pt" data-fte="{f}"/>'
+FT_DOT = '<circle cx="{x}" cy="{y}" r="4" fill="#458699"/>'
+# `class` comes first on both key elements, so DOT, DESKTOP_DOT, TICK and YLABEL (which start `<circle cx=` / `<text x=`) never read the
+# key as a data dot or an axis label
+KEY = ('<circle class="key" cx="{dx:.1f}" cy="{dy:.1f}" r="4" fill="#fff" stroke="#458699" stroke-width="1.5"/>'
+       '<text class="key" x="{tx:.1f}" y="{ty:.1f}">{label}</text>')
+KEY_LABEL, KEY_LABEL_ZERO = "Part-time", "Under 1.0 FTE"  # the second when any marked dot is FTE 0 or 0.0
+KEY_PX, KEY_GAP = 12, 8  # key text size (the 12 px text rule); key dot centre to text start
+INK_R = 4.75  # ink radius of either dot form (hollow: r 4 plus half of the 1.5 stroke)
+GEOM = {"desktop": dict(l=64, r=1024, top=24, axis=280), "mobile": dict(l=PLOT_L, r=PLOT_R, top=24, axis=260)}  # plot edges and gridline/axis y
+# Key spots in order: key dot centre x as an offset from the plot edge, y from the top gridline or the x-axis, and the pad. The band above the
+# top gridline comes first (clear of the data); inside the plot a key needs a wider pad, so it never sits under a line and reads as its label.
+KEY_SPOTS = (("above plot, left", "l", 4.75, "top", -16, 6), ("above plot, right", "r", 0, "top", -16, 6),
+             ("above plot, centre", "c", 0, "top", -16, 6), ("top-left", "l", 10, "top", 16, 10), ("top-right", "r", -10, "top", 16, 10),
+             ("bottom-right", "r", -10, "axis", -16, 10), ("bottom-left", "l", 10, "axis", -16, 10))
+
+
+def joined(a, b):
+    """True when a line may join two dots. Each is None (full-time) or its published FTE string: two full-time dots join, two part-time
+    dots join when the FTE is the same number ("0" equals "0.0"), a part-time and a full-time dot never do."""
+    if a is None or b is None:
+        return a is None and b is None
+    return float(a) == float(b)
+
+
+def cut_lines(polylines, index, ftes):
+    """Polyline point strings re-cut by `joined`. `polylines` are the points="..." values, `index` maps a point string "x,y" to its dot's
+    index in `ftes`. Point strings are only split, never changed; a run of one point is dropped. Returns (new strings, segments removed)."""
+    out, removed = [], 0
+    for pts in polylines:
+        ps = pts.split()
+        run = [ps[0]]
+        for p, q in zip(ps, ps[1:]):
+            if joined(ftes[index[p]], ftes[index[q]]):
+                run.append(q)
+            else:
+                removed += 1
+                if len(run) > 1:
+                    out.append(" ".join(run))
+                run = [q]
+        if len(run) > 1:
+            out.append(" ".join(run))
+    return out, removed
+
+
+def key_label(ftes):
+    """`Under 1.0 FTE` when any marked dot is FTE 0 or 0.0, else `Part-time`."""
+    return KEY_LABEL_ZERO if any(f is not None and float(f) == 0 for f in ftes) else KEY_LABEL
+
+
+def key_box(dx, dy, label):
+    """Ink box of a key: its dot and its text box (EM advance)."""
+    return (dx - INK_R, min(dy - INK_R, dy + 4 - 0.75 * KEY_PX), dx + KEY_GAP + width_of(label, KEY_PX), max(dy + INK_R, dy + 4 + 0.25 * KEY_PX))
+
+
+def key_clear(kind, label, dx, dy, pad, dots, segments, boxes, leaders):
+    """True when the key at (dx, dy), its box grown by pad, clears every dot (ink), line (plus its half width), leader and value-label box
+    and stays between the plot edges."""
+    g = GEOM[kind]
+    b = key_box(dx, dy, label)
+    bb = (b[0] - pad, b[1] - pad, b[2] + pad, b[3] + pad)
+    bl = (bb[0] - 1.5, bb[1] - 1.5, bb[2] + 1.5, bb[3] + 1.5)
+    return not (any(bb[0] - INK_R <= x <= bb[2] + INK_R and bb[1] - INK_R <= y <= bb[3] + INK_R for x, y in dots)
+                or any(segment_hits(a, c, bl) for a, c in segments)
+                or any(segment_hits(a, c, bb) for a, c in leaders)
+                or any(bb[0] < o[2] and o[0] < bb[2] and bb[1] < o[3] and o[1] < bb[3] for o in boxes)
+                or b[0] < g["l"] or b[2] > g["r"])
+
+
+def place_key(kind, label, dots, segments, boxes, leaders):
+    """(spot name, dot centre x, dot centre y) of the first KEY_SPOTS spot where the key is clear (`key_clear`)."""
+    g = GEOM[kind]
+    kw = KEY_GAP + width_of(label, KEY_PX)
+    for name, edge, off, base, dyo, pad in KEY_SPOTS:
+        dx = {"l": g["l"] + off, "r": g["r"] + off - kw, "c": (g["l"] + g["r"]) / 2 - kw / 2}[edge]
+        dy = g[base] + dyo
+        if key_clear(kind, label, dx, dy, pad, dots, segments, boxes, leaders):
+            return name, dx, dy
+    raise ValueError(f"no key spot for {label!r}")
+
+
+def key_svg(dx, dy, label):
+    return KEY.format(dx=dx, dy=dy, tx=dx + KEY_GAP, ty=dy + 4, label=label)
+
+
+def segment_list(polylines):
+    out = []
+    for pts in polylines:
+        p = [tuple(map(float, q.split(","))) for q in pts.split()]
+        out += list(zip(p, p[1:]))
+    return out
+
+
+def dot_ftes(svg):
+    """[None (full-time) or the data-fte string] per dot, in order, from a chart carrying either dot form."""
+    return [f or None for _, _, f in DOT_FTE.findall(svg)]
+
+
+def load_rows(leaid):
+    """The superintendent rows of the committed api/v1/nj/<leaid>.json, in file order."""
+    with open(os.path.join(ROOT, "api", "v1", "nj", f"{leaid}.json"), encoding="utf-8") as fh:
+        return json.load(fh)["superintendent_contracts"]
+
+
+def marked_fte(row):
+    """The row's `ufb_fte` string when it is part-time and plotted (float(ufb_fte) < 1 and a reported salary), else None."""
+    return row["ufb_fte"] if float(row["ufb_fte"]) < 1 and not row["salary_not_reported"] else None
+
+
+def expected_ftes(desktop, rows):
+    """[None or FTE string] per desktop dot, from the committed JSON rows: the dot on year slot Y that is the k-th on that slot is the k-th
+    reported row of Y in file order. Raises ValueError when the chart and the rows disagree."""
+    slots = {x: y for x, y in re.findall(r'<text x="([\d.]+)" y="304" text-anchor="middle">(\d{4}-\d\d)</text>', desktop)}
+    by = {}
+    for r in rows:
+        if not r["salary_not_reported"]:
+            by.setdefault(r["school_year"], []).append(marked_fte(r))
+    out, seen = [], {}
+    for x, _ in DESKTOP_DOT.findall(desktop):
+        year = slots.get(x)
+        k = seen.get(year, 0)
+        seen[year] = k + 1
+        if year not in by or k >= len(by[year]):
+            raise ValueError(f"dot at x={x} (year {year}) has no reported row in the JSON")
+        out.append(by[year][k])
+    if seen != {y: len(v) for y, v in by.items()}:
+        raise ValueError("the chart's dots and the JSON's reported rows differ")
+    return out
+
+
+def marker_problems(svg, kind, ftes=None):
+    """Misfits of the part-time marker, line rule and key in one chart (desktop or mobile). With `ftes` (expected, per dot, from the
+    JSON) also checks every dot's mark and data-fte against its row."""
+    dots_full = DOT_FTE.findall(svg)
+    flags = [f or None for _, _, f in dots_full]
+    out = []
+    if ftes is not None:
+        if len(ftes) != len(flags):
+            out.append(f"{len(flags)} dots but {len(ftes)} reported rows")
+        else:
+            for i, (have, want) in enumerate(zip(flags, ftes)):
+                if have != want:
+                    out.append(f"dot {i + 1} is {'marked part-time, data-fte ' + have if have else 'not marked'} but its row is "
+                               f"{'part-time, ' + want + ' FTE' if want else 'full-time or not plotted'}")
+    index = {}
+    for i, (x, y, _) in reversed(list(enumerate(dots_full))):
+        index[f"{x},{y}"] = i
+    for pts in POLYLINE.findall(svg):
+        ps = pts.split()
+        out += [f"a line segment joins dots {index[p] + 1} and {index[q] + 1} that the FTE rule separates" for p, q in zip(ps, ps[1:])
+                if p in index and q in index and not joined(flags[index[p]], flags[index[q]])]
+    keys = KEY_PARTS.findall(svg)
+    if svg.count('class="key"') != 2 * len(keys):
+        out.append("key markup is not the approved key")
+    if len(keys) > 1:
+        out.append(f"{len(keys)} keys, expected one")
+    if not any(flags):
+        if keys:
+            out.append("a key on a chart with no part-time dot")
+        return out
+    if not keys:
+        return out + ["a part-time dot but no key"]
+    cx, cy, tx, ty, label = keys[0]
+    dx, dy = float(cx), float(cy)
+    if label != key_label(flags):
+        out.append(f"key reads {label!r}, expected {key_label(flags)!r}")
+    if abs(float(tx) - (dx + KEY_GAP)) > 0.11 or abs(float(ty) - (dy + 4)) > 0.11:
+        out.append("key text is not beside its dot")
+    dots = [(float(x), float(y)) for x, y, _ in dots_full]
+    boxes = [value_box(float(m.group(1)), bool(m.group(3)), float(m.group(2)), m.group(4)) for m in VALUE.finditer(svg)]
+    leaders = [tuple(map(float, m)) for m in LEADER_LINE.findall(svg)]
+    g = GEOM[kind]
+    pad = 6 if dy < g["top"] else 10
+    if not key_clear(kind, label, dx, dy, pad, dots, segment_list(POLYLINE.findall(svg)), boxes, [((a, b), (c, d)) for a, b, c, d in leaders]):
+        out.append(f"key is within {pad} units of a dot, line, leader or value label, or outside the plot")
+    return out
+
+
 def fit(svg, desktop):
     """The district mobile SVG redrawn in the MOBILE_W viewBox (see the module docstring). Pure: same input, same output."""
     m = DISTRICT.match(svg)
@@ -250,6 +457,9 @@ def fit(svg, desktop):
     years, first, last = years_of_dots(desktop)
     old_dots = DOT.findall(m.group("dots"))
     if len(old_dots) != len(years):
+        raise ValueError("mobile and desktop dot counts differ")
+    ftes = dot_ftes(desktop)  # the desktop dot's mark (None or its FTE) goes to mobile dot i
+    if len(ftes) != len(old_dots):
         raise ValueError("mobile and desktop dot counts differ")
 
     def x_of(year):
@@ -265,12 +475,16 @@ def fit(svg, desktop):
         out.append(f'<line x1="{PLOT_L}" x2="{PLOT_R}" y1="{y1}" y2="{y2}" stroke="#e3e6ea"/><text x="{YLABEL_X}" y="{ty}" text-anchor="end">{label}</text>')
     out.append(f'<line x1="{PLOT_L}" x2="{PLOT_R}" y1="260" y2="260" stroke="#999999"/>')
     out += [f'<text x="{x_of(y):.1f}" y="284" text-anchor="middle">{school_year(y)}</text>' for y in year_labels(first, last)]
+    moved_lines, index = [], {}
     for pts in POLYLINE.findall(m.group("lines")):
         moved = []
         for p in pts.split():
             cx, cy = p.split(",")
             moved.append(f"{new_x[where[(cx, cy)]]},{cy}")
-        out.append(f'<polyline fill="none" stroke="#458699" stroke-width="3" points="{" ".join(moved)}"/>')
+            index[moved[-1]] = where[(cx, cy)]
+        moved_lines.append(" ".join(moved))
+    for pts in cut_lines(moved_lines, index, ftes)[0]:
+        out.append(f'<polyline fill="none" stroke="#458699" stroke-width="3" points="{pts}"/>')
 
     values = value_owners(desktop)
     if [v[0] for v in values] != [v[3] for v in VALUE.findall(m.group("values"))]:
@@ -285,8 +499,13 @@ def fit(svg, desktop):
             leaders.append(leader(placed[-1], dots[i]))
         labels.append(f'<text class="v" x="{x:.1f}" y="{y:.1f}" text-anchor="end">{text}</text>' if end else f'<text class="v" x="{x:.1f}" y="{y:.1f}">{text}</text>')
     out += leaders  # under the dots, over the line
-    out += [f'<circle cx="{new_x[i]}" cy="{cy}" r="4" fill="#458699"/>' for i, (_, cy) in enumerate(old_dots)]
+    out += [(PT_DOT if ftes[i] is not None else FT_DOT).format(x=new_x[i], y=cy, f=ftes[i]) for i, (_, cy) in enumerate(old_dots)]
     out += labels
+    if any(f is not None for f in ftes):  # the key goes last, placed in this chart's own coordinates around the value labels and leaders
+        label = key_label(ftes)
+        leader_segments = [((a[0], a[1]), (a[2], a[3])) for a in (tuple(map(float, LEADER_LINE.match(ln).groups())) for ln in leaders)]
+        _, dx, dy = place_key("mobile", label, dots, segments, placed, leader_segments)
+        out.append(key_svg(dx, dy, label))
     return "".join(out) + "</svg>"
 
 
@@ -468,6 +687,16 @@ def read(f):
         return fh.read()
 
 
+def district_problems(f, svg):
+    """Misfits of one district mobile chart, the part-time marks checked against the committed JSON row of each dot."""
+    desktop = read(desktop_of(f))
+    try:
+        ftes = expected_ftes(desktop, load_rows(os.path.basename(f).split("-")[0]))
+    except (OSError, ValueError, KeyError) as e:
+        return problems(svg, desktop) + [f"cannot read the part-time marks from the JSON: {e}"]
+    return problems(svg, desktop, ftes)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     g = ap.add_mutually_exclusive_group(required=True)
@@ -484,7 +713,7 @@ def main(argv=None):
                     fh.write(new)
                 changed += 1
             svg = new
-        p = problems(svg, read(desktop_of(f))) if f != DISTRIBUTION else []
+        p = district_problems(f, svg) if f != DISTRIBUTION else []
         if p:
             bad.append((os.path.relpath(f, ROOT), p))
     for f, p in bad:

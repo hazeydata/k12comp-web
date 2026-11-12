@@ -16,6 +16,7 @@ from unittest import mock
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import nj_api_index as A  # noqa: E402
+import nj_fte_marks as N  # noqa: E402  (K12-FTE-PRESENTATION-001: the one allowed further edit, see FTE_PAGES)
 import nj_mobile_chart_fit as F  # noqa: E402
 from nj_history import render as R  # noqa: E402
 
@@ -23,7 +24,11 @@ FIX_BASE = "a41b583835f15b30bb5a398c94beaa1e22e8297d"  # web main before these f
 HISTORY_BASE = "3b50ce10b88e80188e6c8265634b68b482c1a81f"  # the base the history build starts from (AC 23/24)
 # Everything these fixes may change since FIX_BASE, by exact path or one exact pattern. Site files first, then unpublished files.
 # nj/index.html: only the contentUrl, checked below. The NJ distribution mobile SVG: K12-CHART-MOBILE-TEXT-001 (tests/test_k12_chart_mobile_text.py)
-SITE_MODIFIED = re.compile(r"style\.css|charts/d/\d{7}-mobile\.svg|nj/index\.html|charts/chart3-nj-salary-distribution-mobile\.svg")
+# K12-FTE-PRESENTATION-001 adds: the 44 part-time districts' desktop charts and pages (FTE_CHARTS, FTE_PAGES, from the committed JSON), /about/ and llms.txt.
+SITE_MODIFIED = re.compile(r"style\.css|charts/d/\d{7}-mobile\.svg|nj/index\.html|charts/chart3-nj-salary-distribution-mobile\.svg|about/index\.html|llms\.txt")
+FTE_LEAIDS = {leaid for _, leaid in N.pages() if N.marked_rows(N.rows_of(leaid))}
+FTE_CHARTS = {f"charts/d/{leaid}-desktop.svg" for leaid in FTE_LEAIDS}
+FTE_PAGES = {os.path.relpath(p, ROOT).replace(os.sep, "/") for p, leaid in N.pages() if leaid in FTE_LEAIDS}
 # PR #5 fix 1 (tools/nj_guide_tables.py): the 8 guide pages, each by exact path; tests/test_nj_guide_tables.py checks their diff
 GUIDE_PAGES = {"nj/bayonne-city-3401260/index.html", "nj/cherry-hill-twp-3403000/index.html", "nj/clifton-city-3403300/index.html",
                "nj/edison-twp-3404500/index.html", "nj/toms-river-regional-3416230/index.html",
@@ -35,7 +40,8 @@ OTHER_ADDED = {"tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_1
                "tools/nj_api_index.py", "tools/nj_mobile_chart_fit.py",
                "tests/test_nj_guide_tables.py", "tests/test_nj_guide_tables_browser.py", "tools/nj_guide_tables.py",  # PR #5 fix 1
                "tests/test_nj_api_index_browser.py",  # PR #5 fix list, QG nit (/api/v1/nj/ file names)
-               "tests/test_k12_chart_mobile_text.py"}  # K12-CHART-MOBILE-TEXT-001
+               "tests/test_k12_chart_mobile_text.py",  # K12-CHART-MOBILE-TEXT-001
+               "tools/nj_fte_marks.py", "tests/test_k12_fte_presentation.py"}  # K12-FTE-PRESENTATION-001
 
 
 def rt(rel):
@@ -73,7 +79,7 @@ class Leftover7aGuideTables(unittest.TestCase):
 
     def test_only_that_line_is_added_to_style_css(self):
         old, new = at_base("style.css").splitlines(), rt("style.css").splitlines()
-        added = [ln for ln in new if ln not in old]
+        added = [ln for ln in new if ln not in old and "K12-FTE-PRESENTATION-001" not in ln]  # its two lines are pinned in test_k12_fte_presentation.py
         self.assertEqual([ln for ln in old if ln not in new], [])
         self.assertEqual(len(added), 4, added)  # this line, then the PR #5 fix list's three (tests/test_nj_guide_tables.py, test_nj_api_index_browser.py)
         self.assertIn(".grid td.num", added[0])
@@ -114,7 +120,9 @@ class Leftover7bMobileCharts(unittest.TestCase):
     def test_desktop_charts_are_unchanged(self):
         out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", FIX_BASE, "--", "charts"], capture_output=True, check=True, text=True).stdout.split()
         self.assertTrue(out)
-        self.assertEqual([p for p in out if not re.fullmatch(r"charts/d/\d{7}-mobile\.svg|charts/chart3-nj-salary-distribution-mobile\.svg", p)], [])
+        self.assertEqual([p for p in out if not re.fullmatch(r"charts/d/\d{7}-mobile\.svg|charts/chart3-nj-salary-distribution-mobile\.svg", p)
+                          and p not in FTE_CHARTS], [])  # K12-FTE-PRESENTATION-001: exactly the part-time districts' desktop charts
+        self.assertEqual({p for p in out if p.endswith("-desktop.svg")}, FTE_CHARTS)
 
 
 class Leftover10ApiIndex(unittest.TestCase):
@@ -172,10 +180,11 @@ class Leftover10ApiIndex(unittest.TestCase):
     def test_nj_page_differs_from_web_main_by_the_content_url_only(self):
         old = show(FIX_BASE, "nj/index.html")
         self.assertEqual((old.count(A.JSONLD_OLD.encode()), old.count(A.JSONLD_NEW.encode())), (1, 0))
-        self.assertEqual(rb("nj/index.html"), old.replace(A.JSONLD_OLD.encode(), A.JSONLD_NEW.encode(), 1))
+        page = N.strip_nj(rb("nj/index.html").decode()).encode()  # without K12-FTE-PRESENTATION-001's markup (checked in test_k12_fte_presentation.py)
+        self.assertEqual(page, old.replace(A.JSONLD_OLD.encode(), A.JSONLD_NEW.encode(), 1))
 
     def test_ac24_nj_page_differs_from_history_base_by_the_history_link_and_the_content_url_only(self):
-        new = rb("nj/index.html")
+        new = N.strip_nj(rb("nj/index.html").decode()).encode()  # without K12-FTE-PRESENTATION-001's markup
         self.assertEqual((new.count(A.JSONLD_NEW.encode()), new.count(R.nj_link().encode())), (1, 1))
         back = new.replace(A.JSONLD_NEW.encode(), A.JSONLD_OLD.encode(), 1).replace(R.nj_link().encode(), b"", 1)
         self.assertEqual(back, show(HISTORY_BASE, "nj/index.html"))
@@ -212,7 +221,8 @@ class Leftover10ApiIndex(unittest.TestCase):
                 self.assertEqual(quiet_main(["--check"]), 0)
                 for name, rel in (("OUT", "api/v1/nj/index.html"), ("OUT_JSON", "api/v1/nj/index.json"), ("NJ_PAGE", "nj/index.html")):
                     with open(paths[name], "rb") as f:
-                        self.assertEqual(f.read(), rb(rel), rel)
+                        want = N.strip_nj(rb(rel).decode()).encode() if rel == "nj/index.html" else rb(rel)  # the page without the FTE markup
+                        self.assertEqual(f.read(), want, rel)
                 with open(paths["OUT_JSON"], "w", encoding="utf-8") as f:
                     f.write("<!doctype html>")
                 self.assertEqual(quiet_main(["--check"]), 1)
@@ -223,8 +233,9 @@ class Leftover10ApiIndex(unittest.TestCase):
         modified = {ln.split("\t", 1)[1] for ln in out if ln.startswith("M")}
         added = {ln.split("\t", 1)[1] for ln in out if ln.startswith("A")}
         unpublished = ("docs/", "tests/", "tools/")
-        self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p) and p not in GUIDE_PAGES), [])
-        self.assertEqual({p for p in modified if p.startswith("nj/") and p != "nj/index.html"}, GUIDE_PAGES)
+        self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p) and p not in GUIDE_PAGES
+                                 and p not in FTE_PAGES and p not in FTE_CHARTS), [])
+        self.assertEqual({p for p in modified if p.startswith("nj/") and p != "nj/index.html"}, GUIDE_PAGES | FTE_PAGES)
         self.assertEqual({p for p in added if not p.startswith(unpublished)}, SITE_ADDED)
         self.assertEqual({p for p in modified if p.startswith(unpublished)}, OTHER_MODIFIED)
         self.assertEqual({p for p in added if p.startswith(unpublished)}, OTHER_ADDED)
