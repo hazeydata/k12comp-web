@@ -2,8 +2,10 @@
 
 One committed file may differ from the fresh build, by one exact substitution: /nj/index.html's Dataset contentUrl (leftover 10,
 tools/nj_api_index.py). SCOPED_EDITS names it. The 8 district pages with salary-guide tables (GUIDE_PAGES) may differ by PR #5 fix 1's
-guide-table markup only (tools/nj_guide_tables.py: native sr-only caption, swipe cue). Every other committed file must equal the
-build byte for byte.
+guide-table markup only (tools/nj_guide_tables.py: native sr-only caption, swipe cue). K12-FTE-PRESENTATION-001 allows one further rewrite,
+`expected_final`: the 44 part-time districts' pages, /nj/, /about/ and llms.txt must equal tools/nj_fte_marks.py's rewrite of the build output
+(the part-time badges, notes and caption suffixes; tests/test_k12_fte_presentation.py pins every string). Every other committed file must
+equal the build byte for byte.
 """
 import glob
 import os
@@ -14,6 +16,7 @@ import unittest
 import nj_history_helpers as H
 import nj_api_index as A  # tools/ is on sys.path through the helpers
 import nj_guide_tables as G
+import nj_fte_marks as N
 
 STATEWIDE = "data/nj/nj-district-staff-history.csv"
 # {committed file: (bytes in the fresh build, bytes in the committed file)}; each must occur exactly once in the build output.
@@ -38,6 +41,23 @@ def expected_committed(rel, built):
     if built.count(old) != 1 or built.count(new) != 0:
         raise AssertionError(f"{rel}: the fresh build does not hold the scoped text exactly once; the allowance no longer applies")
     return built.replace(old, new, 1)
+
+
+def expected_final(rel, built):
+    """What the committed file must be: `expected_committed`, then K12-FTE-PRESENTATION-001's rewrite on exactly the files it owns (district pages
+    of the districts with a part-time dot, /nj/, /about/, llms.txt). Any other file: unchanged."""
+    want = expected_committed(rel, built)
+    text = lambda b: b.decode("utf-8")  # noqa: E731
+    if rel == "nj/index.html":
+        return N.rewrite_nj(text(want), N.rows_of).encode("utf-8")
+    if rel == "about/index.html":
+        return N.rewrite_about(text(want)).encode("utf-8")
+    if rel == "llms.txt":
+        return N.rewrite_llms(text(want)).encode("utf-8")
+    m = re.fullmatch(r"nj/[a-z0-9-]+-(\d{7})/index\.html", rel)
+    if m and N.marked_rows(N.rows_of(m.group(1))):
+        return N.rewrite_district(text(want), N.rows_of(m.group(1))).encode("utf-8")
+    return want
 
 
 def committed_files(out):
@@ -89,7 +109,7 @@ class CommittedBuild(unittest.TestCase):
         bad = []
         for r in rels:
             p = os.path.join(H.ROOT, *r.split("/"))
-            if not os.path.isfile(p) or H.rb(p) != expected_committed(r, H.rb(os.path.join(out, *r.split("/")))):
+            if not os.path.isfile(p) or H.rb(p) != expected_final(r, H.rb(os.path.join(out, *r.split("/")))):
                 bad.append(r)
         self.assertEqual(bad, [])
         self.assertTrue(set(SCOPED_EDITS) <= set(rels))
@@ -121,7 +141,7 @@ class CommittedBuild(unittest.TestCase):
         self.assertEqual(SCOPED_EDITS["nj/index.html"], (b'"contentUrl": "/api/v1/nj/"', b'"contentUrl": "/api/v1/nj/index.json"'))
         out, _ = H.built()
         built = H.rb(os.path.join(out, "nj", "index.html"))
-        committed = H.rb(os.path.join(H.ROOT, "nj", "index.html"))
+        committed = N.strip_nj(H.rt(os.path.join(H.ROOT, "nj", "index.html"))).encode("utf-8")  # without the FTE markup (expected_final pins that)
         self.assertNotEqual(committed, built)  # the build still writes the old contentUrl; the committed page carries the edit
         self.assertEqual(len(committed) - len(built), len(b"index.json"))
         # worked out here from literals, not through expected_committed, so a helper that waves the file through cannot pass

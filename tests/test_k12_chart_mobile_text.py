@@ -14,10 +14,12 @@ from unittest import mock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
+import nj_fte_marks as N  # noqa: E402  (K12-FTE-PRESENTATION-001, see Scope)
 import nj_mobile_chart_fit as F  # noqa: E402
 
 BASE = "b7e2da6dde06f4b102301c62ac296908f5f6477b"  # the tree this ticket starts from (PR #5 head)
 MAIN = "a41b583835f15b30bb5a398c94beaa1e22e8297d"  # web main: desktop charts must still equal it (AC 10)
+FTE_LEAIDS = {leaid for _, leaid in N.pages() if N.marked_rows(N.rows_of(leaid))}  # the 44 districts K12-FTE-PRESENTATION-001 marks
 TOMS = "charts/d/3416230-mobile.svg"
 DIST = "charts/chart3-nj-salary-distribution-mobile.svg"
 ALT = re.compile(r'alt="Line chart of [^"]*?: ([^"]*?)\.(?: Not reported[^"]*)?"')
@@ -133,18 +135,33 @@ class Districts(unittest.TestCase):
     def test_values_heights_lines_and_gridlines_are_kept(self):
         def keep(svg):
             m = F.DISTRICT.match(svg)
-            lines = [[p.split(",")[1] for p in pts.split()] for pts in F.POLYLINE.findall(m.group("lines"))]
+            # K12-FTE-PRESENTATION-001 re-cuts lines at part-time dots: compare the y pairs of each segment, not where a polyline starts
+            lines = [(p.split(",")[1], q.split(",")[1]) for pts in F.POLYLINE.findall(m.group("lines")) for p, q in zip(pts.split(), pts.split()[1:])]
             return (m.group("style"), F.GRID.findall(m.group("grid")), lines, [y for _, y in F.DOT.findall(svg)],
                     [v[3] for v in F.VALUE.findall(svg)])
         for path, svg, _ in self.charts():
-            self.assertEqual(keep(svg), keep(at(BASE, path)), path)
+            new, old = keep(svg), keep(at(BASE, path))
+            if 'class="pt"' in svg:  # a re-cut chart keeps a subset of the old segments (tests/test_k12_fte_presentation.py pins the rule)
+                self.assertEqual(new[:2] + new[3:], old[:2] + old[3:], path)
+                rest = list(old[2])
+                for seg in new[2]:
+                    rest.remove(seg)
+            else:
+                self.assertEqual(new, old, path)
 
     def test_lines_join_the_same_dots_as_before(self):
         def joins(svg):
             dots = F.DOT.findall(svg)
             return [[dots.index(tuple(p.split(","))) for p in pts.split()] for pts in F.POLYLINE.findall(svg)]
+        def segments(svg):
+            return [(a, b) for pts in joins(svg) for a, b in zip(pts, pts[1:])]
         for path, svg, _ in self.charts():
-            self.assertEqual(joins(svg), joins(at(BASE, path)), path)
+            if 'class="pt"' in svg:  # K12-FTE-PRESENTATION-001 re-cuts lines at part-time dots: only segments are removed, none added
+                rest = segments(at(BASE, path))
+                for seg in segments(svg):
+                    rest.remove(seg)
+            else:
+                self.assertEqual(joins(svg), joins(at(BASE, path)), path)
 
     def test_year_labels_follow_the_rule(self):
         """AC 7: the latest axis year, then every k-th year back; evenly spaced; each at its true position."""
@@ -351,12 +368,16 @@ class Scope(unittest.TestCase):
         site = [ln for ln in out if not ln.split("\t", 1)[1].startswith(("docs/", "tests/", "tools/"))]
         self.assertTrue(site)
         for ln in site:
-            self.assertRegex(ln, r"^M\t(charts/d/\d{7}-mobile\.svg|charts/chart3-nj-salary-distribution-mobile\.svg)$")
+            # K12-FTE-PRESENTATION-001 also changes the part-time districts' desktop charts and pages, /nj/, /about/, llms.txt, style.css
+            self.assertRegex(ln, r"^M\t(charts/d/\d{7}-(mobile|desktop)\.svg|charts/chart3-nj-salary-distribution-mobile\.svg"
+                                 r"|nj/[a-z0-9-]+-\d{7}/index\.html|nj/index\.html|about/index\.html|llms\.txt|style\.css)$")
 
     def test_desktop_charts_equal_web_main(self):
         out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", MAIN, "--", "charts", "data"],
                              capture_output=True, check=True, text=True).stdout.split()
-        self.assertEqual([p for p in out if not re.fullmatch(r"charts/d/\d{7}-mobile\.svg|charts/chart3-nj-salary-distribution-mobile\.svg", p)], [])
+        self.assertEqual([p for p in out if not re.fullmatch(r"charts/d/\d{7}-mobile\.svg|charts/chart3-nj-salary-distribution-mobile\.svg", p)
+                          and p not in {f"charts/d/{leaid}-desktop.svg" for leaid in FTE_LEAIDS}], [])  # K12-FTE-PRESENTATION-001: the part-time districts only
+        self.assertEqual({p for p in out if p.endswith("-desktop.svg")}, {f"charts/d/{leaid}-desktop.svg" for leaid in FTE_LEAIDS})
 
 
 if __name__ == "__main__":
