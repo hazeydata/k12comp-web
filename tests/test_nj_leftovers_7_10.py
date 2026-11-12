@@ -22,7 +22,8 @@ from nj_history import render as R  # noqa: E402
 FIX_BASE = "a41b583835f15b30bb5a398c94beaa1e22e8297d"  # web main before these fixes
 HISTORY_BASE = "3b50ce10b88e80188e6c8265634b68b482c1a81f"  # the base the history build starts from (AC 23/24)
 # Everything these fixes may change since FIX_BASE, by exact path or one exact pattern. Site files first, then unpublished files.
-SITE_MODIFIED = re.compile(r"style\.css|charts/d/\d{7}-mobile\.svg|nj/index\.html")  # nj/index.html: only the contentUrl, checked below
+# nj/index.html: only the contentUrl, checked below. The NJ distribution mobile SVG: K12-CHART-MOBILE-TEXT-001 (tests/test_k12_chart_mobile_text.py)
+SITE_MODIFIED = re.compile(r"style\.css|charts/d/\d{7}-mobile\.svg|nj/index\.html|charts/chart3-nj-salary-distribution-mobile\.svg")
 # PR #5 fix 1 (tools/nj_guide_tables.py): the 8 guide pages, each by exact path; tests/test_nj_guide_tables.py checks their diff
 GUIDE_PAGES = {"nj/bayonne-city-3401260/index.html", "nj/cherry-hill-twp-3403000/index.html", "nj/clifton-city-3403300/index.html",
                "nj/edison-twp-3404500/index.html", "nj/toms-river-regional-3416230/index.html",
@@ -33,7 +34,8 @@ OTHER_MODIFIED = {"docs/nj-history.md", "tests/test_nj_history_committed.py"}
 OTHER_ADDED = {"tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_10.py", "tools/jsonld_content_urls.py",
                "tools/nj_api_index.py", "tools/nj_mobile_chart_fit.py",
                "tests/test_nj_guide_tables.py", "tests/test_nj_guide_tables_browser.py", "tools/nj_guide_tables.py",  # PR #5 fix 1
-               "tests/test_nj_api_index_browser.py"}  # PR #5 fix list, QG nit (/api/v1/nj/ file names)
+               "tests/test_nj_api_index_browser.py",  # PR #5 fix list, QG nit (/api/v1/nj/ file names)
+               "tests/test_k12_chart_mobile_text.py"}  # K12-CHART-MOBILE-TEXT-001
 
 
 def rt(rel):
@@ -63,11 +65,6 @@ def quiet_main(argv):
         return A.main(argv)
 
 
-def svg_labels_removed(svg):
-    """The SVG with its value labels and x-axis year labels taken out (the only parts leftover 7b may change)."""
-    return F.TICK.sub("", F.VALUE.sub("", svg))
-
-
 class Leftover7aGuideTables(unittest.TestCase):
     def test_guide_cells_do_not_wrap_on_mobile(self):
         css = rt("style.css")
@@ -88,8 +85,10 @@ class Leftover7aGuideTables(unittest.TestCase):
 
 
 class Leftover7bMobileCharts(unittest.TestCase):
+    """K12-CHART-MOBILE-TEXT-001 turned the leftover 7b fitter into the mobile generator (x redrawn in a 304 viewBox, true year positions,
+    one year-label rule); tests/test_k12_chart_mobile_text.py checks that in full. What stays from 7b: every chart fits, values stay."""
     def test_every_mobile_chart_fits(self):
-        bad = {f: F.problems(rt(os.path.relpath(f, ROOT).replace(os.sep, "/"))) for f in F.files()}
+        bad = {f: F.problems(rt(os.path.relpath(f, ROOT).replace(os.sep, "/")), F.read(F.desktop_of(f))) for f in F.files()}
         bad = {k: v for k, v in bad.items() if v}
         self.assertEqual(len(F.files()), 573)
         self.assertEqual(bad, {})
@@ -97,7 +96,7 @@ class Leftover7bMobileCharts(unittest.TestCase):
     def test_fit_is_idempotent(self):
         for f in F.files():
             s = rt(os.path.relpath(f, ROOT).replace(os.sep, "/"))
-            self.assertEqual(F.fit(s), s, f)
+            self.assertEqual(F.fit(s, F.read(F.desktop_of(f))), s, f)
 
     def test_the_base_misfits_are_detected(self):
         s = at_base("charts/d/3416230-mobile.svg")
@@ -105,22 +104,17 @@ class Leftover7bMobileCharts(unittest.TestCase):
         self.assertTrue(any("$228,160" in x for x in p), p)
         self.assertTrue(any("2025-26 and 2026-27 overlap" in x for x in p), p)
 
-    def test_only_labels_change_and_values_stay(self):
+    def test_values_and_their_heights_stay(self):
         for f in F.files():
             rel = os.path.relpath(f, ROOT).replace(os.sep, "/")
             old, new = at_base(rel), rt(rel)
-            self.assertEqual(svg_labels_removed(new), svg_labels_removed(old), rel)
             self.assertEqual([m.group(4) for m in F.VALUE.finditer(new)], [m.group(4) for m in F.VALUE.finditer(old)], rel)
-            nt, ot = F.TICK.findall(new), F.TICK.findall(old)
-            self.assertTrue(set(nt) <= set(ot), rel)
-            if ot:
-                self.assertEqual(nt[0], ot[0], rel)
-                self.assertEqual(nt[-1], ot[-1], rel)
+            self.assertEqual([y for _, y in F.DOT.findall(new)], [y for _, y in F.DOT.findall(old)], rel)
 
     def test_desktop_charts_are_unchanged(self):
         out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", FIX_BASE, "--", "charts"], capture_output=True, check=True, text=True).stdout.split()
         self.assertTrue(out)
-        self.assertEqual([p for p in out if not re.fullmatch(r"charts/d/\d{7}-mobile\.svg", p)], [])
+        self.assertEqual([p for p in out if not re.fullmatch(r"charts/d/\d{7}-mobile\.svg|charts/chart3-nj-salary-distribution-mobile\.svg", p)], [])
 
 
 class Leftover10ApiIndex(unittest.TestCase):
