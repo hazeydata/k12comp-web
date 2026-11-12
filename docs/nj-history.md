@@ -262,3 +262,37 @@ size is font units x ancestor transform scale x content width / viewBox width. T
   6 to 8 units right of it. NJ words are verbatim and its marks are only translated. Its text stays inside the viewBox, clear of stems, dots
   and other text, and the Hampton note is at least 6 units from every tick label. Only the in-scope mobile SVGs change on the site, and
   desktop charts equal web main.
+
+## K12-FTE-PRESENTATION-001: part-time superintendent salaries (2026-11-12)
+
+The source publishes some superintendent base salaries at `ufb_fte` below 1 (215 district-years in 63 districts at this pin; 98 of them in 44
+districts have a reported salary and are plotted). Each is shown exactly as published (never scaled, imputed or divided by FTE) and marked wherever
+the number appears. The rule, on the committed `api/v1/nj/<leaid>.json` rows: a row is marked when `float(ufb_fte) < 1` and the salary is reported;
+`{fte}` is always the raw string ("0.2", "0", "0.0"); FTE 0 or 0.0 uses the "reported as" wording, anything else the "part-time" wording. Rows below
+1 FTE with no reported salary (117) draw no dot and get nothing. No name, shared-service partner or free-text field is read. `/nj/history/` and
+`section.nj-hist` are not touched (CEO ruling OQ-1).
+- **`tools/nj_fte_marks.py`** (`--write`, `--check`, idempotent; the copy lives in one place at the top of the file, approved by Lindsay, pinned in
+  `tests/test_k12_fte_presentation.py`). It strips its own markup and rewrites, so any state converges: the 44 desktop charts (hollow dot
+  `fill="#fff" stroke="#458699" stroke-width="1.5" class="pt" data-fte="0.2"` at the dot's coordinates; polylines re-cut so a segment joins only two
+  full-time dots or two part-time dots at the same numeric FTE, point strings kept and only split; a key `Part-time`, or `Under 1.0 FTE` on the 4 charts
+  with an FTE 0/0.0 dot: 3400069, 3400930, 3414790, 3415420), the 44 district pages (alt and figcaption suffix `(part-time, 0.2 FTE)` / `(reported as 0.0 FTE)`
+  and the closing sentence, `#fte-chart-note`, a `#latest` note on 14 pages, a badge paragraph on each of the 98 history rows merged into the "Term ended"
+  paragraph where there is one, `#fte-note`), `/nj/` (a badge in the 10 marked 2026-27 table cells, `#fte-nj-note`, the Hampton Twp suffix in the histogram
+  alt and figcaption), `/about/` (`h3#part-time` after `#term-quirk`) and `llms.txt` (one appended line). `--check` exits 1 on any missing, extra or wrong
+  marker, badge, note, caption suffix or key on any of the 573 charts and 586 pages. The histogram SVGs are not touched.
+- **`tools/nj_mobile_chart_fit.py`** carries the marker to the mobile twins (`--write`: desktop dot i is mobile dot i, same class and data-fte; same line rule;
+  value labels re-placed by `place_value` against the re-cut lines, which moves 3408280 and 3409550 only; the key placed last, in mobile coordinates by
+  `place_key`: above the plot left, right, centre, then inside the plot, first spot clear of every dot, line, leader and value label). `--check` also fails on a
+  mark that is not that year's part-time reported row in the committed JSON, a missing or extra mark, a segment joining dots the rule separates, and a key that
+  is missing, extra, mislabelled, within its pads, outside the plot, or on a chart with no part-time dot. The key text is 12 px like the rest, so the 304/358 px
+  text gate still passes on all 573 charts and the distribution. The other 529 districts' charts are byte-identical.
+- **`style.css`** gains two lines: `td.num>.badge` (flex, `width:fit-content`, `margin-left:auto`: the badge wraps onto its own line under the right-aligned number
+  in the `/nj/` table; no `td.num .badge` existed and only those 10 cells hold one) and its mobile reset inside the existing 640 px block (the cards are left-aligned).
+- **Release.** Like the guide tables, the history build still writes the old pages, so `tests/test_nj_history_committed.py` allows (`expected_final`) the 44 pages,
+  `/nj/`, `/about/` and `llms.txt` to equal `nj_fte_marks`' rewrite of the build output and nothing wider. After copying a fresh build over the tree run
+  `tools/nj_api_index.py --write`, `tools/nj_guide_tables.py --write`, `tools/nj_fte_marks.py --write` and `tools/nj_mobile_chart_fit.py --write`.
+- **Tests:** `tests/test_k12_fte_presentation.py` (counts recounted from the JSON with goldens for this pin; every approved string; per-chart SVG parse, 98 desktop and
+  98 mobile dots; the 44 notes; 98 history badges; the 3414220, 3406630 and five FTE 0/0.0 goldens; no changed salary, `cy`, `.hs`, `.big` or `/nj/` value against
+  `02b5188f`; a two-row year with one part-time row; a planted-name canary; `--check` failing on a removed and an extra marker; double `--write` on a temp copy).
+  Existing byte-diff tests against older commits (`test_k12_chart_mobile_text.py`, `test_nj_leftovers_7_10.py`, `test_nj_guide_tables.py`, `test_nj_history_committed.py`)
+  carry narrow allowances for exactly these files.
