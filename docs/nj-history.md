@@ -316,6 +316,7 @@ and exits 1 on any of the problems below. Two rules on the 1146 `charts/d/<leaid
   (840, 285) -> (840, 270), the first candidate; its mobile twin only changes in the header. The six labels right of the axis end (3401020, 3401470, 3402400, 3407680,
   3408190, 3418240) are outside the span and stay. `--check` fails on any desktop value label on the axis.
 - **/nj/ Year cell.** One rule in `style.css`, `#districts td:nth-of-type(3){white-space:nowrap}` (no media query), keeps "2026-27" on one line; no HTML change.
+- **/nj/ County cell (K12-NJ-COUNTY-WRAP-001).** One more rule in `style.css`, right after the Year rule, `#districts td:nth-of-type(1){white-space:nowrap}` (no media query), keeps the County cell (for example "Hunterdon County") on one line at 1280; no HTML change. `tests/test_k12_nj_county_wrap.py` pins `<th>` 2 as "County" and the rule once at top level; the older style.css line-diff tests allow it by name.
 - **Tests:** `tests/test_k12_chart_label_edge.py` (header on all 1146; header-normalised equality with web main 8c6ad859 apart from the one label; the six labels
   unmoved; `--check` exit 0 on the tree and 1 on the old-header mobile label at baseline 14, the old-header desktop key at baseline 12 and main's 3414220 desktop SVG;
   idempotent `--write` on a temp copy), `tests/test_k12_chart_label_edge_browser.py` (Chrome, skipped without it: em box inside the SVG for every text node of all

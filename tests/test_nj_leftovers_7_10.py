@@ -83,7 +83,7 @@ class Leftover7aGuideTables(unittest.TestCase):
     def test_only_that_line_is_added_to_style_css(self):
         old, new = at_base("style.css").splitlines(), rt("style.css").splitlines()
         added = [ln for ln in new if ln not in old and "K12-FTE-PRESENTATION-001" not in ln
-                 and ln != "#districts td:nth-of-type(3){white-space:nowrap}"]  # K12-FTE-PRESENTATION-001: its two lines are pinned in test_k12_fte_presentation.py; K12-CHART-LABEL-EDGE-001: the Year rule in test_k12_nj_year_wrap.py
+                 and ln not in ("#districts td:nth-of-type(3){white-space:nowrap}", "#districts td:nth-of-type(1){white-space:nowrap}")]  # K12-FTE-PRESENTATION-001: its two lines are pinned in test_k12_fte_presentation.py; K12-CHART-LABEL-EDGE-001: the Year rule in test_k12_nj_year_wrap.py; K12-NJ-COUNTY-WRAP-001: the County rule in test_k12_nj_county_wrap.py
         self.assertEqual([ln for ln in old if ln not in new], [])
         self.assertEqual(len(added), 4, added)  # this line, then the PR #5 fix list's three (tests/test_nj_guide_tables.py, test_nj_api_index_browser.py)
         self.assertIn(".grid td.num", added[0])

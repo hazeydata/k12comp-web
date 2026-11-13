@@ -154,7 +154,7 @@ class Css(unittest.TestCase):
         old, new = at_base("style.css").splitlines(), rt("style.css").splitlines()
         self.assertEqual([ln for ln in old if ln not in new], [])
         added = [ln for ln in new if ln not in old and "K12-FTE-PRESENTATION-001" not in ln
-                 and ln != "#districts td:nth-of-type(3){white-space:nowrap}"]  # K12-FTE-PRESENTATION-001: its two lines are pinned in test_k12_fte_presentation.py; K12-CHART-LABEL-EDGE-001: the Year rule in test_k12_nj_year_wrap.py
+                 and ln not in ("#districts td:nth-of-type(3){white-space:nowrap}", "#districts td:nth-of-type(1){white-space:nowrap}")]  # K12-FTE-PRESENTATION-001: its two lines are pinned in test_k12_fte_presentation.py; K12-CHART-LABEL-EDGE-001: the Year rule in test_k12_nj_year_wrap.py; K12-NJ-COUNTY-WRAP-001: the County rule in test_k12_nj_county_wrap.py
         self.assertEqual(len(added), 4, added)  # leftover 7a, fix 1 (all widths, mobile), then the /api/v1/nj/ rule
         self.assertEqual(new[-3:], added[1:])
         self.assertTrue(all("PR #5 fix 1" in ln for ln in added[1:3]), added[1:3])
