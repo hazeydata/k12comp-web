@@ -322,3 +322,12 @@ and exits 1 on any of the problems below. Two rules on the 1146 `charts/d/<leaid
   idempotent `--write` on a temp copy), `tests/test_k12_chart_label_edge_browser.py` (Chrome, skipped without it: em box inside the SVG for every text node of all
   1146 charts at 304/358 and 1072 px content, no value label on the axis), `tests/test_k12_nj_year_wrap.py` (`<th>` 4 is "Year", the CSS rule once).
   Older tests that compare charts with earlier commits ignore the header (`tests/chart_header_helpers.py`), nothing else.
+
+## K12-NJ-DEADLINK-001: dead Edison Twp contract link (2026-11-13)
+
+The old Edison Twp contract short link (a `5il.co` link whose redirect chain ended in a 404) is dead. It is replaced everywhere by the district's current copy of the same document:
+`https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/4500/Eps/7025b86b-a5ce-4996-9ba2-429cad8337e7/ETEA-Certified-Contract-July-2023-June-2028.pdf`.
+`pdftotext` of all 90 pages of the new copy matches the original that was extracted. The sha256 (`0bec03d3...`) is unchanged, because it identifies the extracted copy, not the URL. Only the URL changed.
+
+- `tools/nj_history/data.py` `SOURCE_URL_OVERRIDES` maps the old URL to the new one for a build that reads a site tree predating the fix: `guide_cells_from_site` for the guide cells, and `apply_source_url_overrides` (called in `build.py`) for the district pages, links and link text.
+- `tests/test_k12_nj_deadlink.py` fails if the dead link returns in any tracked file, and pins the new URL and the unchanged sha256 in `api/v1/nj/3404500.json` (salary cells, contract terms, sources) and on the district page.

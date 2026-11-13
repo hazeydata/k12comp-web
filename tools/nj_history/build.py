@@ -97,7 +97,7 @@ def build(site_root, out_dir, hist, page_paths, nj_index_path=None):
         if newsletter is None:
             m = NEWSLETTER_RE.search(page)
             newsletter = m.group(0) if m else None
-        page = edit_district(page, hist, leaid)
+        page = D.apply_source_url_overrides(edit_district(page, hist, leaid))
         write_text(f, page)
         rep["district_pages"] += 1
         rep["district_pages_with_rows"] += 1 if hist.cov[leaid]["n"] else 0

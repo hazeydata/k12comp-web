@@ -111,7 +111,7 @@ These districts have published teacher salary guides within 2019-20 to 2025-26. 
   - Data years: 2023-24, 2024-25, 2025-26. Retrieved 2026-10-20 (America/Toronto). Link each guide table to the existing source anchor on its district page; there is no public document URL.
 - OPRA response from Clifton City, received 2026-10-21, sha256 2212af5d5ac7f8e49d487a6ba9bff5b51686e83e73aa0c5199823680e9f54b2c
   - Data years: 2024-25, 2025-26. Retrieved 2026-10-21 (America/Toronto). Link each guide table to the existing source anchor on its district page; there is no public document URL.
-- Source: district contract · 2023-24, 2024-25, 2025-26 · retrieved 2026-10-20 (America/Toronto) · https://5il.co/2u0cp
+- Source: district contract · 2023-24, 2024-25, 2025-26 · retrieved 2026-10-20 (America/Toronto) · https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/4500/Eps/7025b86b-a5ce-4996-9ba2-429cad8337e7/ETEA-Certified-Contract-July-2023-June-2028.pdf
 - OPRA response from Toms River Regional, received 2026-10-20, sha256 9c3dc6805c72f9ef55f4ce2aec23509e0c755aaaafe42ab45a1fdeeb50a031cb
   - Data years: 2024-25, 2025-26. Retrieved 2026-10-20 (America/Toronto). Link each guide table to the existing source anchor on its district page; there is no public document URL.
 - OPRA response from Vineland City, received 2026-10-22, sha256 36dd948aa4e46420fec2f143bf64443da4a1e0c5805d610c568c21cf3efc967c

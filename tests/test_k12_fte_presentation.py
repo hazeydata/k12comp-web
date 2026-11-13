@@ -17,6 +17,7 @@ from unittest import mock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
+import k12_deadlink_helpers as deadlink  # noqa: E402
 import nj_fte_marks as N  # noqa: E402
 import nj_mobile_chart_fit as F  # noqa: E402
 import nj_chart_label_edge as E  # noqa: E402  (K12-CHART-LABEL-EDGE-001: header and axis rule)
@@ -128,8 +129,10 @@ class Recount(unittest.TestCase):
 
     @needs_git
     def test_json_and_data_are_byte_identical_to_main(self):
-        out = subprocess.run(["git", "-C", ROOT, "diff", "--stat", BASE, "--", "api", "data", "nj/history"], capture_output=True, check=True, text=True)
-        self.assertEqual(out.stdout, "")
+        out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", BASE, "--", "api", "data", "nj/history"], capture_output=True, check=True, text=True)
+        self.assertEqual(out.stdout.split(), sorted(deadlink.FILES))  # K12-NJ-DEADLINK-001: URL-only change, checked in test_k12_nj_deadlink
+        for rel in deadlink.FILES:
+            self.assertEqual(deadlink.undo(rt(rel)), at_base(rel), rel)
 
 
 class Strings(unittest.TestCase):
@@ -528,12 +531,12 @@ class DistrictPages(unittest.TestCase):
         for leaid in PAGES:
             rel = os.path.relpath(PAGES[leaid], ROOT).replace(os.sep, "/")
             new, old = rt(rel), at_base(rel)
-            self.assertEqual(N.strip_district(new), old, rel)
+            self.assertEqual(deadlink.undo(N.strip_district(new)), old, rel)
             self.assertEqual(sorted(re.findall(r"\$[\d,]+", new)), sorted(re.findall(r"\$[\d,]+", old)), rel)
             for cls in ("hs num", "big num"):
                 self.assertEqual(re.findall(rf'<[a-z]+ class="{cls}">([^<]*)<', new), re.findall(rf'<[a-z]+ class="{cls}">([^<]*)<', old), (rel, cls))
             if leaid not in MARKED:
-                self.assertEqual(new, old, rel)
+                self.assertEqual(deadlink.undo(new), old, rel)
 
     @needs_git
     def test_no_derived_number_anywhere(self):

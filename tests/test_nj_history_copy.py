@@ -10,7 +10,7 @@ from nj_history import copy as C
 
 MD = H.rt(os.path.join(H.ROOT, "docs", "nj-history-copy.md"))
 LAYOUT = H.rt(os.path.join(H.ROOT, "docs", "nj-history-layout-notes.md"))
-MD_SHA256 = "2495d917f14d43d90529ea923ccf398a93b07481c8c9978ab6541787e8246b24"
+MD_SHA256 = "bb20b40955546c553b88a33f3d5872dfda02b1688ccf2ae0b02c1305ec31e662"
 DATAVIZ_OWNED = {"PANEL_CHART_NOTE", "PANEL_TABLE_NOTE", "SCALE_NOTE", "STATUS_PUBLISHED"}  # approved dataviz strings; pinned in test_nj_history_dataviz.py
 NOT_COPY = {"S_PATH"}
 

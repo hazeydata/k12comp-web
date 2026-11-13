@@ -12,6 +12,7 @@ import unittest
 from unittest import mock
 
 import nj_history_helpers as H
+import k12_deadlink_helpers as deadlink
 from nj_history_helpers import B, D, R
 
 from nj_history import copy as C
@@ -408,13 +409,13 @@ class P4District(unittest.TestCase):
         self.assertIn("OPRA response from Toms River Regional, received 2026-10-20, sha256 9c3dc6805c72f9ef55f4ce2aec23509e0c755aaaafe42ab45a1fdeeb50a031cb", t)
         self.assertIn("Data years: 2024-25, 2025-26. Retrieved 2026-10-20 (America/Toronto).", t)
         t = H.text_of(H.history_section(self.page("3404500")))
-        self.assertIn("Source: district contract · 2023-24, 2024-25, 2025-26 · retrieved 2026-10-20 (America/Toronto) · https://5il.co/2u0cp", t)
+        self.assertIn("Source: district contract · 2023-24, 2024-25, 2025-26 · retrieved 2026-10-20 (America/Toronto) · https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/4500/Eps/7025b86b-a5ce-4996-9ba2-429cad8337e7/ETEA-Certified-Contract-July-2023-June-2028.pdf", t)
         self.assertNotIn("NJ PERC", t)
 
     def test_ac14_perc_branch_uses_nj_perc_with_url(self):
         for u in ("https://www.perc.state.nj.us/x.pdf", "https://www.state.nj.us/perc/x.pdf", "https://perc.nj.gov/x"):
             self.assertTrue(D.is_perc_url(u), u)
-        for u in ("https://5il.co/2u0cp", "http://www.perc.state.nj.us/x.pdf", "https://district.k12.nj.us/contract.pdf"):
+        for u in ("https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/4500/Eps/7025b86b-a5ce-4996-9ba2-429cad8337e7/ETEA-Certified-Contract-July-2023-June-2028.pdf", "http://www.perc.state.nj.us/x.pdf", "https://district.k12.nj.us/contract.pdf"):
             self.assertFalse(D.is_perc_url(u), u)
 
         class Stub:
@@ -581,7 +582,7 @@ class P6Statewide(unittest.TestCase):
         self.assertIn('<footer class="site-footer">', self.p)
         self.assertNotIn('name="robots"', self.p)
         hosts = set(re.findall(r'(?:src|href)="https?://([^/"]+)', self.p))
-        self.assertTrue(hosts <= {"k12comp.goatcounter.com", "gc.zgo.at", "hazeydata.ai", "k12comp.com", "www.nj.gov", "5il.co",
+        self.assertTrue(hosts <= {"k12comp.goatcounter.com", "gc.zgo.at", "hazeydata.ai", "k12comp.com", "www.nj.gov", "files-backend.assets.thrillshare.com",
                                   "www.west-windsor-plainsboro.k12.nj.us", "creativecommons.org"}, hosts)
         self.assertNotRegex(self.p, r"<script[^>]+src=\"https?://(?!gc\.zgo\.at)")
 
@@ -650,7 +651,7 @@ class P7Downloads(unittest.TestCase):
             self.assertNotIn('"Person"', m.group(1))
             self.assertNotIn("median", m.group(1).lower())
         ds = json.loads(re.search(r'id="ld-nj-history">(.*?)</script>', H.read(self.out, "nj/history/index.html")).group(1))
-        self.assertIn("https://5il.co/2u0cp", ds["isBasedOn"])
+        self.assertIn("https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/4500/Eps/7025b86b-a5ce-4996-9ba2-429cad8337e7/ETEA-Certified-Contract-July-2023-June-2028.pdf", ds["isBasedOn"])
         self.assertEqual(len(ds["isBasedOn"]), 9)
         p = H.read(self.out, "nj/toms-river-regional-3416230/index.html")
         base = H.git_base("nj/toms-river-regional-3416230/index.html").decode()
@@ -709,7 +710,7 @@ class P8Preservation(unittest.TestCase):
             if p in changed:
                 continue
             if re.fullmatch(r"nj/[a-z0-9-]+-\d{7}/index\.html", p):
-                self.assertEqual(H.strip_history(new.decode()).encode(), old, p)
+                self.assertEqual(deadlink.undo(H.strip_history(new.decode())).encode(), old, p)
                 n += 1
             else:
                 self.assertEqual(new, old, p)

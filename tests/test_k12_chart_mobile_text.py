@@ -14,6 +14,7 @@ from unittest import mock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
+import k12_deadlink_helpers as deadlink  # noqa: E402
 import nj_fte_marks as N  # noqa: E402  (K12-FTE-PRESENTATION-001, see Scope)
 import nj_mobile_chart_fit as F  # noqa: E402
 import nj_chart_label_edge as E  # noqa: E402  (K12-CHART-LABEL-EDGE-001: header)
@@ -369,6 +370,7 @@ class Scope(unittest.TestCase):
         out = subprocess.run(["git", "-C", ROOT, "diff", "--name-status", BASE], capture_output=True, check=True, text=True).stdout.splitlines()
         site = [ln for ln in out if not ln.split("\t", 1)[1].startswith(("docs/", "tests/", "tools/"))]
         self.assertTrue(site)
+        site = [ln for ln in site if ln.split("\t", 1)[1] not in deadlink.FILES]  # K12-NJ-DEADLINK-001: URL-only, pinned in test_k12_nj_deadlink
         for ln in site:
             # K12-FTE-PRESENTATION-001 also changes the part-time districts' desktop charts and pages, /nj/, /about/, llms.txt, style.css
             self.assertRegex(ln, r"^M\t(charts/d/\d{7}-(mobile|desktop)\.svg|charts/chart3-nj-salary-distribution-mobile\.svg"
