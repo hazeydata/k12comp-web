@@ -44,7 +44,8 @@ OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", 
                "tests/test_nj_guide_tables.py", "tests/test_nj_guide_tables_browser.py", "tools/nj_guide_tables.py",  # PR #5 fix 1
                "tests/test_nj_api_index_browser.py",  # PR #5 fix list, QG nit (/api/v1/nj/ file names)
                "tests/test_k12_chart_mobile_text.py",  # K12-CHART-MOBILE-TEXT-001
-               "tools/nj_fte_marks.py", "tests/test_k12_fte_presentation.py"}  # K12-FTE-PRESENTATION-001
+               "tools/nj_fte_marks.py", "tests/test_k12_fte_presentation.py",  # K12-FTE-PRESENTATION-001
+               "tests/test_k12_nj_county_wrap.py"}  # K12-NJ-COUNTY-WRAP-001
 
 
 def rt(rel):
