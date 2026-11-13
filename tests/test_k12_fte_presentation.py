@@ -19,6 +19,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import nj_fte_marks as N  # noqa: E402
 import nj_mobile_chart_fit as F  # noqa: E402
+import nj_chart_label_edge as E  # noqa: E402  (K12-CHART-LABEL-EDGE-001: header and axis rule)
+from chart_header_helpers import content_changes  # noqa: E402
 
 BASE = "02b5188f6acd668c678b9e9de6622b7d3c8f43ad"  # web main this ticket starts from
 GIT = shutil.which("git") is not None
@@ -261,7 +263,8 @@ class Charts(unittest.TestCase):
 
     @needs_git
     def test_only_the_44_districts_charts_change(self):
-        out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", BASE, "--", "charts/d"], capture_output=True, check=True, text=True).stdout.split()
+        out = content_changes(BASE, subprocess.run(["git", "-C", ROOT, "diff", "--name-only", BASE, "--", "charts/d"],
+                                                   capture_output=True, check=True, text=True).stdout.split())  # K12-CHART-LABEL-EDGE-001: not counting the header; 3414220's desktop label y is its own test
         self.assertEqual(len(out), 88)
         self.assertEqual(sorted(out), sorted(f"charts/d/{leaid}-{k}.svg" for leaid in MARKED for k in ("desktop", "mobile")))
         self.assertEqual(subprocess.run(["git", "-C", ROOT, "diff", "--name-only", BASE, "--", "charts/chart3-nj-salary-distribution-desktop.svg",
@@ -277,6 +280,8 @@ class Charts(unittest.TestCase):
         removed = 0
         for leaid in MARKED:
             old, new = at_base(f"charts/d/{leaid}-desktop.svg"), rt(f"charts/d/{leaid}-desktop.svg")
+            if leaid == "3414220":  # K12-CHART-LABEL-EDGE-001: the one label the axis rule lifts above its dot (y 285.0 -> 270.0), nothing else
+                new = new.replace('<text class="v" x="840.0" y="270.0">$20,000</text>', '<text class="v" x="840.0" y="285.0">$20,000</text>')
             self.assertEqual(v.findall(new), v.findall(old), leaid)
             self.assertEqual(dot.findall(new), dot.findall(old), leaid)
             self.assertEqual(style.findall(new), style.findall(old), leaid)
@@ -314,7 +319,7 @@ class Charts(unittest.TestCase):
                 self.assertEqual(F.main(["--check"]), 0)
             self.assertIn("573 mobile charts, 0 rewritten, 0 still misfit", out.getvalue())
             for f in glob.glob(os.path.join(charts, "*.svg")):
-                self.assertEqual(rdf(f), rt("charts/d/" + os.path.basename(f)), f)
+                self.assertEqual(E.convert(f, rdf(f)) if "chart3" not in f else rdf(f), rt("charts/d/" + os.path.basename(f)), f)  # + headroom header, axis rule
 
 
 class MobileGate(unittest.TestCase):
@@ -606,7 +611,7 @@ class NjPage(unittest.TestCase):
         self.assertTrue(added[0].startswith("td.num>.badge{display:flex;width:fit-content;margin-left:auto;"))
         self.assertTrue(added[1].lstrip().startswith("#districts td.num>.badge{margin-left:0}"))
         self.assertFalse(any(re.search(r"td\.num\s*(>\s*)?\.badge", ln) for ln in old))  # nothing like it existed
-        self.assertEqual([ln for ln in new if ln not in old], added)  # and nothing else
+        self.assertEqual([ln for ln in new if ln not in old and ln != "#districts td:nth-of-type(3){white-space:nowrap}"], added)  # and nothing else (K12-CHART-LABEL-EDGE-001 adds the one Year rule, pinned in test_k12_nj_year_wrap.py)
 
 
 class Fixtures(unittest.TestCase):
@@ -735,7 +740,10 @@ class Fixtures(unittest.TestCase):
             self.assertIn("0 files rewritten", out)
             self.assertEqual(self.run_tool(tmp, "--check")[0], 0)
             for rel in ("nj/index.html", "about/index.html", "llms.txt", os.path.relpath(PAGES["3414220"], ROOT), "charts/d/3414220-desktop.svg"):
-                self.assertEqual(rdf(os.path.join(tmp, rel)), rt(rel.replace(os.sep, "/")), rel)
+                got = rdf(os.path.join(tmp, rel))
+                if rel.endswith(".svg"):
+                    got = E.convert(rel, got)  # K12-CHART-LABEL-EDGE-001: the chain's last step (headroom header, axis rule)
+                self.assertEqual(got, rt(rel.replace(os.sep, "/")), rel)
 
 
 class Docs(unittest.TestCase):

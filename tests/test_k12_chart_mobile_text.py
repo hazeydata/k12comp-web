@@ -16,6 +16,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import nj_fte_marks as N  # noqa: E402  (K12-FTE-PRESENTATION-001, see Scope)
 import nj_mobile_chart_fit as F  # noqa: E402
+import nj_chart_label_edge as E  # noqa: E402  (K12-CHART-LABEL-EDGE-001: header)
+from chart_header_helpers import content_changes  # noqa: E402
 
 BASE = "b7e2da6dde06f4b102301c62ac296908f5f6477b"  # the tree this ticket starts from (PR #5 head)
 MAIN = "a41b583835f15b30bb5a398c94beaa1e22e8297d"  # web main: desktop charts must still equal it (AC 10)
@@ -92,7 +94,7 @@ class Gate(unittest.TestCase):
                 self.assertEqual(quiet_main(["--write"])[0], 0)
                 self.assertEqual(quiet_main(["--check"])[0], 0)
                 for f in F.files():
-                    self.assertEqual(F.read(f), rt("charts/d/" + os.path.basename(f)), f)
+                    self.assertEqual(E.add_headroom(F.read(f)), rt("charts/d/" + os.path.basename(f)), f)  # the committed charts also carry the headroom header
             self.assertEqual(F.read(dist), rt(DIST))
 
     def test_size_includes_css_rules_inline_style_and_ancestor_scale(self):
@@ -116,7 +118,7 @@ class Districts(unittest.TestCase):
 
     def test_every_chart_is_drawn_in_the_304_viewbox_and_fits(self):
         for path, svg, desktop in self.charts():
-            self.assertTrue(svg.startswith('<svg xmlns="http://www.w3.org/2000/svg" width="304" height="300" viewBox="0 0 304 300"'), path)
+            self.assertTrue(svg.startswith('<svg xmlns="http://www.w3.org/2000/svg" width="304" height="304" viewBox="0 -4 304 304"'), path)  # K12-CHART-LABEL-EDGE-001 headroom
             self.assertEqual(F.problems(svg, desktop), [], path)
             self.assertEqual(F.fit(svg, desktop), svg, path)  # idempotent
 
@@ -373,8 +375,8 @@ class Scope(unittest.TestCase):
                                  r"|nj/[a-z0-9-]+-\d{7}/index\.html|nj/index\.html|about/index\.html|llms\.txt|style\.css)$")
 
     def test_desktop_charts_equal_web_main(self):
-        out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", MAIN, "--", "charts", "data"],
-                             capture_output=True, check=True, text=True).stdout.split()
+        out = content_changes(MAIN, subprocess.run(["git", "-C", ROOT, "diff", "--name-only", MAIN, "--", "charts", "data"],
+                                                   capture_output=True, check=True, text=True).stdout.split())  # K12-CHART-LABEL-EDGE-001: not counting the header
         self.assertEqual([p for p in out if not re.fullmatch(r"charts/d/\d{7}-mobile\.svg|charts/chart3-nj-salary-distribution-mobile\.svg", p)
                           and p not in {f"charts/d/{leaid}-desktop.svg" for leaid in FTE_LEAIDS}], [])  # K12-FTE-PRESENTATION-001: the part-time districts only
         self.assertEqual({p for p in out if p.endswith("-desktop.svg")}, {f"charts/d/{leaid}-desktop.svg" for leaid in FTE_LEAIDS})

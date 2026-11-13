@@ -290,9 +290,34 @@ the number appears. The rule, on the committed `api/v1/nj/<leaid>.json` rows: a 
   in the `/nj/` table; no `td.num .badge` existed and only those 16 cells hold one) and its mobile reset inside the existing 640 px block (the cards are left-aligned).
 - **Release.** Like the guide tables, the history build still writes the old pages, so `tests/test_nj_history_committed.py` allows (`expected_final`) the 44 pages,
   `/nj/`, `/about/` and `llms.txt` to equal `nj_fte_marks`' rewrite of the build output and nothing wider. After copying a fresh build over the tree run
-  `tools/nj_api_index.py --write`, `tools/nj_guide_tables.py --write`, `tools/nj_fte_marks.py --write` and `tools/nj_mobile_chart_fit.py --write`.
+  `tools/nj_api_index.py --write`, `tools/nj_guide_tables.py --write`, `tools/nj_fte_marks.py --write` and `tools/nj_mobile_chart_fit.py --write`, then `python3 tools/nj_chart_label_edge.py --write` (K12-CHART-LABEL-EDGE-001: last, because the build rewrites the charts in the old header).
 - **Tests:** `tests/test_k12_fte_presentation.py` (counts recounted from the JSON with goldens for this pin; every approved string; per-chart SVG parse, 98 desktop and
   98 mobile dots; the 44 notes; 98 history badges; the 3414220, 3406630 and five FTE 0/0.0 goldens; no changed salary, `cy`, `.hs`, `.big` or `/nj/` value against
   `02b5188f`; a two-row year with one part-time row; a planted-name canary; `--check` failing on a removed and an extra marker; double `--write` on a temp copy).
   Existing byte-diff tests against older commits (`test_k12_chart_mobile_text.py`, `test_nj_leftovers_7_10.py`, `test_nj_guide_tables.py`, `test_nj_history_committed.py`)
   carry narrow allowances for exactly these files.
+
+### K12-CHART-LABEL-EDGE-001: chart text inside the chart edge, off the x-axis (with K12-NJ-YEAR-WRAP-001)
+
+`tools/nj_chart_label_edge.py` (`--check` / `--write`, idempotent, stdlib only) runs last in the chain: `nj_api_index` -> `nj_guide_tables` -> `nj_fte_marks` ->
+`nj_mobile_chart_fit` -> `nj_chart_label_edge`. Its `--check` is part of the gate list next to `nj_fte_marks.py --check` and `nj_mobile_chart_fit.py --check`,
+and exits 1 on any of the problems below. Two rules on the 1146 `charts/d/<leaid>-{mobile,desktop}.svg` and nothing else (no data, text, dot, line or `<style>` change):
+- **Headroom rule.** A text box (em top = baseline - 1.05 x font size) stuck 0.2-0.5 px out of the chart's top edge at some widths (31 mobile value labels at baseline
+  14 at 358 px, 44 desktop keys at baseline 12 at 1072 px), although no ink did. Every chart gets 4 units of white above it, in the header only:
+  `width="W" height="H+4" viewBox="0 -4 W H+4"` and `<rect y="-4" width="W" height="H+4" fill="#ffffff"/>` (W x H read from the file: mobile 304 x 300, desktop
+  1120 x 320 before). `--check` fails on a chart without that exact header and on any text node whose em top is less than 1 unit inside the viewBox (below -3 in the new
+  coordinates); with the same 1-unit pad it also checks the bottom and sides using the tools' monospace width estimate.
+  `nj_mobile_chart_fit.py` reads and writes either header as it finds it, so it is a no-op after this tool and still works on a fresh (old-header) build; its
+  `value_owners` also pairs a desktop label lifted LIFT above its dot.
+- **Axis rule (desktop).** A desktop value label whose box (`value_box`, 14 px) overlaps the x-axis line band (the `#999999` line, y +/- 0.5) within the axis x span
+  moves above its own dot: same x (dot x + 8, start-anchored), baseline = dot y - 10. If that spot covers a dot (2-unit pad over the ink radius, so the hollow
+  part-time dot's 4.75 is covered), a line, the key or another label, leaves the plot or sits nearer another dot, the next candidate is taken in `place_value`'s
+  order (below, beside, left of the dot, further out); the build fails if none is clear. Only the label's x and y change. Today that is 3414220's desktop `$20,000`,
+  (840, 285) -> (840, 270), the first candidate; its mobile twin only changes in the header. The six labels right of the axis end (3401020, 3401470, 3402400, 3407680,
+  3408190, 3418240) are outside the span and stay. `--check` fails on any desktop value label on the axis.
+- **/nj/ Year cell.** One rule in `style.css`, `#districts td:nth-of-type(3){white-space:nowrap}` (no media query), keeps "2026-27" on one line; no HTML change.
+- **Tests:** `tests/test_k12_chart_label_edge.py` (header on all 1146; header-normalised equality with web main 8c6ad859 apart from the one label; the six labels
+  unmoved; `--check` exit 0 on the tree and 1 on the old-header mobile label at baseline 14, the old-header desktop key at baseline 12 and main's 3414220 desktop SVG;
+  idempotent `--write` on a temp copy), `tests/test_k12_chart_label_edge_browser.py` (Chrome, skipped without it: em box inside the SVG for every text node of all
+  1146 charts at 304/358 and 1072 px content, no value label on the axis), `tests/test_k12_nj_year_wrap.py` (`<th>` 4 is "Year", the CSS rule once).
+  Older tests that compare charts with earlier commits ignore the header (`tests/chart_header_helpers.py`), nothing else.

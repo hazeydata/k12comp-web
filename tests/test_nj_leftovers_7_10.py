@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import nj_api_index as A  # noqa: E402
 import nj_fte_marks as N  # noqa: E402  (K12-FTE-PRESENTATION-001: the one allowed further edit, see FTE_PAGES)
 import nj_mobile_chart_fit as F  # noqa: E402
+from chart_header_helpers import content_changes  # noqa: E402
 from nj_history import render as R  # noqa: E402
 
 FIX_BASE = "a41b583835f15b30bb5a398c94beaa1e22e8297d"  # web main before these fixes
@@ -36,7 +37,9 @@ GUIDE_PAGES = {"nj/bayonne-city-3401260/index.html", "nj/cherry-hill-twp-3403000
                "nj/w-windsor-plainsboro-reg-3417700/index.html"}
 SITE_ADDED = {"api/v1/nj/index.html", "api/v1/nj/index.json"}
 OTHER_MODIFIED = {"docs/nj-history.md", "tests/test_nj_history_committed.py"}
-OTHER_ADDED = {"tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_10.py", "tools/jsonld_content_urls.py",
+OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", "tests/test_k12_chart_label_edge.py",  # K12-CHART-LABEL-EDGE-001
+               "tests/test_k12_chart_label_edge_browser.py", "tests/test_k12_nj_year_wrap.py",
+               "tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_10.py", "tools/jsonld_content_urls.py",
                "tools/nj_api_index.py", "tools/nj_mobile_chart_fit.py",
                "tests/test_nj_guide_tables.py", "tests/test_nj_guide_tables_browser.py", "tools/nj_guide_tables.py",  # PR #5 fix 1
                "tests/test_nj_api_index_browser.py",  # PR #5 fix list, QG nit (/api/v1/nj/ file names)
@@ -79,7 +82,8 @@ class Leftover7aGuideTables(unittest.TestCase):
 
     def test_only_that_line_is_added_to_style_css(self):
         old, new = at_base("style.css").splitlines(), rt("style.css").splitlines()
-        added = [ln for ln in new if ln not in old and "K12-FTE-PRESENTATION-001" not in ln]  # its two lines are pinned in test_k12_fte_presentation.py
+        added = [ln for ln in new if ln not in old and "K12-FTE-PRESENTATION-001" not in ln
+                 and ln != "#districts td:nth-of-type(3){white-space:nowrap}"]  # K12-FTE-PRESENTATION-001: its two lines are pinned in test_k12_fte_presentation.py; K12-CHART-LABEL-EDGE-001: the Year rule in test_k12_nj_year_wrap.py
         self.assertEqual([ln for ln in old if ln not in new], [])
         self.assertEqual(len(added), 4, added)  # this line, then the PR #5 fix list's three (tests/test_nj_guide_tables.py, test_nj_api_index_browser.py)
         self.assertIn(".grid td.num", added[0])
@@ -118,7 +122,8 @@ class Leftover7bMobileCharts(unittest.TestCase):
             self.assertEqual([y for _, y in F.DOT.findall(new)], [y for _, y in F.DOT.findall(old)], rel)
 
     def test_desktop_charts_are_unchanged(self):
-        out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", FIX_BASE, "--", "charts"], capture_output=True, check=True, text=True).stdout.split()
+        out = content_changes(FIX_BASE, subprocess.run(["git", "-C", ROOT, "diff", "--name-only", FIX_BASE, "--", "charts"],
+                                                       capture_output=True, check=True, text=True).stdout.split())  # K12-CHART-LABEL-EDGE-001: not counting the header
         self.assertTrue(out)
         self.assertEqual([p for p in out if not re.fullmatch(r"charts/d/\d{7}-mobile\.svg|charts/chart3-nj-salary-distribution-mobile\.svg", p)
                           and p not in FTE_CHARTS], [])  # K12-FTE-PRESENTATION-001: exactly the part-time districts' desktop charts
@@ -230,7 +235,7 @@ class Leftover10ApiIndex(unittest.TestCase):
     def test_no_file_changes_since_web_main_except_the_scoped_leftover_7_and_10_edits(self):
         out = subprocess.run(["git", "-C", ROOT, "diff", "--name-status", FIX_BASE], capture_output=True, check=True, text=True).stdout.splitlines()
         self.assertEqual([ln for ln in out if ln[0] not in "MA"], [])  # nothing deleted, renamed or retyped
-        modified = {ln.split("\t", 1)[1] for ln in out if ln.startswith("M")}
+        modified = set(content_changes(FIX_BASE, [ln.split("\t", 1)[1] for ln in out if ln.startswith("M")]))  # K12-CHART-LABEL-EDGE-001: not counting the header
         added = {ln.split("\t", 1)[1] for ln in out if ln.startswith("A")}
         unpublished = ("docs/", "tests/", "tools/")
         self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p) and p not in GUIDE_PAGES

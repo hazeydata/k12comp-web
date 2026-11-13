@@ -28,6 +28,8 @@ original once (a file already in the 304-unit viewBox is left alone). Title, sub
 rewrapped at 13 (title, bold) and 12 units; tick, axis and note labels become 12 units; the two outlier notes move clear of the stems
 (OUTLIERS). "Hampton Twp / $56,225" goes one word per line over the low tail it names, below the "20" tick row and clear of it.
 The plot (stems, dots, median line, spines, ticks) is only translated, by DIST_DX/dy, never scaled or moved relative to itself.
+Header: the 4-unit top headroom header of tools/nj_chart_label_edge.py is read and written back as found (old header in, old header out), so
+running this tool after that one changes nothing.
 Desktop SVGs are never touched by this tool (tools/nj_fte_marks.py writes their marker). Re-running `--write` changes nothing (idempotent).
 
 Part-time marker, key and line rule (K12-FTE-PRESENTATION-001; the 44 districts with a dot whose `ufb_fte` is below 1 and whose salary is
@@ -85,8 +87,15 @@ PT_ATTRS = r'fill="#fff" stroke="#458699" stroke-width="1\.5" class="pt" data-ft
 KEY_RE = (r'<circle class="key" cx="[\d.]+" cy="[\d.]+" r="4" fill="#fff" stroke="#458699" stroke-width="1\.5"/>'
           r'<text class="key" x="[\d.]+" y="[\d.]+">(?:Part-time|Under 1\.0 FTE)</text>')
 # One district mobile SVG, start to end; every part is captured so nothing can be lost on a rewrite.
+OLD_HEADER = ('<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="300" viewBox="0 0 {w} 300" role="img">'
+              '<rect width="{w}" height="300" fill="#ffffff"/>')
+# K12-CHART-LABEL-EDGE-001: tools/nj_chart_label_edge.py adds 4 units of top headroom to the header. This tool reads either header and
+# writes back the one it found, so it is a no-op after that tool and still works on a fresh (old header) history build.
+HEADROOM_HEADER = ('<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="304" viewBox="0 -4 {w} 304" role="img">'
+                   '<rect y="-4" width="{w}" height="304" fill="#ffffff"/>')
 DISTRICT = re.compile(
-    r'<svg xmlns="http://www.w3.org/2000/svg" width="\d+" height="300" viewBox="0 0 \d+ 300" role="img"><rect width="\d+" height="300" fill="#ffffff"/>'
+    r'(?P<head><svg xmlns="http://www.w3.org/2000/svg" width="\d+" height="300" viewBox="0 0 \d+ 300" role="img"><rect width="\d+" height="300" fill="#ffffff"/>'
+    r'|<svg xmlns="http://www.w3.org/2000/svg" width="\d+" height="304" viewBox="0 -4 \d+ 304" role="img"><rect y="-4" width="\d+" height="304" fill="#ffffff"/>)'
     r'(?P<style><style>[^<]*</style>)'
     r'(?P<grid>(?:<line x1="[\d.]+" x2="[\d.]+" y1="[\d.]+" y2="[\d.]+" stroke="#e3e6ea"/><text x="[\d.]+" y="[\d.]+" text-anchor="end">[^<]*</text>)*)'
     r'<line x1="[\d.]+" x2="[\d.]+" y1="260" y2="260" stroke="#999999"/>'
@@ -258,9 +267,10 @@ def leader(box, dot):
 
 
 def value_owners(desktop):
-    """[(label text, index of its dot)] in order: each desktop value label sits beside its dot (x = dot x + 8, baseline = dot y + 5)."""
+    """[(label text, index of its dot)] in order: each desktop value label sits beside its dot (x = dot x + 8, baseline = dot y + 5), or,
+    when the axis rule of tools/nj_chart_label_edge.py lifted it, LIFT above it (baseline = dot y - LIFT)."""
     dots = [(float(x), float(y)) for x, y in DESKTOP_DOT.findall(desktop)]
-    return [(text, min(range(len(dots)), key=lambda j: abs(dots[j][0] + 8 - float(vx)) + abs(dots[j][1] + 5 - float(vy))))
+    return [(text, min(range(len(dots)), key=lambda j: abs(dots[j][0] + 8 - float(vx)) + min(abs(dots[j][1] + 5 - float(vy)), abs(dots[j][1] - LIFT - float(vy)))))
             for vx, vy, text in DESKTOP_VALUE.findall(desktop)]
 
 
@@ -469,8 +479,8 @@ def fit(svg, desktop):
     where = {d: i for i, d in reversed(list(enumerate(old_dots)))}  # (cx, cy) as written -> first dot index
     dots = [(float(new_x[i]), float(cy)) for i, (_, cy) in enumerate(old_dots)]
 
-    out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{MOBILE_W}" height="300" viewBox="0 0 {MOBILE_W} 300" role="img">'
-           f'<rect width="{MOBILE_W}" height="300" fill="#ffffff"/>', m.group("style")]
+    header = HEADROOM_HEADER if m.group("head").startswith('<svg xmlns="http://www.w3.org/2000/svg" width="304" height="304"') else OLD_HEADER
+    out = [header.format(w=MOBILE_W), m.group("style")]
     for y1, y2, ty, label in GRID.findall(m.group("grid")):
         out.append(f'<line x1="{PLOT_L}" x2="{PLOT_R}" y1="{y1}" y2="{y2}" stroke="#e3e6ea"/><text x="{YLABEL_X}" y="{ty}" text-anchor="end">{label}</text>')
     out.append(f'<line x1="{PLOT_L}" x2="{PLOT_R}" y1="260" y2="260" stroke="#999999"/>')
