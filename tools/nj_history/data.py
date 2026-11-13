@@ -234,6 +234,22 @@ def is_perc_url(u):
                                     or "perc" in (p.hostname or "").split("."))
 
 
+# K12-NJ-DEADLINK-001: the Edison Twp contract short link below is dead (redirect chain ends in a 404). The district's current copy
+# of the same document (identical text, same sha256 of the extracted copy) replaces it wherever a guide source URL is read. The build reads
+# the site's own api/v1/nj files, and the release/tests rebuild from a pre-fix site tree, so the substitution lives here, not in the data repo.
+SOURCE_URL_OVERRIDES = {
+    "https://5il" ".co/2u0cp": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/4500/Eps/"
+                            "7025b86b-a5ce-4996-9ba2-429cad8337e7/ETEA-Certified-Contract-July-2023-June-2028.pdf",
+}
+
+
+def apply_source_url_overrides(page):
+    """K12-NJ-DEADLINK-001: the old URL in a district page (links, JSON-LD) becomes the new one; so does the short link text (the URL's last path segment)."""
+    for old, new in SOURCE_URL_OVERRIDES.items():
+        page = page.replace(f"{old}\">{old.rsplit('/', 1)[1]}</a>", f"{new}\">{new.rsplit('/', 1)[1]}</a>").replace(old, new)
+    return page
+
+
 def guide_cells_from_site(site_root, leaid):
     """Published teacher guide cells inside the window: the site's own API file for the district."""
     p = os.path.join(site_root, "api", "v1", "nj", f"{leaid}.json")
@@ -250,7 +266,7 @@ def guide_cells_from_site(site_root, leaid):
         cur = out.setdefault(y, {}).get(c["sha256"])
         if cur is None or (c.get("retrieved_at") or "") < (cur["retrieved_at"] or ""):
             out[y][c["sha256"]] = {
-                "sha256": c["sha256"], "source_type": c.get("source_type"), "source_url": c.get("source_url"),
+                "sha256": c["sha256"], "source_type": c.get("source_type"), "source_url": SOURCE_URL_OVERRIDES.get(c.get("source_url"), c.get("source_url")),
                 "citation": c.get("citation"), "retrieved_at": c.get("retrieved_at")}
     return {y: [v[k] for k in sorted(v)] for y, v in out.items()}
 

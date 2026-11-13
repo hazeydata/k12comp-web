@@ -11,6 +11,7 @@ import unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
+import k12_deadlink_helpers as deadlink  # noqa: E402
 import nj_guide_tables as G  # noqa: E402
 
 FIX_BASE = "a41b583835f15b30bb5a398c94beaa1e22e8297d"  # web main; the 8 guide pages are unchanged from it up to 52421ace
@@ -81,13 +82,13 @@ class Markup(unittest.TestCase):
         for rel in GUIDE_PAGES:
             base, now = at_base(rel), rt(rel)
             self.assertNotEqual(base, now, rel)
-            self.assertEqual(by_hand_undo(now), base, rel)
-            self.assertEqual(G.rewrite(base), now, rel)
+            self.assertEqual(by_hand_undo(deadlink.undo(now)), base, rel)
+            self.assertEqual(G.rewrite(base), deadlink.undo(now), rel)
 
     def test_previous_visible_caption_publication_migrates_without_copy_changes(self):
         for rel in GUIDE_PAGES:
             previous = subprocess.run(["git", "-C", ROOT, "show", f"16f00528:{rel}"], capture_output=True, check=True).stdout.decode()
-            self.assertEqual(G.rewrite(previous), rt(rel), rel)
+            self.assertEqual(deadlink.undo(G.rewrite(previous)), deadlink.undo(rt(rel)), rel)
 
     def test_native_sr_only_caption_text_unchanged_and_named_table(self):
         for rel in GUIDE_PAGES:

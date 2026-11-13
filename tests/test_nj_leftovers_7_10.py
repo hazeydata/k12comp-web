@@ -36,7 +36,9 @@ GUIDE_PAGES = {"nj/bayonne-city-3401260/index.html", "nj/cherry-hill-twp-3403000
                "nj/trenton-public-school-district-3416290/index.html", "nj/vineland-city-3416800/index.html",
                "nj/w-windsor-plainsboro-reg-3417700/index.html"}
 SITE_ADDED = {"api/v1/nj/index.html", "api/v1/nj/index.json"}
-OTHER_MODIFIED = {"docs/nj-history.md", "tests/test_nj_history_committed.py"}
+OTHER_MODIFIED = {"docs/nj-history.md", "tests/test_nj_history_committed.py",
+                  "docs/nj-history-copy.md", "tools/nj_history/data.py", "tools/nj_history/build.py",  # K12-NJ-DEADLINK-001
+                  "tests/test_nj_history.py", "tests/test_nj_history_copy.py"}
 OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", "tests/test_k12_chart_label_edge.py",  # K12-CHART-LABEL-EDGE-001
                "tests/test_k12_chart_label_edge_browser.py", "tests/test_k12_nj_year_wrap.py",
                "tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_10.py", "tools/jsonld_content_urls.py",
@@ -45,7 +47,8 @@ OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", 
                "tests/test_nj_api_index_browser.py",  # PR #5 fix list, QG nit (/api/v1/nj/ file names)
                "tests/test_k12_chart_mobile_text.py",  # K12-CHART-MOBILE-TEXT-001
                "tools/nj_fte_marks.py", "tests/test_k12_fte_presentation.py",  # K12-FTE-PRESENTATION-001
-               "tests/test_k12_nj_county_wrap.py"}  # K12-NJ-COUNTY-WRAP-001
+               "tests/test_k12_nj_county_wrap.py",  # K12-NJ-COUNTY-WRAP-001
+               "tests/test_k12_nj_deadlink.py", "tests/k12_deadlink_helpers.py"}  # K12-NJ-DEADLINK-001
 
 
 def rt(rel):
@@ -203,7 +206,7 @@ class Leftover10ApiIndex(unittest.TestCase):
         self.assertEqual([os.path.basename(p) for p in api], district_files())
         changed = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", HISTORY_BASE, "--", *api, "CNAME", "robots.txt"],
                                  capture_output=True, check=True, text=True).stdout.split()
-        self.assertEqual(changed, [])
+        self.assertEqual(changed, ["api/v1/nj/3404500.json"])  # K12-NJ-DEADLINK-001: the Edison source URL only (test_k12_nj_deadlink)
 
     def test_nj_page_edit_is_scoped_idempotent_and_refuses_anything_else(self):
         old, new = A.JSONLD_OLD.encode(), A.JSONLD_NEW.encode()
@@ -240,8 +243,8 @@ class Leftover10ApiIndex(unittest.TestCase):
         added = {ln.split("\t", 1)[1] for ln in out if ln.startswith("A")}
         unpublished = ("docs/", "tests/", "tools/")
         self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p) and p not in GUIDE_PAGES
-                                 and p not in FTE_PAGES and p not in FTE_CHARTS), [])
-        self.assertEqual({p for p in modified if p.startswith("nj/") and p != "nj/index.html"}, GUIDE_PAGES | FTE_PAGES)
+                                 and p not in FTE_PAGES and p not in FTE_CHARTS), ["api/v1/nj/3404500.json", "nj/history/index.html"])  # K12-NJ-DEADLINK-001: URL only
+        self.assertEqual({p for p in modified if p.startswith("nj/") and p != "nj/index.html"}, GUIDE_PAGES | FTE_PAGES | {"nj/history/index.html"})  # K12-NJ-DEADLINK-001
         self.assertEqual({p for p in added if not p.startswith(unpublished)}, SITE_ADDED)
         self.assertEqual({p for p in modified if p.startswith(unpublished)}, OTHER_MODIFIED)
         self.assertEqual({p for p in added if p.startswith(unpublished)}, OTHER_ADDED)
