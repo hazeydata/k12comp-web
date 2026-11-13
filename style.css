@@ -105,6 +105,7 @@ td a,th a,.src-short a{display:inline-flex;align-items:center;min-height:44px}
 .badge.held::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--lav)}
 .badge.none{color:var(--muted);border-color:transparent}
 td.num>.badge{display:flex;width:fit-content;margin-left:auto;font-weight:400} /* K12-FTE-PRESENTATION-001: the part-time badge wraps onto its own line under a right-aligned number */
+#districts td:nth-of-type(3){white-space:nowrap}
 .skeleton{display:block;height:16px;border-radius:4px;background:var(--line);margin:12px 0;animation:pulse 1200ms var(--ease) infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 details>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:500;color:var(--teal-text)}
