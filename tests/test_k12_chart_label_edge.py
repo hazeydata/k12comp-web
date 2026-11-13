@@ -1,5 +1,6 @@
-"""K12-CHART-LABEL-EDGE-001 : every district chart has 4 units of top headroom (header only), the one desktop
-value label on the x-axis (3414220 `$20,000`) sits above its dot and `tools/nj_chart_label_edge.py --check` is the failing gate. Comparisons with web main 8c6ad859 skip cleanly when git or that commit is missing."""
+"""K12-CHART-LABEL-EDGE-001: every district chart has 4 units of top headroom (header only), the one desktop value label on the x-axis
+(3414220 `$20,000`) sits above its dot, and `tools/nj_chart_label_edge.py --check` is the failing gate. Comparisons with web main 8c6ad859 skip
+cleanly when git or that commit is missing."""
 import contextlib
 import glob
 import io
