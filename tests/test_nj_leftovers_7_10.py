@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import nj_api_index as A  # noqa: E402
 import nj_fte_marks as N  # noqa: E402  (K12-FTE-PRESENTATION-001: the one allowed further edit, see FTE_PAGES)
 import nj_mobile_chart_fit as F  # noqa: E402
+from chart_header_helpers import content_changes  # noqa: E402
 from nj_history import render as R  # noqa: E402
 
 FIX_BASE = "a41b583835f15b30bb5a398c94beaa1e22e8297d"  # web main before these fixes
@@ -118,7 +119,8 @@ class Leftover7bMobileCharts(unittest.TestCase):
             self.assertEqual([y for _, y in F.DOT.findall(new)], [y for _, y in F.DOT.findall(old)], rel)
 
     def test_desktop_charts_are_unchanged(self):
-        out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", FIX_BASE, "--", "charts"], capture_output=True, check=True, text=True).stdout.split()
+        out = content_changes(FIX_BASE, subprocess.run(["git", "-C", ROOT, "diff", "--name-only", FIX_BASE, "--", "charts"],
+                                                       capture_output=True, check=True, text=True).stdout.split())  # K12-CHART-LABEL-EDGE-001: not counting the header
         self.assertTrue(out)
         self.assertEqual([p for p in out if not re.fullmatch(r"charts/d/\d{7}-mobile\.svg|charts/chart3-nj-salary-distribution-mobile\.svg", p)
                           and p not in FTE_CHARTS], [])  # K12-FTE-PRESENTATION-001: exactly the part-time districts' desktop charts
@@ -230,7 +232,7 @@ class Leftover10ApiIndex(unittest.TestCase):
     def test_no_file_changes_since_web_main_except_the_scoped_leftover_7_and_10_edits(self):
         out = subprocess.run(["git", "-C", ROOT, "diff", "--name-status", FIX_BASE], capture_output=True, check=True, text=True).stdout.splitlines()
         self.assertEqual([ln for ln in out if ln[0] not in "MA"], [])  # nothing deleted, renamed or retyped
-        modified = {ln.split("\t", 1)[1] for ln in out if ln.startswith("M")}
+        modified = set(content_changes(FIX_BASE, [ln.split("\t", 1)[1] for ln in out if ln.startswith("M")]))  # K12-CHART-LABEL-EDGE-001: not counting the header
         added = {ln.split("\t", 1)[1] for ln in out if ln.startswith("A")}
         unpublished = ("docs/", "tests/", "tools/")
         self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p) and p not in GUIDE_PAGES
