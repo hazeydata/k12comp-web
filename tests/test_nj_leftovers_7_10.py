@@ -39,7 +39,8 @@ GUIDE_PAGES = {"nj/bayonne-city-3401260/index.html", "nj/cherry-hill-twp-3403000
 SITE_ADDED = {"api/v1/nj/index.html", "api/v1/nj/index.json"}
 OTHER_MODIFIED = {"docs/nj-history.md", "tests/test_nj_history_committed.py",
                   "docs/nj-history-copy.md", "tools/nj_history/data.py", "tools/nj_history/build.py",  # K12-NJ-DEADLINK-001
-                  "tests/test_nj_history.py", "tests/test_nj_history_copy.py"}
+                  "tests/test_nj_history.py", "tests/test_nj_history_copy.py",
+                  "tools/nj_history/history.css"}  # K12-INDEXING-001: Ann's .hist-panels block (pinned by X.history_css_change_is_this_tickets_block_only)
 OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", "tests/test_k12_chart_label_edge.py",  # K12-CHART-LABEL-EDGE-001
                "tests/test_k12_chart_label_edge_browser.py", "tests/test_k12_nj_year_wrap.py",
                "tests/test_jsonld_content_urls.py", "tests/test_nj_leftovers_7_10.py", "tools/jsonld_content_urls.py",
@@ -51,7 +52,9 @@ OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", 
                "tests/test_k12_nj_county_wrap.py",  # K12-NJ-COUNTY-WRAP-001
                "tests/test_k12_nj_deadlink.py", "tests/k12_deadlink_helpers.py",  # K12-NJ-DEADLINK-001
                "tools/nj_link_baseline.py", "tests/test_k12_nj_link_baseline.py", "tests/k12_upkeep_helpers.py",
-               "docs/nj-link-baseline.md", "docs/nj-link-baseline.tsv"} | X.OWN_TESTS_AND_TOOLS  # K12-NJ-UPKEEP-001; K12-INDEXING-001
+               "docs/nj-link-baseline.md", "docs/nj-link-baseline.tsv",
+               "tests/test_k12_hist_panels_mobile.py",  # K12-INDEXING-001
+               } | X.OWN_TESTS_AND_TOOLS  # K12-NJ-UPKEEP-001; K12-INDEXING-001
 
 
 def rt(rel):
@@ -253,7 +256,8 @@ class Leftover10ApiIndex(unittest.TestCase):
         self.assertEqual(len(hubs), 21)
         self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p) and p not in GUIDE_PAGES
                                  and p not in FTE_PAGES and p not in FTE_CHARTS and p not in indexing and p != X.SITEMAP),
-                         ["api/v1/nj/3404500.json", "nj/history/index.html"])  # K12-NJ-DEADLINK-001: URL only
+                         ["api/v1/nj/3404500.json", "history.css", "nj/history/index.html"])  # K12-NJ-DEADLINK-001: URL only; K12-INDEXING-001: history.css gains Ann's .hist-panels block only (pinned just below)
+        self.assertTrue(X.history_css_change_is_this_tickets_block_only())
         self.assertEqual({p for p in modified if p.startswith("nj/") and p != "nj/index.html"},
                          GUIDE_PAGES | FTE_PAGES | {"nj/history/index.html"} | {p for p in indexing if X.DISTRICT.fullmatch(p)})  # K12-NJ-DEADLINK-001; K12-INDEXING-001
         self.assertEqual({p for p in added if not p.startswith(unpublished)}, SITE_ADDED | hubs)

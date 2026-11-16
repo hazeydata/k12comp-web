@@ -42,3 +42,15 @@ def is_this_tickets_page_change(rel):
         return False
     with open(os.path.join(ROOT, *rel.split("/")), "rb") as f:
         return undo(rel, f.read()) == at_base(rel)
+
+
+# K12-INDEXING-001 (Ann's 304px fix): the one block added to history.css after the existing max-width:640px block
+HIST_PANELS_BLOCK = "@media (max-width: 640px) {\n  .hist-panels { grid-template-columns: minmax(0, 1fr); }\n}\n"
+
+
+def history_css_change_is_this_tickets_block_only():
+    """True when the committed /history.css differs from 7e99b60e only by HIST_PANELS_BLOCK (undo gives the base bytes back)."""
+    with open(os.path.join(ROOT, "history.css"), encoding="utf-8", newline="") as f:
+        now = f.read()
+    base = subprocess.run(["git", "-C", ROOT, "show", BASE + ":history.css"], capture_output=True, check=True).stdout.decode("utf-8")
+    return now.count(HIST_PANELS_BLOCK) == 1 and now.replace(HIST_PANELS_BLOCK, "") == base

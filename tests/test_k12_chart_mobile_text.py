@@ -374,7 +374,8 @@ class Scope(unittest.TestCase):
         site = [ln for ln in site if ln.split("\t", 1)[1] not in deadlink.FILES]  # K12-NJ-DEADLINK-001: URL-only, pinned in test_k12_nj_deadlink
         # K12-INDEXING-001 (pinned in test_k12_indexing): the 21 new hubs, the regenerated sitemap, and / when it differs by the county list only
         site = [ln for ln in site if not (X.HUB.fullmatch(ln[2:]) and ln[0] == "A" or ln == "M\t" + X.SITEMAP
-                                          or ln == "M\tindex.html" and X.is_this_tickets_page_change("index.html"))]
+                                          or ln == "M\tindex.html" and X.is_this_tickets_page_change("index.html")
+                                          or ln == "M\thistory.css" and X.history_css_change_is_this_tickets_block_only())]  # K12-INDEXING-001: Ann's .hist-panels block only
         for ln in site:
             # K12-FTE-PRESENTATION-001 also changes the part-time districts' desktop charts and pages, /nj/, /about/, llms.txt, style.css
             self.assertRegex(ln, r"^M\t(charts/d/\d{7}-(mobile|desktop)\.svg|charts/chart3-nj-salary-distribution-mobile\.svg"

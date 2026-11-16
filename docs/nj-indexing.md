@@ -73,6 +73,10 @@ file), a rebuild from the 7e99b60e pages giving the committed bytes, and that a 
 removed sitemap URL, a wrong BreadcrumbList item or a missing home county list each fail. `tests/k12_indexing_helpers.py` lets older
 byte-diff tests undo this ticket's markup.
 
+## Mobile fix (Ann, 304px)
+
+`tools/nj_history/history.css` (copied to `/history.css`) gains `@media (max-width: 640px) { .hist-panels { grid-template-columns: minmax(0, 1fr); } }` after the existing 640px block: the `minmax(304px,358px)` column was wider than the 272px content box at 304px viewport width (scrollWidth 320) on district pages. Pinned in tests/test_k12_hist_panels_mobile.py.
+
 ## Out of scope
 
 Google Search Console writes (no sitemap resubmit, no URL inspection; OQ-7); IndexNow/Bing (OQ-8); per-district summary sentences (OQ-2,
