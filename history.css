@@ -64,3 +64,6 @@ main>.nj-hist{margin-top:0}
   .stack td::before{content:attr(data-label);display:block;color:var(--muted);font-size:14px}
   .stack td.num{text-align:left}
 }
+@media (max-width: 640px) {
+  .hist-panels { grid-template-columns: minmax(0, 1fr); }
+}

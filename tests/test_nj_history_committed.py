@@ -4,8 +4,9 @@ One committed file may differ from the fresh build, by one exact substitution: /
 tools/nj_api_index.py). SCOPED_EDITS names it. The 8 district pages with salary-guide tables (GUIDE_PAGES) may differ by PR #5 fix 1's
 guide-table markup only (tools/nj_guide_tables.py: native sr-only caption, swipe cue). K12-FTE-PRESENTATION-001 allows one further rewrite,
 `expected_final`: the 44 part-time districts' pages, /nj/, /about/ and llms.txt must equal tools/nj_fte_marks.py's rewrite of the build output
-(the part-time badges, notes and caption suffixes; tests/test_k12_fte_presentation.py pins every string). Every other committed file must
-equal the build byte for byte.
+(the part-time badges, notes and caption suffixes; tests/test_k12_fte_presentation.py pins every string). K12-INDEXING-001 runs last:
+`expected_final` then applies tools/nj_indexing.py's rewrite to the files it owns (every district page, /nj/, sitemap.xml; tests/test_k12_indexing.py
+pins the markup), and the 21 county hubs and / must equal the tool's output. Every other committed file must equal the build byte for byte.
 """
 import glob
 import os
@@ -17,6 +18,8 @@ import nj_history_helpers as H
 import nj_api_index as A  # tools/ is on sys.path through the helpers
 import nj_guide_tables as G
 import nj_fte_marks as N
+import nj_indexing as I
+import k12_indexing_helpers as X
 
 STATEWIDE = "data/nj/nj-district-staff-history.csv"
 # {committed file: (bytes in the fresh build, bytes in the committed file)}; each must occur exactly once in the build output.
@@ -44,7 +47,39 @@ def expected_committed(rel, built):
 
 
 def expected_final(rel, built):
-    """What the committed file must be: `expected_committed`, then K12-FTE-PRESENTATION-001's rewrite on exactly the files it owns (district pages
+    """What the committed file must be: `expected_fte`, then K12-INDEXING-001's rewrite (`expected_indexing`) on exactly the files it owns."""
+    return expected_indexing(rel, expected_fte(rel, built))
+
+
+_indexing = {}
+
+
+def indexing_model():
+    """tools/nj_indexing.py's model of the final tree: the /nj/ rows of the expected /nj/ page, the titles of the fresh build's pages."""
+    if "model" not in _indexing:
+        out, _ = H.built()
+        nj = expected_fte("nj/index.html", H.rb(os.path.join(out, "nj", "index.html"))).decode("utf-8")
+        _indexing["model"] = I.model_from_tree(out, nj_page=nj)
+    return _indexing["model"]
+
+
+def expected_indexing(rel, want):
+    """K12-INDEXING-001 (runs last): every district page, /nj/ and sitemap.xml are tools/nj_indexing.py's rewrite of the earlier result. The
+    sitemap's page set is read from the committed tree, whose pages this module checks one by one (build pages here, hubs and / below)."""
+    text = lambda b: b.decode("utf-8")  # noqa: E731
+    if rel == "nj/index.html":
+        return I.rewrite_nj(text(want), indexing_model()).encode("utf-8")
+    if rel == "sitemap.xml":
+        pages = {r: I.read(os.path.join(H.ROOT, *r.split("/"))) for r in I.html_files(H.ROOT)}
+        return I.render_sitemap(text(want), pages).encode("utf-8")
+    m = re.fullmatch(r"nj/[a-z0-9-]+-(\d{7})/index\.html", rel)
+    if m:
+        return I.rewrite_district(text(want), indexing_model(), m.group(1)).encode("utf-8")
+    return want
+
+
+def expected_fte(rel, built):
+    """`expected_committed`, then K12-FTE-PRESENTATION-001's rewrite on exactly the files it owns (district pages
     of the districts with a part-time dot, /nj/, /about/, llms.txt). Any other file: unchanged."""
     want = expected_committed(rel, built)
     text = lambda b: b.decode("utf-8")  # noqa: E731
@@ -125,7 +160,7 @@ class CommittedBuild(unittest.TestCase):
         cap = re.compile(r'<table aria-labelledby="guide-cap-\d+"><caption class="sr-only" id="guide-cap-\d+">')
         for rel in GUIDE_PAGES:
             built = H.rb(os.path.join(out, *rel.split("/"))).decode("utf-8")
-            committed = H.rb(os.path.join(H.ROOT, *rel.split("/"))).decode("utf-8")
+            committed = X.undo(rel, H.rb(os.path.join(H.ROOT, *rel.split("/"))).decode("utf-8"))  # without K12-INDEXING-001's markup (expected_final pins that)
             self.assertNotEqual(committed, built)
             # undone here by hand, not through the tool: taking fix 1's markup out gives the build page back exactly
             self.assertEqual(cap.sub("<table><caption>", cue.sub("", committed)), built, rel)
@@ -141,7 +176,7 @@ class CommittedBuild(unittest.TestCase):
         self.assertEqual(SCOPED_EDITS["nj/index.html"], (b'"contentUrl": "/api/v1/nj/"', b'"contentUrl": "/api/v1/nj/index.json"'))
         out, _ = H.built()
         built = H.rb(os.path.join(out, "nj", "index.html"))
-        committed = N.strip_nj(H.rt(os.path.join(H.ROOT, "nj", "index.html"))).encode("utf-8")  # without the FTE markup (expected_final pins that)
+        committed = N.strip_nj(X.undo("nj/index.html", H.rt(os.path.join(H.ROOT, "nj", "index.html")))).encode("utf-8")  # without the FTE or K12-INDEXING-001 markup (expected_final pins that)
         self.assertNotEqual(committed, built)  # the build still writes the old contentUrl; the committed page carries the edit
         self.assertEqual(len(committed) - len(built), len(b"index.json"))
         # worked out here from literals, not through expected_committed, so a helper that waves the file through cannot pass
@@ -159,6 +194,34 @@ class CommittedBuild(unittest.TestCase):
                         built.replace(SCOPED_EDITS["nj/index.html"][0], SCOPED_EDITS["nj/index.html"][1])):
             with self.assertRaises(AssertionError):
                 expected_committed("nj/index.html", drifted)
+
+    def test_indexing_rewrite_is_applied_and_owns_exactly_its_files(self):
+        """K12-INDEXING-001: the rewrite changes every district page, /nj/ and the sitemap of the earlier result, and nothing else."""
+        out, _ = H.built()
+        rels = committed_files(out)
+        owned = []
+        for r in rels:
+            fte = expected_fte(r, H.rb(os.path.join(out, *r.split("/"))))
+            if expected_indexing(r, fte) != fte:
+                owned.append(r)
+        self.assertEqual(len([r for r in owned if re.fullmatch(r"nj/[a-z0-9-]+-\d{7}/index\.html", r)]), 586)
+        self.assertEqual(sorted(r for r in owned if not re.fullmatch(r"nj/[a-z0-9-]+-\d{7}/index\.html", r)), ["nj/index.html", "sitemap.xml"])
+        # the rewrite is the last step: undoing it gives the earlier result back on every page it owns
+        for r in owned:
+            if r.endswith(".html"):
+                fte = expected_fte(r, H.rb(os.path.join(out, *r.split("/"))))
+                self.assertEqual(X.undo(r, H.rb(os.path.join(H.ROOT, *r.split("/")))), fte, r)
+
+    def test_committed_hubs_and_home_are_the_tool_output(self):
+        """K12-INDEXING-001: the 21 county hubs (new files) and / (not part of the history build) equal tools/nj_indexing.py's output."""
+        model = indexing_model()
+        have = sorted(os.path.relpath(p, H.ROOT).replace(os.sep, "/") for p in glob.glob(os.path.join(H.ROOT, "nj", "county", "*", "index.html")))
+        self.assertEqual(have, sorted(I.hub_rel(c) for c in model.counties))
+        self.assertEqual(len(have), 21)
+        for c in model.counties:
+            self.assertEqual(H.rb(os.path.join(H.ROOT, *I.hub_rel(c).split("/"))), I.render_hub(model, c).encode("utf-8"), c)
+        self.assertEqual(H.rt(os.path.join(H.ROOT, "index.html")), I.rewrite_home(X.at_base("index.html").decode("utf-8"), model))
+        self.assertEqual(sorted(os.listdir(os.path.join(H.ROOT, "nj", "county"))), sorted(I.county_slug(c) for c in model.counties))
 
     def test_no_stale_committed_history_csv(self):
         out, _ = H.built()

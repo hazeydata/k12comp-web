@@ -354,3 +354,12 @@ The old Edison Twp contract short link (a `5il.co` link whose redirect chain end
   failing on x=4, the idempotent fix-up, the chain run twice on a scratch copy). `tests/test_k12_fte_presentation.py` compares chart3 mobile
   with its base after mapping the label back to x=4 (`tests/k12_upkeep_helpers.py`), and its rebuild-from-base count is 45 (the 44 district
   charts plus the chart3 fix-up).
+
+## K12-INDEXING-001: county hubs, peer links, unique titles, sitemap (2026-11-16)
+
+`tools/nj_indexing.py --write` now runs **last** in the post-build chain: history build -> `nj_api_index` -> `nj_guide_tables` -> `nj_fte_marks`
+-> `nj_mobile_chart_fit` -> `nj_chart_label_edge` -> `nj_indexing`. It adds the 21 county hubs (`/nj/county/<slug>/`), rewrites every district
+page (breadcrumb "New Jersey / <County> / <District>" + BreadcrumbList, the 8-peer block), `/` and `/nj/` ("By county" list, `/nj/` h1), the 24
+duplicate titles, and regenerates `sitemap.xml` (611 URLs) after the build's fresh-sitemap check. Its `--check` joins the gate list next to the
+other `--check` modes. `tests/test_nj_history_committed.py` applies it in `expected_final`. With the hubs, `tools/nj_link_baseline.py` scans
+609 tracked /nj/ pages (588 + 21). Rules, slugs, lastmod and scope: `docs/nj-indexing.md`.
