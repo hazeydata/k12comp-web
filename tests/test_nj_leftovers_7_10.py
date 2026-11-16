@@ -48,7 +48,9 @@ OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", 
                "tests/test_k12_chart_mobile_text.py",  # K12-CHART-MOBILE-TEXT-001
                "tools/nj_fte_marks.py", "tests/test_k12_fte_presentation.py",  # K12-FTE-PRESENTATION-001
                "tests/test_k12_nj_county_wrap.py",  # K12-NJ-COUNTY-WRAP-001
-               "tests/test_k12_nj_deadlink.py", "tests/k12_deadlink_helpers.py"}  # K12-NJ-DEADLINK-001
+               "tests/test_k12_nj_deadlink.py", "tests/k12_deadlink_helpers.py",  # K12-NJ-DEADLINK-001
+               "tools/nj_link_baseline.py", "tests/test_k12_nj_link_baseline.py", "tests/k12_upkeep_helpers.py",
+               "docs/nj-link-baseline.md", "docs/nj-link-baseline.tsv"}  # K12-NJ-UPKEEP-001
 
 
 def rt(rel):
