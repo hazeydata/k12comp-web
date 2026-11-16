@@ -18,6 +18,7 @@ from unittest import mock
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import k12_deadlink_helpers as deadlink  # noqa: E402
+import k12_upkeep_helpers as upkeep  # noqa: E402  (K12-NJ-UPKEEP-001: chart3 mobile label)
 import nj_fte_marks as N  # noqa: E402
 import nj_mobile_chart_fit as F  # noqa: E402
 import nj_chart_label_edge as E  # noqa: E402  (K12-CHART-LABEL-EDGE-001: header and axis rule)
@@ -270,8 +271,10 @@ class Charts(unittest.TestCase):
                                                    capture_output=True, check=True, text=True).stdout.split())  # K12-CHART-LABEL-EDGE-001: not counting the header; 3414220's desktop label y is its own test
         self.assertEqual(len(out), 88)
         self.assertEqual(sorted(out), sorted(f"charts/d/{leaid}-{k}.svg" for leaid in MARKED for k in ("desktop", "mobile")))
-        self.assertEqual(subprocess.run(["git", "-C", ROOT, "diff", "--name-only", BASE, "--", "charts/chart3-nj-salary-distribution-desktop.svg",
-                                         "charts/chart3-nj-salary-distribution-mobile.svg"], capture_output=True, check=True, text=True).stdout, "")
+        self.assertEqual(subprocess.run(["git", "-C", ROOT, "diff", "--name-only", BASE, "--", "charts/chart3-nj-salary-distribution-desktop.svg"],
+                                        capture_output=True, check=True, text=True).stdout, "")
+        # K12-NJ-UPKEEP-001 moved one node of chart3 mobile (the "districts" label, x 4 -> 6); with that undone it equals BASE byte for byte
+        self.assertEqual(upkeep.undo_chart3(rt(upkeep.CHART3_MOBILE)), at_base(upkeep.CHART3_MOBILE))
 
     @needs_git
     def test_values_dots_and_style_are_kept_and_lines_only_lose_segments(self):
@@ -316,7 +319,7 @@ class Charts(unittest.TestCase):
             dist = os.path.join(tmp, "charts", "chart3-nj-salary-distribution-mobile.svg")
             with mock.patch.object(F, "CHARS", charts), mock.patch.object(F, "DISTRIBUTION", dist), contextlib.redirect_stdout(io.StringIO()) as out:
                 self.assertEqual(F.main(["--write"]), 0, out.getvalue())
-            self.assertIn("573 mobile charts, 44 rewritten, 0 still misfit", out.getvalue())
+            self.assertIn("573 mobile charts, 45 rewritten, 0 still misfit", out.getvalue())  # the 44 + chart3's K12-NJ-UPKEEP-001 label fix-up
             with mock.patch.object(F, "CHARS", charts), mock.patch.object(F, "DISTRIBUTION", dist), contextlib.redirect_stdout(io.StringIO()) as out:
                 self.assertEqual(F.main(["--write"]), 0)
                 self.assertEqual(F.main(["--check"]), 0)

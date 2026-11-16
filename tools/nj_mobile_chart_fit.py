@@ -28,6 +28,12 @@ original once (a file already in the 304-unit viewBox is left alone). Title, sub
 rewrapped at 13 (title, bold) and 12 units; tick, axis and note labels become 12 units; the two outlier notes move clear of the stems
 (OUTLIERS). "Hampton Twp / $56,225" goes one word per line over the low tail it names, below the "20" tick row and clear of it.
 The plot (stems, dots, median line, spines, ticks) is only translated, by DIST_DX/dy, never scaled or moved relative to itself.
+The rotated y-axis title "districts" is written at x=DIST_YLABEL_X (6) with `rotate(-90 6 213.7856)` inside the plot group (translate x 8), so
+its baseline sits at figure x 14 and its em box (1.05 x 12 = 12.6 units left of the baseline) ends 1.4 units inside the left edge
+(K12-NJ-UPKEEP-001; it was x=4, 0.6 units outside). A file already in the 304-unit viewBox gets only that fix-up (`ylabel_fixup`: x="4" ->
+x="6" and the rotate centre on that one node; a no-op the second time). `--check` applies the rotated-text rule (`rotated_text_problems`)
+to every gated chart: for each text node rotated by -90, figure baseline x (its x plus the ancestors' translate x) minus 1.05 x its font
+size must be at least 1 unit, else it is a misfit.
 Header: the 4-unit top headroom header of tools/nj_chart_label_edge.py is read and written back as found (old header in, old header out), so
 running this tool after that one changes nothing.
 Desktop SVGs are never touched by this tool (tools/nj_fte_marks.py writes their marker). Re-running `--write` changes nothing (idempotent).
@@ -49,7 +55,7 @@ tools use:
 a segment joining dots the line rule separates, a key that is missing, extra, mislabelled, within its pads or outside the plot, and a key on a
 chart with no part-time dot.
 
-    python3 tools/nj_mobile_chart_fit.py --check   # exit 1 on any misfit or any text node under 12 px at 304 or 358 px content
+    python3 tools/nj_mobile_chart_fit.py --check   # exit 1 on any misfit (incl. rotated text) or any text node under 12 px at 304 or 358 px content
     python3 tools/nj_mobile_chart_fit.py --write   # regenerate the mobile charts in place, then check
 """
 import argparse
@@ -524,6 +530,11 @@ DIST_DX = 8  # plot shift right, so the y-axis title clears the tick labels and 
 DIST_X = 12  # left edge of the title, subtitle and source note
 DIST_WRAP = MOBILE_W - 2 * DIST_X
 DIST_EM = 0.6  # Space Grotesk / fallback sans advance, rounded up
+DIST_YLABEL_X = 6  # the rotated "districts" y-axis title, in plot coordinates: baseline at figure x DIST_DX + 6 = 14, em edge 14 - 12.6 = 1.4
+DIST_YLABEL_OLD = ("x=\"4\" y=\"213.7856\" transform=\"rotate(-90 4 213.7856)\">districts</text>")
+DIST_YLABEL = (f"x=\"{DIST_YLABEL_X}\" y=\"213.7856\" transform=\"rotate(-90 {DIST_YLABEL_X} 213.7856)\">districts</text>")
+EM_TOP = 1.05  # an em box reaches 1.05 x font size from the baseline (the label-edge rule of tools/nj_chart_label_edge.py)
+EDGE_PAD = 1  # units the em box must stay inside the chart edge
 TITLE_PX, NOTE_PX = 13, 12  # title (bold); every other text node
 TITLE_STEP, NOTE_STEP = 17, 15.5  # baseline to baseline
 ORIGINAL_VIEWBOX = 'width="280.8pt" height="374.4pt" viewBox="0 0 280.8 374.4"'
@@ -558,9 +569,10 @@ def unwrap(lines):
 
 
 def distribution(svg):
-    """The /nj/ distribution mobile SVG reflowed into the MOBILE_W viewBox (see the module docstring). Already reflowed: unchanged."""
+    """The /nj/ distribution mobile SVG reflowed into the MOBILE_W viewBox (see the module docstring). Already reflowed: only the
+    y-axis title fix-up (`ylabel_fixup`)."""
     if f'viewBox="0 0 {MOBILE_W} ' in svg:
-        return svg
+        return ylabel_fixup(svg)
     if svg.count(ORIGINAL_VIEWBOX) != 1:
         raise ValueError("not the original matplotlib distribution SVG")
     groups = {m.group(2): m for m in GROUP_TEXT.finditer(svg)}
@@ -605,10 +617,53 @@ def distribution(svg):
                  r'x="([\d.]+)" y="([\d.]+)" transform="rotate\(-0 [\d.]+ [\d.]+\)">', tick, svg)
     svg = svg.replace("font-size: 7px; font-family: 'Space Grotesk'; text-anchor: middle; fill: #5b6470\" x=\"16.16\" y=\"213.7856\" "
                       "transform=\"rotate(-90 16.16 213.7856)\"",
-                      f"font-size: {NOTE_PX}px; font-family: 'Space Grotesk'; text-anchor: middle; fill: #5b6470\" x=\"4\" y=\"213.7856\" "
-                      "transform=\"rotate(-90 4 213.7856)\"", 1)
+                      f"font-size: {NOTE_PX}px; font-family: 'Space Grotesk'; text-anchor: middle; fill: #5b6470\" x=\"{DIST_YLABEL_X}\" y=\"213.7856\" "
+                      f"transform=\"rotate(-90 {DIST_YLABEL_X} 213.7856)\"", 1)
     svg = svg.replace("font-size: 7px; font-family: 'JetBrains Mono'; text-anchor: start", f"font-size: {NOTE_PX}px; font-family: 'JetBrains Mono'; text-anchor: start", 1)
     return svg
+
+
+def ylabel_fixup(svg):
+    """An already-reflowed distribution SVG with the "districts" y-axis title moved from x="4" to x=DIST_YLABEL_X (its x and rotate
+    centre, that one node only). Idempotent: a file already at x=6 comes back unchanged."""
+    if svg.count(DIST_YLABEL_OLD) > 1:
+        raise ValueError("more than one old y-axis title node")
+    return svg.replace(DIST_YLABEL_OLD, DIST_YLABEL, 1)
+
+
+def rotated_text_problems(svg):
+    """Misfits of the rotated-text rule: every text node rotated by -90 reads upward, so its em box reaches EM_TOP x font size left of its
+    baseline. Figure baseline x = the node's x plus every ancestor's translate x (rotate and translate only; the node's own rotate centre
+    is its x/y). The em edge must be at least EDGE_PAD units inside the left edge of the viewBox."""
+    root = ET.fromstring(svg.encode())
+    vb = root.get("viewBox")
+    left = float(vb.split()[0]) if vb else 0.0
+    _, sizes = text_sizes(svg)
+    size_of = iter(sizes)
+    out = []
+
+    def walk(el, dx):
+        tag = el.tag.split("}")[-1]
+        for op, args in TRANSFORM.findall(el.get("transform") or ""):
+            a = [float(v) for v in re.split(r"[\s,]+", args.strip()) if v]
+            if op == "translate" and tag not in ("text", "tspan"):
+                dx += a[0]
+            elif op in ("scale", "matrix") and tag not in ("text", "tspan"):
+                raise ValueError(f"rotated-text rule: unsupported ancestor transform {op}")
+        if tag in ("text", "tspan") and (el.text or "").strip():
+            text, px = next(size_of)
+            rot = re.search(r"rotate\(\s*(-?[\d.]+)", el.get("transform") or "")
+            if rot and float(rot.group(1)) == -90:
+                base = dx + float(el.get("x", "0"))
+                edge = base - EM_TOP * px
+                if edge < left + EDGE_PAD - 1e-9:
+                    out.append(f"rotated text {text.strip()!r}: baseline x {base:g} - {EM_TOP} x {px:g} = {edge:.2f}, "
+                               f"less than {EDGE_PAD} unit inside the left edge")
+        for c in el:
+            walk(c, dx)
+
+    walk(root, 0.0)
+    return out
 
 
 # --- effective text-size gate -----------------------------------------------------------------------------------------------------
@@ -723,7 +778,7 @@ def main(argv=None):
                     fh.write(new)
                 changed += 1
             svg = new
-        p = district_problems(f, svg) if f != DISTRIBUTION else []
+        p = (district_problems(f, svg) if f != DISTRIBUTION else []) + rotated_text_problems(svg)
         if p:
             bad.append((os.path.relpath(f, ROOT), p))
     for f, p in bad:

@@ -331,3 +331,26 @@ The old Edison Twp contract short link (a `5il.co` link whose redirect chain end
 
 - `tools/nj_history/data.py` `SOURCE_URL_OVERRIDES` maps the old URL to the new one for a build that reads a site tree predating the fix: `guide_cells_from_site` for the guide cells, and `apply_source_url_overrides` (called in `build.py`) for the district pages, links and link text.
 - `tests/test_k12_nj_deadlink.py` fails if the dead link returns in any tracked file, and pins the new URL and the unchanged sha256 in `api/v1/nj/3404500.json` (salary cells, contract terms, sources) and on the district page.
+
+## K12-NJ-UPKEEP-001: /nj/ link baseline and the chart3 mobile "districts" label (2026-11-16)
+
+- **Link check.** `tools/nj_link_baseline.py` (stdlib only) lists every external source and district link on the 588 tracked /nj/ pages
+  (`href`, `src`, `content`, `action`, JSON-LD) and in `api/v1/nj/*.json` and `data/nj/`, and compares them with the committed baseline
+  `docs/nj-link-baseline.tsv` (18 URLs at dd15360d: 15 www.nj.gov files and 3 district documents). `--offline` (the default, run by
+  the unittest suite in CI) fails on an unbaselined URL, a stale or non-2xx baseline row and any local ref that does not resolve in the tree;
+  `--live` checks every URL politely (sequential, 1.1 s apart, HEAD first, a 1-byte ranged GET only after a non-2xx HEAD) and fails on a dead
+  link, including a document URL (.csv, .zip, .pdf, ...) answered with a 200 text/html page (soft-404); `--write-baseline` refuses to
+  baseline one. Modes, classes, schedule and refresh rule: `docs/nj-link-baseline.md`. Not in CI and no cron.
+- **Chart3 mobile label.** The rotated y-axis title "districts" in `charts/chart3-nj-salary-distribution-mobile.svg` moves from `x="4"` to
+  `x="6"` (`rotate(-90 6 213.7856)`), inside the `translate(8 43.95)` plot group: its baseline sits at figure x 14 and its em box
+  (1.05 x 12 = 12.6 units) ends 1.4 units inside the left edge (it was 0.6 outside, a 0.26 px overrun at 272 px content). One line of the SVG
+  changes; no viewBox, text size, word or other chart byte changes. `tools/nj_mobile_chart_fit.py` writes it in both paths (the `distribution()`
+  reflow and an idempotent fix-up of an already-reflowed file), and its `--check` gains a rotated-text rule: for every -90-rotated text node
+  on a gated chart, figure baseline x (x plus ancestor translate x) minus 1.05 x font size must be at least 1 unit. The chart chain is
+  unchanged: `nj_api_index` -> `nj_guide_tables` -> `nj_fte_marks` -> `nj_mobile_chart_fit` -> `nj_chart_label_edge`, each `--write`;
+  running it twice changes nothing the second time.
+- **Tests:** `tests/test_k12_nj_link_baseline.py` (offline on the repo tree, the baseline against the tool's URL set, mutation cases on
+  scratch trees, one classifier case per class with a stubbed transport, politeness with a fake clock, the chart3 label at x=6, `--check`
+  failing on x=4, the idempotent fix-up, the chain run twice on a scratch copy). `tests/test_k12_fte_presentation.py` compares chart3 mobile
+  with its base after mapping the label back to x=4 (`tests/k12_upkeep_helpers.py`), and its rebuild-from-base count is 45 (the 44 district
+  charts plus the chart3 fix-up).
