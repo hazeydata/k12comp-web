@@ -17,6 +17,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import nj_api_index as A  # noqa: E402
 import nj_fte_marks as N  # noqa: E402  (K12-FTE-PRESENTATION-001: the one allowed further edit, see FTE_PAGES)
+import k12_indexing_helpers as X  # noqa: E402  (K12-INDEXING-001: undo / is_this_tickets_page_change)
 import nj_mobile_chart_fit as F  # noqa: E402
 from chart_header_helpers import content_changes  # noqa: E402
 from nj_history import render as R  # noqa: E402
@@ -50,7 +51,7 @@ OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", 
                "tests/test_k12_nj_county_wrap.py",  # K12-NJ-COUNTY-WRAP-001
                "tests/test_k12_nj_deadlink.py", "tests/k12_deadlink_helpers.py",  # K12-NJ-DEADLINK-001
                "tools/nj_link_baseline.py", "tests/test_k12_nj_link_baseline.py", "tests/k12_upkeep_helpers.py",
-               "docs/nj-link-baseline.md", "docs/nj-link-baseline.tsv"}  # K12-NJ-UPKEEP-001
+               "docs/nj-link-baseline.md", "docs/nj-link-baseline.tsv"} | X.OWN_TESTS_AND_TOOLS  # K12-NJ-UPKEEP-001; K12-INDEXING-001
 
 
 def rt(rel):
@@ -191,11 +192,11 @@ class Leftover10ApiIndex(unittest.TestCase):
     def test_nj_page_differs_from_web_main_by_the_content_url_only(self):
         old = show(FIX_BASE, "nj/index.html")
         self.assertEqual((old.count(A.JSONLD_OLD.encode()), old.count(A.JSONLD_NEW.encode())), (1, 0))
-        page = N.strip_nj(rb("nj/index.html").decode()).encode()  # without K12-FTE-PRESENTATION-001's markup (checked in test_k12_fte_presentation.py)
+        page = N.strip_nj(X.undo("nj/index.html", rb("nj/index.html").decode())).encode()  # without K12-FTE-PRESENTATION-001's markup (checked in test_k12_fte_presentation.py) or K12-INDEXING-001's
         self.assertEqual(page, old.replace(A.JSONLD_OLD.encode(), A.JSONLD_NEW.encode(), 1))
 
     def test_ac24_nj_page_differs_from_history_base_by_the_history_link_and_the_content_url_only(self):
-        new = N.strip_nj(rb("nj/index.html").decode()).encode()  # without K12-FTE-PRESENTATION-001's markup
+        new = N.strip_nj(X.undo("nj/index.html", rb("nj/index.html").decode())).encode()  # without K12-FTE-PRESENTATION-001's or K12-INDEXING-001's markup
         self.assertEqual((new.count(A.JSONLD_NEW.encode()), new.count(R.nj_link().encode())), (1, 1))
         back = new.replace(A.JSONLD_NEW.encode(), A.JSONLD_OLD.encode(), 1).replace(R.nj_link().encode(), b"", 1)
         self.assertEqual(back, show(HISTORY_BASE, "nj/index.html"))
@@ -232,7 +233,7 @@ class Leftover10ApiIndex(unittest.TestCase):
                 self.assertEqual(quiet_main(["--check"]), 0)
                 for name, rel in (("OUT", "api/v1/nj/index.html"), ("OUT_JSON", "api/v1/nj/index.json"), ("NJ_PAGE", "nj/index.html")):
                     with open(paths[name], "rb") as f:
-                        want = N.strip_nj(rb(rel).decode()).encode() if rel == "nj/index.html" else rb(rel)  # the page without the FTE markup
+                        want = N.strip_nj(X.undo(rel, rb(rel).decode())).encode() if rel == "nj/index.html" else rb(rel)  # the page without the FTE (and K12-INDEXING-001) markup
                         self.assertEqual(f.read(), want, rel)
                 with open(paths["OUT_JSON"], "w", encoding="utf-8") as f:
                     f.write("<!doctype html>")
@@ -244,10 +245,18 @@ class Leftover10ApiIndex(unittest.TestCase):
         modified = set(content_changes(FIX_BASE, [ln.split("\t", 1)[1] for ln in out if ln.startswith("M")]))  # K12-CHART-LABEL-EDGE-001: not counting the header
         added = {ln.split("\t", 1)[1] for ln in out if ln.startswith("A")}
         unpublished = ("docs/", "tests/", "tools/")
+        # K12-INDEXING-001: every district page and / differ from 7e99b60e by that ticket's markup only (undo gives 7e99b60e back); the
+        # sitemap is regenerated and 21 county hubs are added (all pinned in test_k12_indexing)
+        indexing = {p for p in modified if X.is_this_tickets_page_change(p)}
+        self.assertEqual(len({p for p in indexing if X.DISTRICT.fullmatch(p)}), 586)
+        hubs = {p for p in added if X.HUB.fullmatch(p)}
+        self.assertEqual(len(hubs), 21)
         self.assertEqual(sorted(p for p in modified if not p.startswith(unpublished) and not SITE_MODIFIED.fullmatch(p) and p not in GUIDE_PAGES
-                                 and p not in FTE_PAGES and p not in FTE_CHARTS), ["api/v1/nj/3404500.json", "nj/history/index.html"])  # K12-NJ-DEADLINK-001: URL only
-        self.assertEqual({p for p in modified if p.startswith("nj/") and p != "nj/index.html"}, GUIDE_PAGES | FTE_PAGES | {"nj/history/index.html"})  # K12-NJ-DEADLINK-001
-        self.assertEqual({p for p in added if not p.startswith(unpublished)}, SITE_ADDED)
+                                 and p not in FTE_PAGES and p not in FTE_CHARTS and p not in indexing and p != X.SITEMAP),
+                         ["api/v1/nj/3404500.json", "nj/history/index.html"])  # K12-NJ-DEADLINK-001: URL only
+        self.assertEqual({p for p in modified if p.startswith("nj/") and p != "nj/index.html"},
+                         GUIDE_PAGES | FTE_PAGES | {"nj/history/index.html"} | {p for p in indexing if X.DISTRICT.fullmatch(p)})  # K12-NJ-DEADLINK-001; K12-INDEXING-001
+        self.assertEqual({p for p in added if not p.startswith(unpublished)}, SITE_ADDED | hubs)
         self.assertEqual({p for p in modified if p.startswith(unpublished)}, OTHER_MODIFIED)
         self.assertEqual({p for p in added if p.startswith(unpublished)}, OTHER_ADDED)
 

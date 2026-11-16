@@ -54,12 +54,12 @@ class CommittedTree(NoNetwork):
 
     def test_every_jsonld_block_of_every_page_is_walked(self):
         pages = J.html_pages(ROOT, J.jekyll_excludes(ROOT))
-        self.assertEqual(len(pages), 594)
+        self.assertEqual(len(pages), 615)  # K12-INDEXING-001: 594 + the 21 county hubs
         n = 0
         for rel in pages:
             with open(os.path.join(ROOT, *rel.split("/")), encoding="utf-8") as f:
                 n += f.read().count("application/ld+json")
-        self.assertEqual((n, self.blocks), (1173, 1173))
+        self.assertEqual((n, self.blocks), (1780, 1780))  # K12-INDEXING-001: 1173 + one BreadcrumbList on each of 586 districts and 21 hubs
 
     def test_the_one_json_claim_is_the_nj_dataset_and_its_target_is_json(self):
         js = [c for c in self.checked if c[2] == "application/json"]

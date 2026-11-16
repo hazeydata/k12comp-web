@@ -131,7 +131,7 @@ class OfflineRepo(unittest.TestCase):
 
     def test_offline_passes_on_the_repo_tree(self):
         self.assertEqual(self.rc, 0, self.out)
-        self.assertIn("pages scanned: 588\n", self.out)
+        self.assertIn("pages scanned: 609\n", self.out)  # K12-INDEXING-001: 588 + the 21 county hubs
         self.assertIn("unique external URLs: 18 ", self.out)
         self.assertIn("unresolved local refs: 0\n", self.out)
         self.assertRegex(self.out, r"local refs: \d+ \(\d+ unique targets\)")

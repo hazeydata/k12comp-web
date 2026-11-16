@@ -19,6 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import k12_deadlink_helpers as deadlink  # noqa: E402
 import k12_upkeep_helpers as upkeep  # noqa: E402  (K12-NJ-UPKEEP-001: chart3 mobile label)
+import k12_indexing_helpers as X  # noqa: E402  (K12-INDEXING-001: breadcrumb, peers, titles, /nj/ h1 and county list)
 import nj_fte_marks as N  # noqa: E402
 import nj_mobile_chart_fit as F  # noqa: E402
 import nj_chart_label_edge as E  # noqa: E402  (K12-CHART-LABEL-EDGE-001: header and axis rule)
@@ -533,7 +534,7 @@ class DistrictPages(unittest.TestCase):
         """Removing this ticket's markup gives the main page back exactly (AC 2, 9, 17); every salary string is the same multiset."""
         for leaid in PAGES:
             rel = os.path.relpath(PAGES[leaid], ROOT).replace(os.sep, "/")
-            new, old = rt(rel), at_base(rel)
+            new, old = X.undo(rel, rt(rel)), at_base(rel)  # K12-INDEXING-001 markup undone (pinned in test_k12_indexing)
             self.assertEqual(deadlink.undo(N.strip_district(new)), old, rel)
             self.assertEqual(sorted(re.findall(r"\$[\d,]+", new)), sorted(re.findall(r"\$[\d,]+", old)), rel)
             for cls in ("hs num", "big num"):
@@ -597,7 +598,7 @@ class NjPage(unittest.TestCase):
 
     @needs_git
     def test_every_other_byte_of_nj_is_unchanged_and_values_are_kept(self):
-        new, old = rt("nj/index.html"), at_base("nj/index.html")
+        new, old = X.undo("nj/index.html", rt("nj/index.html")), at_base("nj/index.html")  # K12-INDEXING-001 markup undone
         self.assertEqual(N.strip_nj(new), old)
         self.assertEqual(re.findall(r'<td class="num">(\$[\d,]+)', new), re.findall(r'<td class="num">(\$[\d,]+)', old))
         self.assertEqual(sorted(re.findall(r"\$[\d,]+", new)), sorted(re.findall(r"\$[\d,]+", old)))
@@ -749,7 +750,7 @@ class Fixtures(unittest.TestCase):
                 got = rdf(os.path.join(tmp, rel))
                 if rel.endswith(".svg"):
                     got = E.convert(rel, got)  # K12-CHART-LABEL-EDGE-001: the chain's last step (headroom header, axis rule)
-                self.assertEqual(got, rt(rel.replace(os.sep, "/")), rel)
+                self.assertEqual(got, X.undo(rel.replace(os.sep, "/"), rt(rel.replace(os.sep, "/"))), rel)  # K12-INDEXING-001 markup undone
 
 
 class Docs(unittest.TestCase):
