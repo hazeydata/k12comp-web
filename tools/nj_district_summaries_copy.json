@@ -1,22 +1,24 @@
 {
   "_note": "All English template strings of tools/nj_district_summaries.py live here and nowhere else. One key per slot; {field} names are filled from the committed data (see docs/nj-district-summaries.md). Swapping a slot's wording is a one-line edit of that slot; then run the tool with --write and regenerate the golden fixtures.",
   "_status": {
-    "S0": "PLACEHOLDER (writing to replace)",
-    "S0b": "PLACEHOLDER (writing to replace)",
-    "S1": "PLACEHOLDER (writing to replace)",
-    "S2": "PLACEHOLDER (writing to replace)",
-    "S3": "PLACEHOLDER (writing to replace)",
-    "SH": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 11:19 AM ET",
-    "S4": "PLACEHOLDER (writing to replace)",
-    "S5": "PLACEHOLDER (writing to replace)"
+    "S0": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2",
+    "S0b": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2",
+    "S1": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2",
+    "S2": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2",
+    "S3": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2",
+    "SH": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2",
+    "S4": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2",
+    "S5": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2",
+    "S5_one": "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2"
   },
   "max_words": 80,
-  "S0": "{district} in {county} has no reported superintendent base salary in the NJDOE files used here.",
+  "S0": "No superintendent base salary is reported for {district} in {county} in the NJDOE files we use.",
   "S0b": "Each row in the History section below links to its source file.",
-  "S1": "{district} in {county} reported a superintendent base salary of {base_salary} for {salary_year}.",
-  "S2": "The earliest reported figure here is {base_salary} for {salary_year}.",
-  "S3": "The contract on file runs {contract_start} to {contract_end}, with {ufb_work_days} work days.",
+  "S1": "The latest superintendent base salary reported for {district} in {county} is {base_salary}, for {salary_year}.",
+  "S2": "The earliest salary on record here is {base_salary}, for {salary_year}.",
+  "S3": "The contract on file runs from {contract_start} to {contract_end} and lists {ufb_work_days} work days.",
   "SH": "The superintendent contract on file is reported as a shared-service arrangement.",
-  "S4": "NJDOE's certified-staff data list {fte_sum} teacher FTE for {school_year}.",
-  "S5": "This page also shows teacher salary guides for {n_guide_years} school years."
+  "S4": "NJDOE staff records count {fte_sum} full-time-equivalent teachers for {school_year}.",
+  "S5": "This page also shows teacher salary guides for {n_guide_years} school years.",
+  "S5_one": "This page also shows a teacher salary guide for one school year."
 }

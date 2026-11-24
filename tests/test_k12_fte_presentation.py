@@ -550,8 +550,8 @@ class DistrictPages(unittest.TestCase):
             shown = re.findall(r"(?<![\d.$,])(\d+(?:\.\d+)?) FTE\b", page)
             self.assertTrue(shown, leaid)
             self.assertLessEqual(set(shown), {r["ufb_fte"] for r in ROWS[leaid]}, leaid)  # each is a ufb_fte string of this district, as published
-            for dollars_ in re.findall(r"\$[\d,]+", page):
-                self.assertIn(dollars_, {dollars(r) for r in ROWS[leaid]} | {"$20k"} | set(re.findall(r"\$[\d,]+k?", at_base(os.path.relpath(PAGES[leaid], ROOT).replace(os.sep, "/")))), (leaid, dollars_))
+            for dollars_ in re.findall(r"\$\d[\d,]*\d|\$\d", page):  # a dollar figure never ends in a comma or period of the sentence
+                self.assertIn(dollars_, {dollars(r) for r in ROWS[leaid]} | {"$20k"} | set(re.findall(r"\$\d[\d,]*\d(?:k)?|\$\d(?:k)?", at_base(os.path.relpath(PAGES[leaid], ROOT).replace(os.sep, "/")))), (leaid, dollars_))
 
 
 class NjPage(unittest.TestCase):

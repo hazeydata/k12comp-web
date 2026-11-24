@@ -20,9 +20,8 @@ text `nj_indexing` then puts in the breadcrumb. The paragraph sits in `<main>` d
 (`<section class="summary"` on every page today). Names are HTML-escaped (`&`, apostrophes). The district name is the JSON `district` field (the tool stops if
 it differs from the h1).
 
-**All English template strings live only in `tools/nj_district_summaries_copy.json`**, one key per slot (`S0`, `S0b`, `S1`, `S2`, `S3`, `SH`, `S4`, `S5`) with
-`{field}` placeholders, plus `"max_words": 80` and a `_status` object naming each slot's wording status: `PLACEHOLDER (writing to replace)` for every slot except
-`SH` (`APPROVED writing · Lindsay Bluth, Nov 24, 2026, 11:19 AM ET`). The tool holds no English sentence (a test greps for that). Swapping a slot's wording is a
+**All English template strings live only in `tools/nj_district_summaries_copy.json`**, one key per slot (`S0`, `S0b`, `S1`, `S2`, `S3`, `SH`, `S4`, `S5`, `S5_one`) with
+`{field}` placeholders, plus `"max_words": 80` and a `_status` object naming each slot's wording status: `APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2` for every slot (final wording; no placeholders remain). The tool holds no English sentence (a test greps for that). Swapping a slot's wording is a
 one-line edit of the copy file; then run `--write`, regenerate `tests/fixtures/k12_district_summaries/` and the sitemap (`nj_indexing.py --write`).
 
 ## Slots (in this order; one sentence each; 2 to 5 sentences per page, at most `max_words` words)
@@ -42,8 +41,10 @@ them (`$263,750`), dates as in the JSON (ISO). A missing, blank, zero or suppres
   "The superintendent contract on file is reported as a shared-service arrangement." (approved writing, Lindsay Bluth, Nov 24, 2026, 11:19 AM ET).
 - **S4** (teacher staff FTE, 577): the history CSV's latest `school_year`, `staff_group` = teacher, `suppressed` false, `fte_sum` printed exactly as the page's FTE section prints
   it (the CSV string with a thousands comma). Omitted when suppressed, blank, zero or when there is no CSV (Seaside Park Boro, 3414820).
-- **S5** (teacher salary guides, 8): `{n_guide_years}` = the number of distinct `salary_cells` `school_year` values. This is the only formula in the summaries (the trace
-  marks it `FORMULA`). The placeholder prints "1 school years" for Cherry Hill Twp (3403000); writing's wording should handle the singular.
+- **S5** (teacher salary guides, 8): `{n_guide_years}` = the number of distinct `salary_cells` `school_year` values. Used when there are 2 or more guide years; this is the only formula in the summaries (the trace
+  marks it `FORMULA`).
+- **S5_one** (the singular form of S5, same 8-page S5 total): used instead of S5 when `n_guide_years` is 1 (Cherry Hill Twp, 3403000). No fields, no digit, so the trace has no
+  token for it (7 `FORMULA` tokens remain). The tool only chooses the key; the sentence lives in the copy file.
 - **S0** (no salary pages, 11): `{district}`, `{county}`. Then S4 when present.
 - **S0b** (no salary and no S4: 3414820 Seaside Park Boro and 3410170 Milford Boro): one neutral fixed sentence, no fields, no digits, true on both pages.
 

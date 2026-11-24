@@ -153,7 +153,8 @@ def recompute(root, leaid, page, copy):
     if not sal and not s4:
         out.append(copy["S0b"])
     if doc["salary_cells"]:
-        out.append(copy["S5"].format(n_guide_years=len({c["school_year"] for c in doc["salary_cells"]})))
+        ng = len({c["school_year"] for c in doc["salary_cells"]})
+        out.append(copy["S5_one"] if ng == 1 else copy["S5"].format(n_guide_years=ng))
     return " ".join(out)
 
 
@@ -204,17 +205,14 @@ class ToolSource(unittest.TestCase):
 
     def test_copy_file_has_one_key_per_slot_with_status_and_limit(self):
         copy = jload(COPY)
-        self.assertEqual(set(copy) - {"_note", "_status", "max_words"}, set("S0 S0b S1 S2 S3 SH S4 S5".split()))
+        self.assertEqual(set(copy) - {"_note", "_status", "max_words"}, set("S0 S0b S1 S2 S3 SH S4 S5 S5_one".split()))
         self.assertEqual(copy["max_words"], 80)
         self.assertEqual(set(copy["_status"]), set(S.SLOTS))
         for k, v in copy["_status"].items():
-            if k == "SH":
-                self.assertEqual(v, "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 11:19 AM ET")
-            else:
-                self.assertEqual(v, "PLACEHOLDER (writing to replace)")
+            self.assertEqual(v, "APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2", k)
         self.assertEqual(copy["SH"], SH_SENTENCE)
         self.assertNotIn("shared-service arrangement", copy["S3"])  # the spec's S3 add-on is dropped
-        self.assertIsNone(re.search(r"\d", copy["SH"] + copy["S0"] + copy["S0b"]))
+        self.assertIsNone(re.search(r"\d", copy["SH"] + copy["S0"] + copy["S0b"] + copy["S5_one"]))
         self.assertIn("{fte_sum}", copy["S4"])
         for k in ("S1", "S2", "S3", "S4", "S5", "S0"):
             self.assertRegex(copy[k], r"\{[a-z_]+\}")
@@ -230,7 +228,7 @@ class ToolSource(unittest.TestCase):
             with mock.patch.object(S, "COPY", p):
                 new, text, _ = S.rewrite(page, doc_of(ROOT, "3416800"), S.history_rows(ROOT, "3416800"), None, "3416800")
             self.assertIn("First on file: $181,938 (2019-20).", text)
-            self.assertNotIn("earliest reported", text)
+            self.assertNotIn("earliest salary on record", text)
             self.assertEqual(Y.strip(new), Y.strip(page))
 
 
@@ -337,7 +335,7 @@ class Committed(unittest.TestCase):
                     v = row[head.index(m.group(2))]
                     self.assertEqual(t["rendered"], S.fmt_fte(v) if m.group(2) == "fte_sum" else v)
                     self.assertEqual(row[head.index("staff_group")], "teacher")
-        self.assertEqual(formulas, 8)  # S5's count is the only formula
+        self.assertEqual(formulas, 7)  # S5's count is the only formula (3403000 uses S5_one, no digit)
 
     def test_multi_row_latest_districts_trace_names_the_row_the_page_shows(self):
         for L, row in (("3401470", "row 263"), ("3401860", "row 4667"), ("3407680", "row 2117"), ("3412690", "row 4946")):
@@ -356,10 +354,10 @@ class Committed(unittest.TestCase):
         n_s1 = n_match = 0
         shows_not_reported = []
         for L, p in self.parsed.items():
-            if "reported a superintendent base salary of" not in p.summary:
+            if "The latest superintendent base salary reported for" not in p.summary:
                 continue
             n_s1 += 1
-            m = re.search(r"base salary of (\$[\d,]+) for (\d{4}-\d\d)\.", p.summary)
+            m = re.search(r" is (\$[\d,]+), for (\d{4}-\d\d)\.", p.summary)
             if p.big.startswith("$"):
                 self.assertEqual((m.group(1), m.group(2)), (p.big, p.label), L)
                 n_match += 1
@@ -428,22 +426,32 @@ class Committed(unittest.TestCase):
         got = collections.Counter()
         for p in self.parsed.values():
             t = p.summary
-            for k, needle in (("S1", self.copy["S1"].split("{county}")[1].split("{")[0]), ("S2", self.copy["S2"].split("{")[0]),
+            for k, needle in (("S1", self.copy["S1"].split("{")[0]), ("S2", self.copy["S2"].split("{")[0]),
                               ("S3", self.copy["S3"].split("{")[0]), ("SH", self.copy["SH"]), ("S4", self.copy["S4"].split("{")[0]),
-                              ("S5", self.copy["S5"].split("{")[0]), ("S0", self.copy["S0"].split("{county}")[1]), ("S0b", self.copy["S0b"])):
+                              ("S5", self.copy["S5"].split("{")[0]), ("S5", self.copy["S5_one"]), ("S0", self.copy["S0"].split("{county}")[1]), ("S0b", self.copy["S0b"])):
                 got[k] += needle in t
         self.assertEqual({k: got[k] for k in ("S1", "S2", "S3", "SH", "S4", "S5", "S0", "S0b")},
                          {"S1": 575, "S2": 573, "S3": 335, "SH": 40, "S4": 577, "S5": 8, "S0": 11, "S0b": 2})
         # S0b only where S4 is absent, S0 pages: S4 follows S0
         for L, p in self.parsed.items():
             if self.copy["S0b"] in p.summary:
-                self.assertNotIn("teacher FTE", p.summary, L)
+                self.assertNotIn("NJDOE staff records count", p.summary, L)
                 self.assertIn(L, ("3414820", "3410170"))
+
+    def test_single_guide_year_page_uses_the_s5_one_sentence(self):
+        self.assertEqual(len({c["school_year"] for c in doc_of(ROOT, "3403000")["salary_cells"]}), 1)
+        t = self.parsed["3403000"].summary
+        self.assertTrue(t.endswith(" " + self.copy["S5_one"]), t)
+        self.assertEqual(t.count(self.copy["S5_one"]), 1)
+        self.assertNotIn("school years", t)
+        self.assertEqual([x for x in self.trace["3403000"]["tokens"] if x["slot"].startswith("S5")], [])
+        for L, p in self.parsed.items():
+            self.assertNotIn("1 school years", p.summary, L)
 
     def test_slot_order_on_every_page(self):
         order = ["S0", "S1", "S2", "S3", "SH", "S4", "S0b", "S5"]
-        needles = {"S1": "reported a superintendent base salary of", "S2": "earliest reported", "S3": "contract on file runs",
-                   "SH": SH_SENTENCE, "S4": "certified-staff data", "S5": "salary guides", "S0": "has no reported", "S0b": self.copy["S0b"]}
+        needles = {"S1": "base salary reported for", "S2": "earliest salary on record", "S3": "contract on file runs",
+                   "SH": SH_SENTENCE, "S4": "NJDOE staff records count", "S5": "teacher salary guide", "S0": "No superintendent base salary is reported", "S0b": self.copy["S0b"]}
         for L, p in self.parsed.items():
             pos = [(p.summary.find(needles[k]), k) for k in order if needles[k] in p.summary]
             self.assertEqual([k for _, k in pos], [k for _, k in sorted(pos)], L)
@@ -582,6 +590,7 @@ class Committed(unittest.TestCase):
         for slot in S.SLOTS:
             self.assertRegex(doc, rf"\*\*{slot}\*\*")
         self.assertIn(SH_SENTENCE, doc)
+        self.assertIn("S5_one", doc)
 
 
 class ScratchTree(unittest.TestCase):
@@ -642,7 +651,7 @@ class ScratchTree(unittest.TestCase):
             self.assertEqual(Page(rd(d, rel)).paras, Page(rd(ROOT, rel)).paras, L)
 
     def test_check_is_1_on_a_stale_tree(self):
-        for mutate in (lambda t: t.replace("reported a superintendent", "reported a superintendents", 1),  # changed wording
+        for mutate in (lambda t: t.replace("The latest superintendent", "The latest superintendents", 1),  # changed wording
                        lambda t: PARA.sub("", t, count=1),  # missing
                        lambda t: PARA.sub(lambda m: m.group(0) * 2, t, count=1),  # twice
                        lambda t: re.sub(r"(<p class=\"disclaimer\">[^<]*</p>)(<p class=\"district-summary\".*?</p>)", r"\2\1", t, count=1)):  # moved

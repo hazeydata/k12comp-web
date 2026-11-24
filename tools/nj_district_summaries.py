@@ -4,7 +4,7 @@
 Each district page nj/<slug>-<leaid>/index.html gets exactly one <p class="district-summary" id="district-summary">...</p> in <main>, directly
 after <p class="disclaimer">...</p>. The text is built from that district's committed data only: api/v1/nj/<leaid>.json, data/nj/history/<leaid>.csv
 and the page itself (h1, breadcrumb county, the "Latest base salary" block, the "Starts at" note). All English strings live in
-tools/nj_district_summaries_copy.json (one key per slot S0, S0b, S1, S2, S3, SH, S4, S5); this file holds none.
+tools/nj_district_summaries_copy.json (one key per slot S0, S0b, S1, S2, S3, SH, S4, S5, S5_one); this file holds none.
 
 Run after the history build and the existing rewrites, before tools/nj_indexing.py. Each page is first stripped of its own paragraph, then the
 paragraph is inserted, so a second run changes no byte.
@@ -23,7 +23,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 COPY = os.path.join(ROOT, "tools", "nj_district_summaries_copy.json")
-SLOTS = ("S0", "S0b", "S1", "S2", "S3", "SH", "S4", "S5")
+SLOTS = ("S0", "S0b", "S1", "S2", "S3", "SH", "S4", "S5", "S5_one")
 DISTRICT = re.compile(r"nj/([a-z0-9-]+-(\d{7}))/index\.html")
 PARA = re.compile(r'<p class="district-summary" id="district-summary">.*?</p>', re.S)
 DISCLAIMER = re.compile(r'<p class="disclaimer">.*?</p>', re.S)
@@ -179,10 +179,13 @@ def build(page, doc, hist, county_fallback, leaid):
             add("S4", fte_sum=Rec(fmt_fte(r["fte_sum"]), src, f"row {n} fte_sum"), school_year=Rec(r["school_year"], src, f"row {n} school_year"))
     if doc["salary_cells"]:
         n = len({c["school_year"] for c in doc["salary_cells"]})
-        add("S5", n_guide_years=Rec(str(n), api, "FORMULA count(distinct salary_cells[*].school_year)"))
+        if n == 1:
+            add("S5_one")
+        else:
+            add("S5", n_guide_years=Rec(str(n), api, "FORMULA count(distinct salary_cells[*].school_year)"))
     if not sal and not any(s == "S4" for s, _, _ in out):
         out.append(("S0b", copy["S0b"], []))
-    order = {s: i for i, s in enumerate(("S0", "S1", "S2", "S3", "SH", "S4", "S0b", "S5"))}
+    order = {s: i for i, s in enumerate(("S0", "S1", "S2", "S3", "SH", "S4", "S0b", "S5", "S5_one"))}
     # the spec order: salary pages S1 S2 S3 SH S4 S5; no-salary pages S0, then S4, then S0b only when S4 is absent
     return sorted(out, key=lambda x: order[x[0]])
 
