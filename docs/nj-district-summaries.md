@@ -24,6 +24,14 @@ it differs from the h1).
 `{field}` placeholders, plus `"max_words": 80` and a `_status` object naming each slot's wording status: `APPROVED writing · Lindsay Bluth, Nov 24, 2026, 12:04 PM ET round 2` for every slot (final wording; no placeholders remain). The tool holds no English sentence (a test greps for that). Swapping a slot's wording is a
 one-line edit of the copy file; then run `--write`, regenerate `tests/fixtures/k12_district_summaries/` and the sitemap (`nj_indexing.py --write`).
 
+**No-break dates (dataviz's by-eye fixes, review of `d9f6a5bd`).** Dates and school years broke at their hyphens on narrow screens (`2019-` / `20.`). The tool wraps every
+rendered `{salary_year}`, `{contract_start}`, `{contract_end}` and `{school_year}` value in `<span class="nw">...</span>` when it fills the field (the markup is added by the
+tool, so no English goes into it and `tools/nj_district_summaries_copy.json` is byte-identical to `d9f6a5bd`). The span text is the plain date; there is no U+2011 (it breaks
+copy-paste and search), no other markup and no `<a>` in the paragraph; "History section below" in S0b stays plain text. Word counts, traces and tests read the paragraph with the
+tags removed. `style.css` gains one rule next to `.disclaimer`:
+`.district-summary{max-width:60ch;text-wrap:pretty}.district-summary .nw{white-space:nowrap}` (60ch caps the longest line at about 84 characters on desktop; `text-wrap:pretty`
+avoids a one-word last line in browsers that support it and is ignored elsewhere; `.nw` keeps a date on one line). Ann's optional notes (margin-top, scroll-margin) are not applied.
+
 ## Slots (in this order; one sentence each; 2 to 5 sentences per page, at most `max_words` words)
 
 Salary page = at least one superintendent row with `salary_not_reported` false. "Latest" = the max `salary_year` among those rows. Dollars print as the page prints
@@ -76,5 +84,5 @@ position and no other page with one; 2 to 5 sentences, at most 80 words; a recom
 and label; branch counts against a fresh recount (S1 575, S2 573, S3 335 = 337 dates branch - 2 zero-work-day pages, SH 40, S4 577, S5 8, S0 11, S0b 2); no person name, UFB token or
 suppressed value (the `FORBIDDEN` guard of `tests/test_nj_history_privacy.py` without the role word, plus a planted-name canary); 14 golden paragraphs under
 `tests/fixtures/k12_district_summaries/` byte for byte (including SH on 3400990 and 3401590 and not on 3416800); 586 distinct summaries; every district page equal to
-`bd37e392` apart from the paragraph; only `tools/`, `tests/`, `docs/`, district pages and `sitemap.xml` changed. `tests/k12_district_summaries_helpers.py` (`strip`) lets older byte-diff
+`bd37e392` apart from the paragraph; only `tools/`, `tests/`, `docs/`, district pages, `sitemap.xml` and the one `style.css` rule changed; the copy file is byte-equal to `d9f6a5bd`; every date or school year sits in exactly one `nw` span and `style.css` differs from `d9f6a5bd` by exactly that rule. `tests/k12_district_summaries_helpers.py` (`strip`) lets older byte-diff
 tests undo this paragraph (`tests/k12_indexing_helpers.py` `undo` calls it).

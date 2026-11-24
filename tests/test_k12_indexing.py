@@ -528,8 +528,12 @@ class Committed(unittest.TestCase):
 
     def test_no_data_chart_api_or_config_file_changes(self):
         out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", BASE, "--", "charts", "api", "data", "robots.txt", ".github",
-                              "_config.yml", "style.css", "llms.txt"], capture_output=True, check=True, text=True).stdout
+                              "_config.yml", "llms.txt"], capture_output=True, check=True, text=True).stdout
         self.assertEqual(out, "")
+        # K12-DISTRICT-SUMMARIES-001: style.css gains exactly the one summary rule (pinned in tests/test_k12_district_summaries.py), nothing else
+        css = subprocess.run(["git", "-C", ROOT, "diff", "-U0", BASE, "--", "style.css"], capture_output=True, check=True, text=True).stdout
+        body = [ln for ln in css.splitlines() if ln[:1] in "+-" and not ln.startswith(("+++", "---"))]
+        self.assertEqual(body, ["+.district-summary{max-width:60ch;text-wrap:pretty}.district-summary .nw{white-space:nowrap}"])
 
     # AC 22
     def test_docs_name_the_tool_and_the_rules(self):

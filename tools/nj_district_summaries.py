@@ -37,6 +37,12 @@ STARTS_AT = re.compile(r'Starts at <span class="num">([^<]*)</span> in (\d{4}-\d
 NUMBER = re.compile(r"\d{4}-\d\d-\d\d|\d{4}-\d\d|\$?\d{1,3}(?:,\d{3})+(?:\.\d+)?|\$?\d+(?:\.\d+)?")
 
 
+# Ann's by-eye fix: dates and school years must not break at their hyphens. The tool wraps these rendered values in <span class="nw">; while the
+# parts are built the wrap is marked with two private-use characters, which paragraph() turns into the span (no English here).
+NW_FIELDS = ("salary_year", "contract_start", "contract_end", "school_year")
+OPEN, CLOSE = "\ue000", "\ue001"
+
+
 class SummaryError(ValueError):
     pass
 
@@ -129,7 +135,7 @@ def build(page, doc, hist, county_fallback, leaid):
 
     def add(slot, **fields):
         # fields: name -> Rec
-        text = copy[slot].format(**{k: v.text for k, v in fields.items()})
+        text = copy[slot].format(**{k: (OPEN + v.text + CLOSE if k in NW_FIELDS else v.text) for k, v in fields.items()})
         out.append((slot, text, list(fields.values())))
 
     def rec(i, field, text=None):
@@ -207,8 +213,10 @@ def trace_of(parts):
 
 
 def paragraph(parts):
-    text = " ".join(t for _, t, _ in parts)
-    return text, '<p class="district-summary" id="district-summary">' + html.escape(text, quote=True) + "</p>"
+    marked = " ".join(t for _, t, _ in parts)
+    text = marked.replace(OPEN, "").replace(CLOSE, "")
+    body = html.escape(marked, quote=True).replace(OPEN, '<span class="nw">').replace(CLOSE, "</span>")
+    return text, '<p class="district-summary" id="district-summary">' + body + "</p>"
 
 
 def rewrite(page, doc, hist, county_fallback, leaid):

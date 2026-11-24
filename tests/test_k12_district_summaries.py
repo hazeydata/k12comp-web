@@ -108,7 +108,8 @@ class Page:
         c = re.search(r'<nav aria-label="Breadcrumb" class="crumbs"><a href="/nj/">New Jersey</a> / <a href="/nj/county/[a-z0-9-]+/">([^<]*)</a> / ', self.main)
         self.county = html.unescape(c.group(1)) if c else None
         self.paras = PARA.findall(self.main)
-        self.summary = html.unescape(self.paras[0]) if self.paras else None
+        # K12-DISTRICT-SUMMARIES-001 (Ann's fix): the paragraph holds <span class="nw"> around dates; the text is the paragraph with those tags removed
+        self.summary = html.unescape(re.sub(r'</?span(?: class="nw")?>', "", self.paras[0])) if self.paras else None
         self.big = re.search(r'<p class="big num">([^<]*)</p>', self.main).group(1)
         self.label = re.search(r'<h2 id="latest" class="label">Latest base salary · ([^<]*)</h2>', self.main).group(1)
         st = re.search(r'Starts at <span class="num">([^<]*)</span> in (\d{4}-\d\d)', self.main)
@@ -257,7 +258,7 @@ class Committed(unittest.TestCase):
             self.assertEqual(t.count('class="district-summary"'), 1, rel)
             self.assertEqual(t.count('id="district-summary"'), 1, rel)
             self.assertEqual(len(self.parsed[L].paras), 1, rel)
-            self.assertRegex(t, r'<main id="main">.*?<p class="disclaimer">[^<]*</p><p class="district-summary" id="district-summary">[^<]*</p>'
+            self.assertRegex(t, r'<main id="main">.*?<p class="disclaimer">[^<]*</p><p class="district-summary" id="district-summary">.*?</p>'
                                 r'<section class="summary" aria-labelledby="latest">')
             # inside <main>, once, and nothing else with the class
             self.assertEqual(self.parsed[L].main.count('class="district-summary"'), 1)
@@ -556,10 +557,46 @@ class Committed(unittest.TestCase):
     def test_changed_files_are_only_tools_tests_docs_district_pages_and_the_sitemap(self):
         ch = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", BASE], capture_output=True, check=True, text=True).stdout.split()
         ch += subprocess.run(["git", "-C", ROOT, "ls-files", "--others", "--exclude-standard"], capture_output=True, check=True, text=True).stdout.split()
-        bad = [f for f in ch if not (f.startswith(("tools/", "tests/", "docs/")) or DISTRICT.fullmatch(f) or f == "sitemap.xml")]
+        bad = [f for f in ch if not (f.startswith(("tools/", "tests/", "docs/")) or DISTRICT.fullmatch(f) or f == "sitemap.xml"
+                                                               or f == "style.css")]  # K12-DISTRICT-SUMMARIES-001: Ann's by-eye CSS rule, pinned below
         self.assertEqual(bad, [])
         for f in ch:
             self.assertFalse(f.startswith(("api/", "data/", "charts/")), f)
+
+    # K12-DISTRICT-SUMMARIES-001: Ann's by-eye fixes (d9f6a5bd = the reviewed head)
+    REVIEWED = "d9f6a5bd"
+    CSS_RULE = ".district-summary{max-width:60ch;text-wrap:pretty}.district-summary .nw{white-space:nowrap}\n"
+
+    def test_copy_file_is_byte_identical_to_the_reviewed_commit(self):
+        old = subprocess.run(["git", "-C", ROOT, "show", self.REVIEWED + ":tools/nj_district_summaries_copy.json"], capture_output=True, check=True).stdout
+        with open(os.path.join(ROOT, "tools", "nj_district_summaries_copy.json"), "rb") as f:
+            self.assertEqual(f.read(), old)
+
+    def test_every_date_and_school_year_sits_in_exactly_one_nw_span_and_there_is_no_other_markup(self):
+        date = re.compile(r"\d{4}-\d\d-\d\d|\d{4}-\d\d")
+        seen = 0
+        for L, rel in self.pages.items():
+            raw = PARA.search(rd(ROOT, rel)).group(1)
+            self.assertNotIn("<a", raw, L)
+            self.assertNotIn("\u2011", raw, L)
+            spans = re.findall(r'<span class="nw">([^<]*)</span>', raw)
+            rest = re.sub(r'<span class="nw">[^<]*</span>', "", raw)
+            self.assertNotIn("<", rest, L)  # no other markup (escaped text has no raw "<")
+            for sp in spans:
+                self.assertRegex(sp, r"\A(?:\d{4}-\d\d-\d\d|\d{4}-\d\d)\Z", L)  # a span holds one whole date or school year
+            for m in date.finditer(raw):
+                inside = [sp for sp in re.finditer(r'<span class="nw">[^<]*</span>', raw) if sp.start() < m.start() and m.end() <= sp.end()]
+                self.assertEqual(len(inside), 1, (L, m.group(0)))
+                seen += 1
+        self.assertGreater(seen, 1000)
+
+    def test_style_css_differs_from_the_reviewed_commit_by_exactly_the_one_rule(self):
+        old = subprocess.run(["git", "-C", ROOT, "show", self.REVIEWED + ":style.css"], capture_output=True, check=True).stdout.decode("utf-8")
+        new = rd(ROOT, "style.css")
+        anchor = ".disclaimer a{color:var(--ink);text-decoration:underline}\n"
+        self.assertEqual(old.count(anchor), 1)
+        self.assertEqual(new, old.replace(anchor, anchor + self.CSS_RULE))
+        self.assertEqual(new.count(".district-summary"), 2)
 
     def test_sitemap_still_611_urls_with_the_release_date(self):
         sm = rd(ROOT, "sitemap.xml")

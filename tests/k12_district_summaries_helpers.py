@@ -4,7 +4,7 @@ out), so older byte-diff tests keep comparing the rest of the page unchanged. te
 The regex is written here, not taken from the tool."""
 import re
 
-PARA = re.compile(r'<p class="district-summary" id="district-summary">[^<]*</p>')
+PARA = re.compile(r'<p class="district-summary" id="district-summary">.*?</p>', re.S)
 
 
 def strip(text):
