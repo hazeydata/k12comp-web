@@ -161,7 +161,7 @@ def build(page, doc, hist, county_fallback, leaid):
                 raise SummaryError(f"{leaid} starts-at note")
             fi, fr = pick([(i, r) for i, r in first if money(r["base_salary"]) == note.group(1)], "earliest row", leaid)
             add("S2", base_salary=rec(fi, "base_salary", money(fr["base_salary"])), salary_year=rec(fi, "salary_year"))
-        if (not any(r["term_ends_before_year"] for _, r in latest) and lr["contract_start"] and lr["contract_end"]
+        if (not lr["term_ends_before_year"] and lr["contract_start"] and lr["contract_end"]
                 and lr["ufb_work_days"] not in ("", "0", None)):
             add("S3", contract_start=rec(li, "contract_start"), contract_end=rec(li, "contract_end"), ufb_work_days=rec(li, "ufb_work_days"))
         if any(r["ufb_shared"] == "Y" for _, r in latest):

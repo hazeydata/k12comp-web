@@ -136,7 +136,7 @@ def recompute(root, leaid, page, copy):
             assert page.starts and page.starts[1] == ys[0]
             r2 = [r for r in first if money(r["base_salary"]) == page.starts[0]][0]
             out.append(copy["S2"].format(base_salary=money(r2["base_salary"]), salary_year=r2["salary_year"]))
-        if (not any(r["term_ends_before_year"] for r in latest) and r1["ufb_work_days"] not in ("", "0")):
+        if (not r1["term_ends_before_year"] and r1["ufb_work_days"] not in ("", "0")):
             out.append(copy["S3"].format(contract_start=r1["contract_start"], contract_end=r1["contract_end"], ufb_work_days=r1["ufb_work_days"]))
         if any(r["ufb_shared"] == "Y" for r in latest):
             out.append(copy["SH"])
@@ -377,6 +377,7 @@ class Committed(unittest.TestCase):
     def test_branch_counts_equal_a_fresh_recount(self):
         c = collections.Counter()
         zero_days = []
+        sh_ended = []
         for L in self.pages:
             doc = doc_of(ROOT, L)
             sal = [r for r in doc["superintendent_contracts"] if not r["salary_not_reported"] and r["base_salary"] not in ("", None)]
@@ -393,22 +394,31 @@ class Committed(unittest.TestCase):
                 lat = [r for r in sal if r["salary_year"] == ys[-1]]
                 c["S1"] += 1
                 c["S2"] += len(ys) >= 2
-                if not any(r["term_ends_before_year"] for r in lat):
+                shown = [r for r in lat if money(r["base_salary"]) == self.parsed[L].big]
+                disp = (shown or lat)[0]  # the row the "Latest base salary" block displays
+                if not disp["term_ends_before_year"]:
                     c["S3 dates branch"] += 1
-                    if not any(r["ufb_work_days"] in ("", "0") for r in lat):
+                    if disp["ufb_work_days"] not in ("", "0"):
                         c["S3"] += 1
                     else:
                         zero_days.append(L)
                 c["SH"] += any(r["ufb_shared"] == "Y" for r in lat)
+                if any(r["ufb_shared"] == "Y" for r in lat) and disp["term_ends_before_year"]:
+                    sh_ended.append(L)
             else:
                 c["S0"] += 1
                 c["S0b"] += not s4
         self.assertEqual(c["S1"], 575)
         self.assertEqual(c["S2"], 573)
-        self.assertEqual(c["S3 dates branch"], 335)
-        # two pages are in the dates branch but report 0 work days; the slot is omitted there (never print 0): 335 - 2
+        self.assertEqual(c["S3 dates branch"], 337)
+        # two pages are in the dates branch but report 0 work days; the slot is omitted there (never print 0): 337 - 2
         self.assertEqual(zero_days, ["3400069", "3407200"])
-        self.assertEqual(c["S3"], 333)
+        self.assertEqual(c["S3"], 335)
+        for L in ("3401470", "3401860"):  # displayed row not term-ended: S3 present (even with another ended/shared latest row)
+            self.assertIn("contract on file runs", self.parsed[L].summary, L)
+        self.assertEqual(len(sh_ended), 14)  # shared-service pages without S3 because the displayed row is term-ended
+        for L in sh_ended:
+            self.assertNotIn("contract on file runs", self.parsed[L].summary, L)
         self.assertEqual(c["SH"], 40)
         self.assertEqual(c["S4"], 577)
         self.assertEqual(c["S5"], 8)
@@ -423,7 +433,7 @@ class Committed(unittest.TestCase):
                               ("S5", self.copy["S5"].split("{")[0]), ("S0", self.copy["S0"].split("{county}")[1]), ("S0b", self.copy["S0b"])):
                 got[k] += needle in t
         self.assertEqual({k: got[k] for k in ("S1", "S2", "S3", "SH", "S4", "S5", "S0", "S0b")},
-                         {"S1": 575, "S2": 573, "S3": 333, "SH": 40, "S4": 577, "S5": 8, "S0": 11, "S0b": 2})
+                         {"S1": 575, "S2": 573, "S3": 335, "SH": 40, "S4": 577, "S5": 8, "S0": 11, "S0b": 2})
         # S0b only where S4 is absent, S0 pages: S4 follows S0
         for L, p in self.parsed.items():
             if self.copy["S0b"] in p.summary:

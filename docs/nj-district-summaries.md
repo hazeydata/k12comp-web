@@ -35,8 +35,8 @@ them (`$263,750`), dates as in the JSON (ISO). A missing, blank, zero or suppres
   shows; the trace names it). On 6 pages (e.g. 3403660 Deerfield Twp) the block shows a newer "Not reported" row; S1 then states the latest *reported* year, which History lists.
 - **S2** (two or more salary years, 573): `{base_salary}` and `{salary_year}` of the earliest salary year (the page's "Starts at" note; the tool stops if they differ).
   Raw values only: no difference, percentage or growth.
-- **S3** (contract dates, 333): `{contract_start}`, `{contract_end}`, `{ufb_work_days}` of the S1 row. Omitted when ANY latest-year row has `term_ends_before_year` true
-  (240 pages), and when the work days are 0 or blank (2 pages: 3400069 Bayshore Jointure Comm and 3407200 Highlands Boro; the dates branch is 335 = 575 - 240).
+- **S3** (contract dates, 335): `{contract_start}`, `{contract_end}`, `{ufb_work_days}` of the S1 row. Omitted when the displayed S1 row (the row the page's "Latest base salary" block shows) has `term_ends_before_year` true
+  (238 pages), and when the work days are 0 or blank (2 pages: 3400069 Bayshore Jointure Comm and 3407200 Highlands Boro; the dates branch is 337 = 575 - 238).
   The spec's "It is reported as a shared-service arrangement." add-on is dropped; SH is its own slot.
 - **SH** (shared service, 40): when ANY latest-year row has `ufb_shared` = Y, independent of S3 (so also on term-ended pages). One fixed sentence, no fields, no digits:
   "The superintendent contract on file is reported as a shared-service arrangement." (approved writing, Lindsay Bluth, Nov 24, 2026, 11:19 AM ET).
@@ -72,7 +72,7 @@ written outside the site.
 `tests/test_k12_district_summaries.py` (own parsers and own recompute): AST import allowlist and no English sentence literal in the tool; copy-file keys, statuses and
 `max_words`; `--write` twice and `--check` on a scratch copy (sha256 of every file), a stale tree, a rebuild from pages without the paragraph; 586 pages with one paragraph at the
 position and no other page with one; 2 to 5 sentences, at most 80 words; a recompute of all 586 with 0 mismatches and every digit traced; S1 against the page's latest figure
-and label; branch counts against a fresh recount (S1 575, S2 573, S3 333 = 335 dates branch - 2 zero-work-day pages, SH 40, S4 577, S5 8, S0 11, S0b 2); no person name, UFB token or
+and label; branch counts against a fresh recount (S1 575, S2 573, S3 335 = 337 dates branch - 2 zero-work-day pages, SH 40, S4 577, S5 8, S0 11, S0b 2); no person name, UFB token or
 suppressed value (the `FORBIDDEN` guard of `tests/test_nj_history_privacy.py` without the role word, plus a planted-name canary); 14 golden paragraphs under
 `tests/fixtures/k12_district_summaries/` byte for byte (including SH on 3400990 and 3401590 and not on 3416800); 586 distinct summaries; every district page equal to
 `bd37e392` apart from the paragraph; only `tools/`, `tests/`, `docs/`, district pages and `sitemap.xml` changed. `tests/k12_district_summaries_helpers.py` (`strip`) lets older byte-diff
