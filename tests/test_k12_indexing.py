@@ -23,6 +23,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import nj_indexing as I  # noqa: E402
+import nj_district_summaries as DSTOOL  # noqa: E402
+import k12_district_summaries_helpers as DS  # noqa: E402
 
 BASE = "7e99b60ee83a606550ce9e353fef8fcb06047996"  # web main before this ticket
 SITE = "https://k12comp.com"
@@ -374,7 +376,7 @@ class Committed(unittest.TestCase):
         rc, out = run_tool(ROOT, "--check")
         self.assertEqual(rc, 0, out)
         self.assertIn("21 county hubs, 586 districts, 24 disambiguated titles, 611 sitemap URLs; 0 files stale", out)
-        self.assertEqual(I.RELEASE_DATE, "2026-11-16")
+        self.assertEqual(I.RELEASE_DATE, "2026-11-24")
 
     # AC 3-5
     def test_hubs(self):
@@ -490,7 +492,7 @@ class Committed(unittest.TestCase):
         for u, d in got:
             rel = (u[len(SITE) + 1:] or "") + "index.html"
             if HUB.match(rel) or DISTRICT.match(rel) or rel in ("index.html", "nj/index.html"):
-                self.assertEqual(d, "2026-11-16", u)
+                self.assertEqual(d, "2026-11-24", u)
             else:
                 self.assertEqual(d, old[u], u)
         self.assertEqual([u for u, _ in got][-1], SITE + "/nj/history/")
@@ -509,6 +511,7 @@ class Committed(unittest.TestCase):
                 continue
             m = main_of(p)
             m = re.sub(r'<section class="peers" aria-labelledby="peers">.*?</section>', "", m)
+            m = DS.strip(m)  # K12-DISTRICT-SUMMARIES-001's paragraph (tests/test_k12_district_summaries.py checks it)
             m = re.sub(r'<a href="/nj/">New Jersey</a> / <a href="/nj/county/[a-z0-9-]+/">[^<]*</a> / ', '<a href="/nj/">Districts</a> / ', m)
             self.assertEqual(m, main_of(self.base_pages[rel]), rel)
             # and everything outside <main> except the head's title/og:title/BreadcrumbList
@@ -525,8 +528,12 @@ class Committed(unittest.TestCase):
 
     def test_no_data_chart_api_or_config_file_changes(self):
         out = subprocess.run(["git", "-C", ROOT, "diff", "--name-only", BASE, "--", "charts", "api", "data", "robots.txt", ".github",
-                              "_config.yml", "style.css", "llms.txt"], capture_output=True, check=True, text=True).stdout
+                              "_config.yml", "llms.txt"], capture_output=True, check=True, text=True).stdout
         self.assertEqual(out, "")
+        # K12-DISTRICT-SUMMARIES-001: style.css gains exactly the one summary rule (pinned in tests/test_k12_district_summaries.py), nothing else
+        css = subprocess.run(["git", "-C", ROOT, "diff", "-U0", BASE, "--", "style.css"], capture_output=True, check=True, text=True).stdout
+        body = [ln for ln in css.splitlines() if ln[:1] in "+-" and not ln.startswith(("+++", "---"))]
+        self.assertEqual(body, ["+.district-summary{max-width:60ch;text-wrap:pretty}.district-summary .nw{white-space:nowrap}"])
 
     # AC 22
     def test_docs_name_the_tool_and_the_rules(self):
@@ -559,11 +566,16 @@ class ScratchTree(unittest.TestCase):
         """From the pre-ticket pages (7e99b60e) the tool writes the committed bytes, and a second run changes nothing."""
         with tempfile.TemporaryDirectory(prefix="k12idx-b-") as b:
             base_tree(b)
+            # K12-DISTRICT-SUMMARIES-001 runs before this tool: the committed pages carry its paragraph (built here from the committed api/ and data/)
+            shutil.copytree(os.path.join(ROOT, "api", "v1", "nj"), os.path.join(b, "api", "v1", "nj"), dirs_exist_ok=True)
+            shutil.copytree(os.path.join(ROOT, "data", "nj", "history"), os.path.join(b, "data", "nj", "history"), dirs_exist_ok=True)
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(DSTOOL.main([b, "--write"]), 0)
             self.assertEqual(run_tool(b, "--check")[0], 1)
             self.assertEqual(run_tool(b, "--write")[0], 0)
-            once = sha_tree(b)
+            once = {k: v for k, v in sha_tree(b).items() if k in sha_tree(self.d)}  # minus the api/ and data/ files only the summaries step read
             self.assertEqual(run_tool(b, "--write")[0], 0)
-            self.assertEqual(sha_tree(b), once)
+            self.assertEqual({k: v for k, v in sha_tree(b).items() if k in once}, once)
             self.assertEqual(once, sha_tree(self.d))
 
     def mutate(self, rel, old, new):
@@ -601,7 +613,7 @@ class ScratchTree(unittest.TestCase):
         self.assertEqual(run_tool(self.d, "--check")[0], 1)
 
     def test_mutation_sitemap_url_removed(self):
-        line = "<url><loc>https://k12comp.com/nj/county/salem/</loc><lastmod>2026-11-16</lastmod></url>\n"
+        line = "<url><loc>https://k12comp.com/nj/county/salem/</loc><lastmod>2026-11-24</lastmod></url>\n"
         self.mutate("sitemap.xml", line, "")
         self.assertTrue(sitemap_problems(self.d))
         self.assertEqual(run_tool(self.d, "--check")[0], 1)

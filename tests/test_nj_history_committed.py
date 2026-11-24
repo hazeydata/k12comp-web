@@ -6,9 +6,12 @@ guide-table markup only (tools/nj_guide_tables.py: native sr-only caption, swipe
 `expected_final`: the 44 part-time districts' pages, /nj/, /about/ and llms.txt must equal tools/nj_fte_marks.py's rewrite of the build output
 (the part-time badges, notes and caption suffixes; tests/test_k12_fte_presentation.py pins every string). K12-INDEXING-001 runs last:
 `expected_final` then applies tools/nj_indexing.py's rewrite to the files it owns (every district page, /nj/, sitemap.xml; tests/test_k12_indexing.py
-pins the markup), and the 21 county hubs and / must equal the tool's output. Every other committed file must equal the build byte for byte.
+pins the markup), and the 21 county hubs and / must equal the tool's output. K12-DISTRICT-SUMMARIES-001 runs between the two: `expected_final` is
+`expected_fte` -> `expected_summaries` (tools/nj_district_summaries.py's paragraph on every district page, from the committed api/ and data/ files) ->
+`expected_indexing`. Every other committed file must equal the build byte for byte.
 """
 import glob
+import json
 import os
 import re
 import subprocess
@@ -19,7 +22,9 @@ import nj_api_index as A  # tools/ is on sys.path through the helpers
 import nj_guide_tables as G
 import nj_fte_marks as N
 import nj_indexing as I
+import nj_district_summaries as S
 import k12_indexing_helpers as X
+import k12_district_summaries_helpers as Y
 
 STATEWIDE = "data/nj/nj-district-staff-history.csv"
 # {committed file: (bytes in the fresh build, bytes in the committed file)}; each must occur exactly once in the build output.
@@ -47,8 +52,9 @@ def expected_committed(rel, built):
 
 
 def expected_final(rel, built):
-    """What the committed file must be: `expected_fte`, then K12-INDEXING-001's rewrite (`expected_indexing`) on exactly the files it owns."""
-    return expected_indexing(rel, expected_fte(rel, built))
+    """What the committed file must be: `expected_fte`, then K12-DISTRICT-SUMMARIES-001's paragraph (`expected_summaries`), then
+    K12-INDEXING-001's rewrite (`expected_indexing`) on exactly the files each owns."""
+    return expected_indexing(rel, expected_summaries(rel, expected_fte(rel, built)))
 
 
 _indexing = {}
@@ -76,6 +82,19 @@ def expected_indexing(rel, want):
     if m:
         return I.rewrite_district(text(want), indexing_model(), m.group(1)).encode("utf-8")
     return want
+
+
+def expected_summaries(rel, want):
+    """K12-DISTRICT-SUMMARIES-001 (after the FTE marks, before nj_indexing): every district page gets tools/nj_district_summaries.py's paragraph, built
+    from the committed api/v1/nj/<leaid>.json and data/nj/history/<leaid>.csv (the latter is checked equal to the build in this module) and the
+    county of the /nj/ table (the page has no county breadcrumb yet at this point of the chain). Any other file: unchanged."""
+    m = re.fullmatch(r"nj/[a-z0-9-]+-(\d{7})/index\.html", rel)
+    if not m:
+        return want
+    leaid = m.group(1)
+    doc = json.loads(H.rt(os.path.join(H.ROOT, "api", "v1", "nj", leaid + ".json")))
+    new, _, _ = S.rewrite(want.decode("utf-8"), doc, S.history_rows(H.ROOT, leaid), indexing_model().by_leaid[leaid].county, leaid)
+    return new.encode("utf-8")
 
 
 def expected_fte(rel, built):
@@ -211,6 +230,27 @@ class CommittedBuild(unittest.TestCase):
             if r.endswith(".html"):
                 fte = expected_fte(r, H.rb(os.path.join(out, *r.split("/"))))
                 self.assertEqual(X.undo(r, H.rb(os.path.join(H.ROOT, *r.split("/")))), fte, r)
+
+    def test_summaries_rewrite_is_applied_to_every_district_page_and_nothing_else(self):
+        """K12-DISTRICT-SUMMARIES-001: the step changes exactly the 586 district pages of the earlier result (one paragraph each), and nothing else."""
+        out, _ = H.built()
+        rels = committed_files(out)
+        owned = []
+        for r in rels:
+            fte = expected_fte(r, H.rb(os.path.join(out, *r.split("/"))))
+            if expected_summaries(r, fte) != fte:
+                owned.append(r)
+        self.assertEqual(len(owned), 586)
+        self.assertTrue(all(re.fullmatch(r"nj/[a-z0-9-]+-\d{7}/index\.html", r) for r in owned))
+        for r in owned:
+            fte = expected_fte(r, H.rb(os.path.join(out, *r.split("/")))).decode("utf-8")
+            got = expected_summaries(r, fte.encode("utf-8")).decode("utf-8")
+            self.assertEqual(got.count('<p class="district-summary" id="district-summary">'), 1, r)
+            self.assertEqual(Y.strip(got), fte, r)  # the paragraph is the only difference
+            # the committed page carries it, directly after the disclaimer
+            with open(os.path.join(H.ROOT, *r.split("/")), encoding="utf-8", newline="") as f:
+                now = f.read()
+            self.assertRegex(now, r'<p class="disclaimer">[^<]*</p><p class="district-summary" id="district-summary">')
 
     def test_committed_hubs_and_home_are_the_tool_output(self):
         """K12-INDEXING-001: the 21 county hubs (new files) and / (not part of the history build) equal tools/nj_indexing.py's output."""

@@ -1,4 +1,4 @@
-"""K12-INDEXING-001: tools/nj_indexing.py rewrote every district page, / and /nj/, regenerated sitemap.xml and added 21 county hubs after the
+"""K12-INDEXING-001 (and, for district pages, K12-DISTRICT-SUMMARIES-001's paragraph): tools/nj_indexing.py rewrote every district page, / and /nj/, regenerated sitemap.xml and added 21 county hubs after the
 base commits other tests compare against. `undo(rel, text)` maps a current page back to its pre-ticket text (the tool's own strip functions:
 breadcrumb, BreadcrumbList block, peer block, disambiguated title, "By county" list, /nj/ h1) so those comparisons stay exact.
 `is_this_tickets_page_change(rel)` is true only when undoing gives web main 7e99b60e's bytes back. tests/test_k12_indexing.py checks the
@@ -11,6 +11,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import nj_indexing as I  # noqa: E402
+import k12_district_summaries_helpers as DS  # noqa: E402
 
 BASE = "7e99b60ee83a606550ce9e353fef8fcb06047996"  # web main before K12-INDEXING-001
 DISTRICT = re.compile(r"nj/[a-z0-9-]+-\d{7}/index\.html")
@@ -28,7 +29,7 @@ def undo(rel, text):
     elif rel == "index.html":
         t = I.strip_home(t)
     elif DISTRICT.fullmatch(rel):
-        t = I.strip_district(t)
+        t = DS.strip(I.strip_district(t))  # K12-DISTRICT-SUMMARIES-001's paragraph too (it runs before nj_indexing, so it sits under this ticket's markup)
     return t.encode("utf-8") if raw else t
 
 

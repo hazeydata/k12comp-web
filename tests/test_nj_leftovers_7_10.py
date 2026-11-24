@@ -54,6 +54,24 @@ OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", 
                "tools/nj_link_baseline.py", "tests/test_k12_nj_link_baseline.py", "tests/k12_upkeep_helpers.py",
                "docs/nj-link-baseline.md", "docs/nj-link-baseline.tsv",
                "tests/test_k12_hist_panels_mobile.py",  # K12-INDEXING-001
+               # K12-DISTRICT-SUMMARIES-001
+               "docs/nj-district-summaries.md", "tools/nj_district_summaries.py",
+               "tools/nj_district_summaries_copy.json", "tests/test_k12_district_summaries.py",
+               "tests/k12_district_summaries_helpers.py",
+               "tests/fixtures/k12_district_summaries/3400004.html",
+               "tests/fixtures/k12_district_summaries/3400006.html",
+               "tests/fixtures/k12_district_summaries/3400069.html",
+               "tests/fixtures/k12_district_summaries/3400990.html",
+               "tests/fixtures/k12_district_summaries/3401020.html",
+               "tests/fixtures/k12_district_summaries/3401200.html",
+               "tests/fixtures/k12_district_summaries/3401260.html",
+               "tests/fixtures/k12_district_summaries/3401470.html",
+               "tests/fixtures/k12_district_summaries/3401590.html",
+               "tests/fixtures/k12_district_summaries/3403840.html",
+               "tests/fixtures/k12_district_summaries/3406150.html",
+               "tests/fixtures/k12_district_summaries/3408370.html",
+               "tests/fixtures/k12_district_summaries/3414820.html",
+               "tests/fixtures/k12_district_summaries/3416800.html",
                } | X.OWN_TESTS_AND_TOOLS  # K12-NJ-UPKEEP-001; K12-INDEXING-001
 
 
@@ -93,7 +111,7 @@ class Leftover7aGuideTables(unittest.TestCase):
     def test_only_that_line_is_added_to_style_css(self):
         old, new = at_base("style.css").splitlines(), rt("style.css").splitlines()
         added = [ln for ln in new if ln not in old and "K12-FTE-PRESENTATION-001" not in ln
-                 and ln not in ("#districts td:nth-of-type(3){white-space:nowrap}", "#districts td:nth-of-type(1){white-space:nowrap}")]  # K12-FTE-PRESENTATION-001: its two lines are pinned in test_k12_fte_presentation.py; K12-CHART-LABEL-EDGE-001: the Year rule in test_k12_nj_year_wrap.py; K12-NJ-COUNTY-WRAP-001: the County rule in test_k12_nj_county_wrap.py
+                 and ln not in ("#districts td:nth-of-type(3){white-space:nowrap}", "#districts td:nth-of-type(1){white-space:nowrap}", ".district-summary{max-width:60ch;text-wrap:pretty}.district-summary .nw{white-space:nowrap}")]  # K12-FTE-PRESENTATION-001: its two lines are pinned in test_k12_fte_presentation.py; K12-CHART-LABEL-EDGE-001: the Year rule in test_k12_nj_year_wrap.py; K12-NJ-COUNTY-WRAP-001: the County rule in test_k12_nj_county_wrap.py  # K12-DISTRICT-SUMMARIES-001: the one summary rule, pinned in tests/test_k12_district_summaries.py
         self.assertEqual([ln for ln in old if ln not in new], [])
         self.assertEqual(len(added), 4, added)  # this line, then the PR #5 fix list's three (tests/test_nj_guide_tables.py, test_nj_api_index_browser.py)
         self.assertIn(".grid td.num", added[0])

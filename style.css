@@ -76,6 +76,7 @@ figure.chart figcaption{color:var(--muted);font-size:14px;margin-top:12px;max-wi
 /* disclaimers and boxes */
 .disclaimer{border:1px solid var(--line);border-left:4px solid var(--lav);background:var(--surface);padding:12px 16px;border-radius:8px;max-width:65ch}
 .disclaimer a{color:var(--ink);text-decoration:underline}
+.district-summary{max-width:60ch;text-wrap:pretty}.district-summary .nw{white-space:nowrap}
 .error-box{border-left:4px solid var(--pink);background:var(--white);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 16px;border-radius:8px}
 .empty{padding:24px;border:1px dashed var(--line);border-radius:16px;display:flex;flex-wrap:wrap;gap:16px;align-items:center}
 .empty p{margin:0}

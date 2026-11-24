@@ -550,8 +550,8 @@ class DistrictPages(unittest.TestCase):
             shown = re.findall(r"(?<![\d.$,])(\d+(?:\.\d+)?) FTE\b", page)
             self.assertTrue(shown, leaid)
             self.assertLessEqual(set(shown), {r["ufb_fte"] for r in ROWS[leaid]}, leaid)  # each is a ufb_fte string of this district, as published
-            for dollars_ in re.findall(r"\$[\d,]+", page):
-                self.assertIn(dollars_, {dollars(r) for r in ROWS[leaid]} | {"$20k"} | set(re.findall(r"\$[\d,]+k?", at_base(os.path.relpath(PAGES[leaid], ROOT).replace(os.sep, "/")))), (leaid, dollars_))
+            for dollars_ in re.findall(r"\$\d[\d,]*\d|\$\d", page):  # a dollar figure never ends in a comma or period of the sentence
+                self.assertIn(dollars_, {dollars(r) for r in ROWS[leaid]} | {"$20k"} | set(re.findall(r"\$\d[\d,]*\d(?:k)?|\$\d(?:k)?", at_base(os.path.relpath(PAGES[leaid], ROOT).replace(os.sep, "/")))), (leaid, dollars_))
 
 
 class NjPage(unittest.TestCase):
@@ -618,7 +618,7 @@ class NjPage(unittest.TestCase):
         self.assertTrue(added[0].startswith("td.num>.badge{display:flex;width:fit-content;margin-left:auto;"))
         self.assertTrue(added[1].lstrip().startswith("#districts td.num>.badge{margin-left:0}"))
         self.assertFalse(any(re.search(r"td\.num\s*(>\s*)?\.badge", ln) for ln in old))  # nothing like it existed
-        self.assertEqual([ln for ln in new if ln not in old and ln not in ("#districts td:nth-of-type(3){white-space:nowrap}", "#districts td:nth-of-type(1){white-space:nowrap}")], added)  # and nothing else (K12-CHART-LABEL-EDGE-001 adds the one Year rule, pinned in test_k12_nj_year_wrap.py; K12-NJ-COUNTY-WRAP-001 the one County rule, pinned in test_k12_nj_county_wrap.py)
+        self.assertEqual([ln for ln in new if ln not in old and ln not in ("#districts td:nth-of-type(3){white-space:nowrap}", "#districts td:nth-of-type(1){white-space:nowrap}", ".district-summary{max-width:60ch;text-wrap:pretty}.district-summary .nw{white-space:nowrap}")], added)  # and nothing else (K12-CHART-LABEL-EDGE-001 adds the one Year rule, pinned in test_k12_nj_year_wrap.py; K12-NJ-COUNTY-WRAP-001 the one County rule, pinned in test_k12_nj_county_wrap.py)  # K12-DISTRICT-SUMMARIES-001: the one summary rule, pinned in tests/test_k12_district_summaries.py
 
 
 class Fixtures(unittest.TestCase):

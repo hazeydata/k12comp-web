@@ -20,11 +20,12 @@ and `sitemap.xml`: the `/nj/` table (names, LEAIDs, counties, row markup), the p
 1. The history build: `K12_DATA_REPO=<clone> python3 tools/nj_history_postbuild.py --site <git archive of the base> --out <dir>`
    (see `docs/nj-history.md`). Its fresh-sitemap check runs here, on the build's own sitemap, and it appends `/nj/history/`.
 2. The existing rewrites, each `--write`: `nj_api_index` -> `nj_guide_tables` -> `nj_fte_marks` -> `nj_mobile_chart_fit` -> `nj_chart_label_edge`.
-3. **`tools/nj_indexing.py --write` last.** It reads the final `/nj/` table (with the FTE badges `nj_fte_marks` adds, which the hubs copy) and
+3. `tools/nj_district_summaries.py --write` (K12-DISTRICT-SUMMARIES-001, `docs/nj-district-summaries.md`): one summary paragraph on every district page.
+4. **`tools/nj_indexing.py --write` last.** It reads the final `/nj/` table (with the FTE badges `nj_fte_marks` adds, which the hubs copy) and
    then regenerates `sitemap.xml` from the finished tree, which is why it runs after `build.py`'s fresh-sitemap check rather than inside it.
 
 `tests/test_nj_history_committed.py` checks that the committed tree is exactly this: fresh build, the existing rewrites, then this tool
-(`expected_final` -> `expected_indexing` for every district page, `/nj/` and `sitemap.xml`; the hubs and `/` must equal the tool's output).
+(`expected_final`: `expected_fte` -> `expected_summaries` -> `expected_indexing` for every district page, `/nj/` and `sitemap.xml`; the hubs and `/` must equal the tool's output).
 
 ## What it writes
 
@@ -54,8 +55,8 @@ and `sitemap.xml`: the `/nj/` table (names, LEAIDs, counties, row markup), the p
 - **`sitemap.xml`**: every indexable HTML page = no robots `noindex` and exactly one canonical pointing at the page itself, except `api/`
   (OQ-9: `/api/v1/nj/` stays out). Same format as before; sorted by file path with `/nj/history/` last (where the build appends it).
   **lastmod (OQ-6):** hubs `RELEASE_DATE`; pages the tool rewrites (districts, `/`, `/nj/`) max(the page's "Updated" date, `RELEASE_DATE`);
-  every other page keeps its current lastmod (an indexable page with none stops the tool). `RELEASE_DATE = "2026-11-16"` is a constant in the
-  tool; bump it in the release that next changes these pages. 611 URLs today (590 + 21). `robots.txt` is unchanged and
+  every other page keeps its current lastmod (an indexable page with none stops the tool). `RELEASE_DATE = "2026-11-24"` is a constant in the
+  tool (bumped from 2026-11-16 for K12-DISTRICT-SUMMARIES-001); bump it in the release that next changes these pages. 611 URLs today (590 + 21). `robots.txt` is unchanged and
   `tools/nj_history_release_guard.py` still finds `/nj/history/`.
 
 The new visible strings live once, at the top of the tool (`NJ_H1`, `BY_COUNTY_H2`, `PEERS_H2`, `CRUMB_ROOT`, `HUB_*`, `DUP_TITLE`).
@@ -79,6 +80,6 @@ byte-diff tests undo this ticket's markup.
 
 ## Out of scope
 
-Google Search Console writes (no sitemap resubmit, no URL inspection; OQ-7); IndexNow/Bing (OQ-8); per-district summary sentences (OQ-2,
-K12-DISTRICT-SUMMARY-001); medians or other county statistics (OQ-3); linking the `/nj/` County cells (OQ-10); noindex or removal of any page
+Google Search Console writes (no sitemap resubmit, no URL inspection; OQ-7); IndexNow/Bing (OQ-8); per-district summary sentences (OQ-2; done in
+K12-DISTRICT-SUMMARIES-001, `docs/nj-district-summaries.md`); medians or other county statistics (OQ-3); linking the `/nj/` County cells (OQ-10); noindex or removal of any page
 and any change to `/api/v1/nj/` (OQ-9); the `/nj/history/` breadcrumb; backlinks and outreach.

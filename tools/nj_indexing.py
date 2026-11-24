@@ -34,7 +34,7 @@ import os
 import re
 import sys
 
-RELEASE_DATE = "2026-11-16"
+RELEASE_DATE = "2026-11-24"
 SITE = "https://k12comp.com"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PEERS_EACH_SIDE = 4
