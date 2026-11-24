@@ -54,6 +54,24 @@ OTHER_ADDED = {"tools/nj_chart_label_edge.py", "tests/chart_header_helpers.py", 
                "tools/nj_link_baseline.py", "tests/test_k12_nj_link_baseline.py", "tests/k12_upkeep_helpers.py",
                "docs/nj-link-baseline.md", "docs/nj-link-baseline.tsv",
                "tests/test_k12_hist_panels_mobile.py",  # K12-INDEXING-001
+               # K12-DISTRICT-SUMMARIES-001
+               "docs/nj-district-summaries.md", "tools/nj_district_summaries.py",
+               "tools/nj_district_summaries_copy.json", "tests/test_k12_district_summaries.py",
+               "tests/k12_district_summaries_helpers.py",
+               "tests/fixtures/k12_district_summaries/3400004.html",
+               "tests/fixtures/k12_district_summaries/3400006.html",
+               "tests/fixtures/k12_district_summaries/3400069.html",
+               "tests/fixtures/k12_district_summaries/3400990.html",
+               "tests/fixtures/k12_district_summaries/3401020.html",
+               "tests/fixtures/k12_district_summaries/3401200.html",
+               "tests/fixtures/k12_district_summaries/3401260.html",
+               "tests/fixtures/k12_district_summaries/3401470.html",
+               "tests/fixtures/k12_district_summaries/3401590.html",
+               "tests/fixtures/k12_district_summaries/3403840.html",
+               "tests/fixtures/k12_district_summaries/3406150.html",
+               "tests/fixtures/k12_district_summaries/3408370.html",
+               "tests/fixtures/k12_district_summaries/3414820.html",
+               "tests/fixtures/k12_district_summaries/3416800.html",
                } | X.OWN_TESTS_AND_TOOLS  # K12-NJ-UPKEEP-001; K12-INDEXING-001
 
 
